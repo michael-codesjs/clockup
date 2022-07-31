@@ -1,0 +1,23 @@
+
+schema {
+  query: Query
+}
+
+type Query {
+  getUser: User
+  getAlarm(id: ID!): Alarm
+}
+
+type User {
+  id: ID
+  created: AWSDateTime
+  email: AWSEmail
+  name: String
+  alarms: Int
+}
+
+type Alarm {
+  id: ID!
+  created: AWSDateTime
+  name: String
+}
