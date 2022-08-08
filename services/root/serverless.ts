@@ -7,7 +7,9 @@ import { generateLogicalResourcelName, generateServiceName } from "../../utiliti
 
 
 const serverlessConfiguration: AWS.Extended = {
+
   service: generateServiceName("root"),
+  
   provider: {
     name: config.provider,
     region: config.region,
@@ -21,20 +23,21 @@ const serverlessConfiguration: AWS.Extended = {
   },
 
   resources: {
+
     Resources: {
-      DynamoDbTable: dynamoDbResource
+      ...dynamoDbResource
     },
 
     Outputs: {
 
-      [stackOutputNames.dynamoDbTableName]: {
+      [stackOutputNames.root.table.name]: {
         Value: { Ref: "DynamoDbTable" },
-        Export: { Name: stackOutputNames.dynamoDbTableName }
+        Export: { Name: stackOutputNames.root.table.name }
       },
 
-      [stackOutputNames.dynamoDbTableArn]: {
+      [stackOutputNames.root.table.arn]: {
         Value: { "Fn::GetAtt": ["DynamoDbTable", "Arn"] },
-        Export: { Name: stackOutputNames.dynamoDbTableArn }
+        Export: { Name: stackOutputNames.root.table.arn }
       }
 
     }

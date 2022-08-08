@@ -7,25 +7,45 @@ export enum config {
   runtime = "nodejs16.x",
 };
 
+export type stacks = "root" | "authentication" | "api" | "user" | "alarm";
+
+export const logicalResourceNames = {
+  table: "DynamoDbTable",
+  userPool: "CognitoUserPool",
+  userPoolWebClient: "WebCognitoUserPoolClient"
+}
+
 export const stackOutputNames = {
 
-  /* STORAGE */
+  root: {
 
-  dynamoDbTableName: "dynamoDbTableName",
-  dynamoDbTableArn: "dynamoDbTableArn",
+    table: {
+      stack: "root",
+      name: "dynamoDbTableName",
+      arn: "dynamoDbTableArn",
+    }
 
-  /* AUTH */
+  },
 
-  // cognitoUserPoolName: "cognitoUserPoolName",
-  cognitoUserPoolId: "cognitoUserPoolId",
-  cognitoUserPoolArn: "cognitoUserPoolArn",
+  auth: {
 
-  cognitoClientId: "cognitoClientId",
+    cogntio: {
+      id: "cognitoUserPoolId",
+      arn: "cognitoUserPoolArn",
+    },
 
-  /* API */
+    clients: {
+      web: {
+        id:  "cognitoClientId"
+      }
+    }
 
-  GraphQlApiId: "GraphQlApiId",
-  GraphQlApiUrl: "GraphQlApiUrl",
+  },
+
+  api: {
+    id:  "GraphQlApiId",
+    endpoint: "GraphQlApiUrl"
+  }
 
 }
 

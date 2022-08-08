@@ -2,31 +2,35 @@ import type { AWS } from "../../types/aws";
 import { config, stackOutputNames } from "../../utilities/constants";
 import { commonCloudFormationImports, commonCustom, commonEnviromentVariables, commonPlugins } from "../../utilities/commons";
 import { cognitoUserPoolResource, webCognitoClientResource } from "../../resources";
-import { generateLogicalResourcelName, generateServiceName, importCloudFormationParam } from "../../utilities/functions";
+import { generateLogicalResourcelName, generateServiceName, importLocalCloudFormationParam } from "../../utilities/functions";
 
 const serverlessConfiguration: AWS.Extended = {
 
   service: generateServiceName("authentication"),
 
+
   provider: {
+
     name: config.provider,
     region: config.region,
     stage: config.stage,
     runtime: config.runtime,
+
     environment: {
       ...commonEnviromentVariables,
-      DYNAMO_DB_TABLE_NAME: importCloudFormationParam({
-        name: config.serviceName,
+      DYNAMO_DB_TABLE_NAME: importLocalCloudFormationParam({
         stack: "root",
-        stage: "${self:custom.stage}",
-        output: stackOutputNames.dynamoDbTableName
+        output: stackOutputNames.root.table.name
       }),
     }
+
   },
+
 
   plugins: [
     ...commonPlugins,
   ],
+
 
   custom: {
     ...commonCustom,
@@ -34,27 +38,29 @@ const serverlessConfiguration: AWS.Extended = {
     tableArn: commonCloudFormationImports.tableArn,
   },
 
+
   resources: {
 
     Resources: {
-      CognitoUserPool: cognitoUserPoolResource,
-      WebCognitoUserPoolClient: webCognitoClientResource
+      ...cognitoUserPoolResource,
+      ...webCognitoClientResource
     },
 
     Outputs: {
 
-      [stackOutputNames.cognitoUserPoolId]: {
+      [stackOutputNames.auth.cogntio.id]: {
         Value: { Ref: "CognitoUserPool" },
-        Export: { Name: stackOutputNames.cognitoUserPoolId }
+        Export: { Name: stackOutputNames.auth.cogntio.id }
       },
 
-      [stackOutputNames.cognitoClientId]: {
+      [stackOutputNames.auth.clients.web.id]: {
         Value: { Ref: "WebCognitoUserPoolClient" },
-        Export: { Name: stackOutputNames.cognitoClientId }
+        Export: { Name: stackOutputNames.auth.clients.web.id }
       }
 
     }
   },
+
 
   functions: {
 
@@ -72,7 +78,7 @@ const serverlessConfiguration: AWS.Extended = {
       events: [
         {
           cognitoUserPool: {
-            pool: generateLogicalResourcelName("userPool"),
+            pool: "${self:custom.userPoolName}",
             existing: true,
             forceDeploy: true,
             trigger: "PostConfirmation"

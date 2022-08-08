@@ -1,6 +1,6 @@
 import { esBuildConfig } from "../plugin-configs/esbuild";
-import { config, stackOutputNames } from "./constants";
-import { importCloudFormationParam } from "./functions";
+import { stackOutputNames } from "./constants";
+import { importLocalCloudFormationParam } from "./functions";
 
 export const commonPlugins = [
   "serverless-esbuild",
@@ -27,34 +27,27 @@ export const commonEnviromentVariables = {
 export const commomEnviromentResources = {
   // use together with commonCloudFormationImports
   DYNAMO_DB_TABLE_NAME: "${self:custom.tableName}",
+  GRAPHQL_API_ID: "${self:custom.apiId}",
   GRAPHQL_API_ENDPOINT: "${self:custom.apiEndpoint}",
-  COGNITO_USER_POOL_ID: "${self:custom.apiId}",
-  COGNITO_CLIENT_ID: "${self:custom.apiEndpoint}"
 }
 
 export const commonCloudFormationImports = {
-  tableName: importCloudFormationParam({
-    name: config.serviceName,
+
+  tableName: importLocalCloudFormationParam({
     stack: "root",
-    stage: "${self:custom.stage}",
-    output: stackOutputNames.dynamoDbTableName
+    output: stackOutputNames.root.table.name,
   }),
-  tableArn:  importCloudFormationParam({
-    name: config.serviceName,
+  tableArn:  importLocalCloudFormationParam({
     stack: "root",
-    stage: "${self:custom.stage}",
-    output: stackOutputNames.dynamoDbTableArn
+    output: stackOutputNames.root.table.arn
   }),
-  apiId: importCloudFormationParam({
-    name: config.serviceName,
+  apiId: importLocalCloudFormationParam({
     stack: "api",
-    stage: "${self:custom.stage}",
-    output: stackOutputNames.GraphQlApiId
+    output: stackOutputNames.api.id
   }),
-  apiEndpoint: importCloudFormationParam({
-    name: config.serviceName,
+  apiEndpoint: importLocalCloudFormationParam({
     stack: "api",
-    stage: "${self:custom.stage}",
-    output: stackOutputNames.GraphQlApiUrl
-  }),
+    output: stackOutputNames.api.endpoint
+  })
+
 }

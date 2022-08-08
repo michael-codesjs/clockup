@@ -2,7 +2,7 @@
 import { AWS } from "../../types/aws";
 import { commonCustom, commonEnviromentVariables, commonPluginConfig, commonPlugins } from "../../utilities/commons";
 import { config, stackOutputNames } from "../../utilities/constants";
-import { generateServiceName, importCloudFormationParam } from "../../utilities/functions";
+import { generateServiceName, importLocalCloudFormationParam } from "../../utilities/functions";
 
 const serverlessConfiguration: AWS.Extended = {
 
@@ -37,11 +37,9 @@ const serverlessConfiguration: AWS.Extended = {
       region: "${self:custom.region}",
       authenticationType: "AMAZON_COGNITO_USER_POOLS",
       userPoolConfig: {
-        userPoolId: importCloudFormationParam({
-          name: config.serviceName,
+        userPoolId: importLocalCloudFormationParam({
           stack: "authentication",
-          stage: "${self:custom.stage}",
-          output: stackOutputNames.cognitoUserPoolId
+          output: stackOutputNames.auth.cogntio.id
         }),
         defaultAction: "ALLOW",
       },

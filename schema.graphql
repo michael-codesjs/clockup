@@ -1,6 +1,7 @@
 
 schema {
   query: Query
+  mutation: Mutation
 }
 
 type Query {
@@ -8,16 +9,38 @@ type Query {
   getAlarm(id: ID!): Alarm
 }
 
-type User {
-  id: ID
+type Mutation {
+  editUser(user:UserInput): User
+}
+
+interface ICommom {
+  id: ID!
+  entityType: EntityType
   created: AWSDateTime
-  email: AWSEmail
-  name: String
-  alarms: Int
+}
+
+enum EntityType {
+  USER
+  ALARM
+}
+
+type User implements ICommom {
+  id: ID!
+  entityType: EntityType
+  created: AWSDateTime!
+  email: AWSEmail!
+  name: String!
+  alarms: Int!
 }
 
 type Alarm {
   id: ID!
   created: AWSDateTime
+  name: String
+}
+
+
+input UserInput {
+  email: AWSEmail
   name: String
 }

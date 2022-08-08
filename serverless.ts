@@ -2,14 +2,14 @@
 import { AWS } from "./types/aws";
 import { commomEnviromentResources, commonCloudFormationImports, commonCustom, commonEnviromentVariables, commonPluginConfig, commonPlugins } from "./utilities/commons";
 import { config, stackOutputNames } from "./utilities/constants";
-import { generateServiceName, importCloudFormationParam } from "./utilities/functions";
+import { generateServiceName, importCloudFormationParam, importLocalCloudFormationParam } from "./utilities/functions";
 
 
 // DEPLOY THIS SERVICE LAST
 
 const serverlessConfiguration: AWS.Extended = {
 
-  service: generateServiceName("test"),
+  service: generateServiceName("testing"),
 
   provider: {
     name: config.provider,
@@ -19,6 +19,14 @@ const serverlessConfiguration: AWS.Extended = {
     environment: {
       ...commonEnviromentVariables,
       ...commomEnviromentResources,
+      COGNITO_USER_POOL_ID: importLocalCloudFormationParam({
+        stack: "authentication",
+        output: stackOutputNames.auth.cogntio.id
+      }),
+      COGNITO_CLIENT_ID: importLocalCloudFormationParam({
+        stack: "authentication",
+        output: stackOutputNames.auth.clients.web.id
+      }),
     }
   },
 

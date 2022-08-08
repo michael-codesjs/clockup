@@ -3,6 +3,7 @@ import { DynamoDB } from "aws-sdk"
 export const dynamdoDbClient = new DynamoDB.DocumentClient();
 
 export const dynamoDbOperations = {
-  get: (params:AWS.DynamoDB.GetItemInput) => dynamdoDbClient.get(params).promise(),
-  put: (params:AWS.DynamoDB.PutItemInput) => dynamdoDbClient.put(params).promise(),
+  get: (params:DynamoDB.GetItemInput) => dynamdoDbClient.get(params).promise(),
+  put: (params:DynamoDB.PutItemInput) => dynamdoDbClient.put(params).promise(),
+  update: (params: DynamoDB.UpdateItemInput) => dynamdoDbClient.update(params).promise()
 }

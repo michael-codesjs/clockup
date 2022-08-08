@@ -58,6 +58,19 @@ const serverlessConfiguration: AWS.Extended = {
           ]
         }
       ]
+    },
+
+    editProfile: {
+      handler: "functions/edit-profile.handler",
+      iamRoleStatements: [
+        {
+          Effect: "Allow",
+          Action: ["dynamodb:UpdateItem"],
+          Resource: [
+            "${self:custom.tableArn}"
+          ]
+        }
+      ]
     }
 
   }

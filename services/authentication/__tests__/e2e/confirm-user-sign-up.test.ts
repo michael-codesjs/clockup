@@ -1,4 +1,6 @@
 import { Given, Then, When } from "../../../../framework/tests";
+import { EntityType } from "../../../../types/api";
+import { constructKey } from "../../../../utilities/functions";
 
 describe("user sign-up", () => {
 
@@ -9,8 +11,11 @@ describe("user sign-up", () => {
     const result = await Then.userExistsInTable(user.id);
 
     expect(result.Item).toMatchObject({
-      entityType: "User",
-      ...user,
+      entityType: EntityType.USER,
+      PK: constructKey(EntityType.USER, user.id),
+      SK: constructKey(EntityType.USER, user.id),
+      name: user.name,
+      email: user.email,
       alarms: 0
     });
 

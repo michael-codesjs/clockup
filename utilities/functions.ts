@@ -1,6 +1,7 @@
 
-import { config } from "./constants";
+import { config, stacks } from "./constants";
 
+export { config as configureEnviromentVariables } from "dotenv";
 
 export function createMappingTemplate({ field, type, source }: { field: string, type: string, source: string }) {
   return {
@@ -23,9 +24,16 @@ export function createDataSource(name: string) {
 };
 
 
-export function importCloudFormationParam(args: { name: config.serviceName | string, stack: string, stage: string, output: string }) {
+export function importCloudFormationParam(args: { name: config.serviceName | string, stack: stacks, stage: string, output: string }) {
   const { name, stage, stack, output } = args;
   return "${cf:" + `${name}-${stack}-${stage}.${output}` + "}";
+}
+
+export function importLocalCloudFormationParam(args: { stack: stacks, stage?: string, output: string }) {
+  let { stack, stage, output } = args;
+  stage = stage || "${self:custom.stage}";
+  const name = config.serviceName;
+  return importCloudFormationParam({ name, stack, stage, output });
 }
 
 export function importResourceArn(args: { service: string, region: string, resourceType: string, resourceName: string }) {
@@ -41,4 +49,6 @@ export function generateLogicalResourcelName(name: string) {
   return "${self:service}-" + name + "-${self:custom.stage}"
 }
 
-export { config as configureEnviromentVariables } from "dotenv";
+export function constructKey(entityType: string, id: string) {
+  return `${entityType.toUpperCase()}#${id}`;
+}

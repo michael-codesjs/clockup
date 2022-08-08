@@ -6,6 +6,7 @@ export const getProfile = /* GraphQL */ `
   query GetProfile {
     getProfile {
       id
+      entityType
       created
       email
       name

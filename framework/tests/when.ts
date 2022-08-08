@@ -1,4 +1,4 @@
-import { PostConfirmationTriggerEvent } from "aws-lambda";
+import { AppSyncIdentityCognito, AppSyncResolverEvent, PostConfirmationTriggerEvent } from "aws-lambda";
 import { api, auth } from "../../lib/amplify";
 import { configureEnviromentVariables } from "../../utilities/functions";
 import { User } from "../types/types";
@@ -68,6 +68,7 @@ export module When {
   }
 
   export async function getProfile() {
+
     const response = await api.graphql<User>({
       query: getProfileQuery,
       authMode: "AMAZON_COGNITO_USER_POOLS",

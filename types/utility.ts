@@ -6,3 +6,5 @@ export type Replace<T, From, To> = T extends (...args: any[]) => any ? T : {
 export type ChangeTypeOfKeys<T extends object, Keys extends keyof T, NewType> = {
   [key in keyof T]: key extends Keys ? NewType : T[key]
 }
+
+export type PutItem<T> = Omit<T, "__typename"> & { PK: string, SK: string };

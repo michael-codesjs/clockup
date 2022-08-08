@@ -1,6 +1,6 @@
 import { Given, When } from "../../../../framework/tests";
 
-jest.setTimeout(20000); // my internet was very slow when i was writing this.
+jest.setTimeout(20000);
 
 describe("Get User Profile", () => {
 

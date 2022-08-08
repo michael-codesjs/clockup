@@ -9,8 +9,6 @@ export const handler: AppSyncResolverHandler<null, User> = async (event) => {
 
   const identity = event.identity as AppSyncIdentityCognito;
 
-  console.log(identity);
-
   const user = await dynamoDbOperations.get({
     TableName: process.env.DYNAMO_DB_TABLE_NAME!,
     Key: {
