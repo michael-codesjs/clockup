@@ -1,10 +1,10 @@
 
 import { AWS } from "../../types/aws";
 import { commomEnviromentResources, commonCloudFormationImports, commonCustom, commonEnviromentVariables, commonPluginConfig, commonPlugins } from "../../utilities/commons";
-import { config } from "../../utilities/constants";
-import { createDataSource, createMappingTemplate, generateServiceName } from "../../utilities/functions";
+import { config, stacks } from "../../utilities/constants";
+import { createDataSource, createMappingTemplate, generateServiceName, importLocalCloudFormationParam } from "../../utilities/functions";
 
-const serverlessConfiguration: AWS.Extended = {
+const serverlessConfiguration: AWS.Service = {
 
   service: generateServiceName("user"),
 
@@ -15,7 +15,15 @@ const serverlessConfiguration: AWS.Extended = {
     runtime: config.runtime,
     environment: {
       ...commonEnviromentVariables,
-      ...commomEnviromentResources
+      ...commomEnviromentResources,
+      COGNITO_USER_POOL_ID: importLocalCloudFormationParam({
+        stack: "authentication",
+        output: stacks.auth.outputs.cognito.id
+      }),
+      COGNITO_CLIENT_ID: importLocalCloudFormationParam({
+        stack: "authentication",
+        output: stacks.auth.outputs.clients.web.id
+      })
     }
   },
 
@@ -36,10 +44,22 @@ const serverlessConfiguration: AWS.Extended = {
           field: "getProfile",
           type: "Query",
           source: "getProfile",
+        }),
+        createMappingTemplate({
+          field: "editUser",
+          type: "Mutation",
+          source: "editUser",
+        }),
+        createMappingTemplate({
+          field: "deleteUser",
+          type: "Mutation",
+          source: "deleteUser",
         })
       ],
       dataSources: [
-        createDataSource("getProfile")
+        createDataSource("getProfile"),
+        createDataSource("editUser"),
+        createDataSource("deleteUser")
       ]
     },
 
@@ -60,12 +80,25 @@ const serverlessConfiguration: AWS.Extended = {
       ]
     },
 
-    editProfile: {
-      handler: "functions/edit-profile.handler",
+    editUser: {
+      handler: "functions/edit-user.handler",
       iamRoleStatements: [
         {
           Effect: "Allow",
-          Action: ["dynamodb:UpdateItem"],
+          Action: ["dynamodb:UpdateItem", "dynamodb:GetItem"],
+          Resource: [
+            "${self:custom.tableArn}"
+          ]
+        }
+      ]
+    },
+
+    deleteUser: {
+      handler: "functions/delete-user.handler",
+      iamRoleStatements: [
+        {
+          Effect: "Allow",
+          Action: ["dynamodb:DeleteItem"],
           Resource: [
             "${self:custom.tableArn}"
           ]

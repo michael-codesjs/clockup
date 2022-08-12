@@ -1,21 +1,15 @@
-import { AppSyncIdentityCognito, AppSyncResolverHandler } from "aws-lambda";
-import { dynamoDbOperations } from "../../../model/index";
-import { User } from "../../../types/appsync";
+import { AppSyncIdentityCognito, AppSyncResolverEvent } from "aws-lambda";
+import { User } from "../../../framework/entities";
 import { configureEnviromentVariables } from "../../../utilities/functions";
 
 configureEnviromentVariables();
 
-export const handler: AppSyncResolverHandler<null, User> = async (event) => {
+export const handler = async (event:AppSyncResolverEvent<null,any>) => {
 
   const identity = event.identity as AppSyncIdentityCognito;
 
-  const user = await dynamoDbOperations.get({
-    TableName: process.env.DYNAMO_DB_TABLE_NAME!,
-    Key: {
-      id: identity.sub as any
-    }
-  });
+  const user = await User.new({ id: identity.sub }).sync();
 
-  return user.Item as User;
-
+  return user instanceof user.AbsoluteTypeOfSelf ? user.graphqlEntity() : {};
+  
 }
