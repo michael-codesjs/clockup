@@ -1,12 +1,12 @@
 import { dynamoDbResource } from "../../resources";
 import { AWS } from "../../types/aws";
-import { commonCustom } from "../../utilities/commons";
-import { config, stackOutputNames } from "../../utilities/constants";
+import { commonCustom, commonPluginConfig, commonPlugins } from "../../utilities/commons";
+import { config, logicalResourceNames, stacks } from "../../utilities/constants";
 import { generateLogicalResourcelName, generateServiceName } from "../../utilities/functions";
 
 
 
-const serverlessConfiguration: AWS.Extended = {
+const serverlessConfiguration: AWS.Service = {
 
   service: generateServiceName("root"),
   
@@ -17,27 +17,37 @@ const serverlessConfiguration: AWS.Extended = {
     runtime: config.runtime
   },
 
+  plugins: [
+    ...commonPlugins
+  ],
+
+  package: {
+    individually: true
+  },
+
   custom: {
     ...commonCustom,
-    tableName: generateLogicalResourcelName("table")
+    ...commonPluginConfig,
+    tableName: generateLogicalResourcelName("table"),
+    userPoolName: generateLogicalResourcelName("userPool")
   },
 
   resources: {
 
     Resources: {
-      ...dynamoDbResource
+      ...dynamoDbResource,
     },
 
     Outputs: {
 
-      [stackOutputNames.root.table.name]: {
-        Value: { Ref: "DynamoDbTable" },
-        Export: { Name: stackOutputNames.root.table.name }
+      [stacks.root.outputs.table.name]: {
+        Value: { Ref: logicalResourceNames.table },
+        Export: { Name: stacks.root.outputs.table.name }
       },
 
-      [stackOutputNames.root.table.arn]: {
-        Value: { "Fn::GetAtt": ["DynamoDbTable", "Arn"] },
-        Export: { Name: stackOutputNames.root.table.arn }
+      [stacks.root.outputs.table.arn]: {
+        Value: { "Fn::GetAtt": [logicalResourceNames.table, "Arn"] },
+        Export: { Name: stacks.root.outputs.table.arn }
       }
 
     }

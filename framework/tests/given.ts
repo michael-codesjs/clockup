@@ -1,7 +1,10 @@
 
 import { Chance } from "chance";
 import { When } from ".";
+import { configureEnviromentVariables } from "../../utilities/functions";
 import { User } from "../types/types";
+
+configureEnviromentVariables();
 
 const chance = Chance();
 

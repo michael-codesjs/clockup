@@ -1,10 +1,10 @@
 import type { AWS } from "../../types/aws";
-import { config, stackOutputNames } from "../../utilities/constants";
+import { config, logicalResourceNames, stacks } from "../../utilities/constants";
 import { commonCloudFormationImports, commonCustom, commonEnviromentVariables, commonPlugins } from "../../utilities/commons";
 import { cognitoUserPoolResource, webCognitoClientResource } from "../../resources";
 import { generateLogicalResourcelName, generateServiceName, importLocalCloudFormationParam } from "../../utilities/functions";
 
-const serverlessConfiguration: AWS.Extended = {
+const serverlessConfiguration: AWS.Service = {
 
   service: generateServiceName("authentication"),
 
@@ -20,8 +20,8 @@ const serverlessConfiguration: AWS.Extended = {
       ...commonEnviromentVariables,
       DYNAMO_DB_TABLE_NAME: importLocalCloudFormationParam({
         stack: "root",
-        output: stackOutputNames.root.table.name
-      }),
+        output: stacks.root.outputs.table.name
+      })
     }
 
   },
@@ -31,6 +31,10 @@ const serverlessConfiguration: AWS.Extended = {
     ...commonPlugins,
   ],
 
+  package: {
+    individually: true
+  },
+
 
   custom: {
     ...commonCustom,
@@ -38,9 +42,8 @@ const serverlessConfiguration: AWS.Extended = {
     tableArn: commonCloudFormationImports.tableArn,
   },
 
-
   resources: {
-
+    
     Resources: {
       ...cognitoUserPoolResource,
       ...webCognitoClientResource
@@ -48,40 +51,48 @@ const serverlessConfiguration: AWS.Extended = {
 
     Outputs: {
 
-      [stackOutputNames.auth.cogntio.id]: {
-        Value: { Ref: "CognitoUserPool" },
-        Export: { Name: stackOutputNames.auth.cogntio.id }
+      [stacks.auth.outputs.cognito.id]: {
+        Value: { Ref: logicalResourceNames.userPool },
+        Export: { Name: stacks.auth.outputs.cognito.id },
       },
 
-      [stackOutputNames.auth.clients.web.id]: {
-        Value: { Ref: "WebCognitoUserPoolClient" },
-        Export: { Name: stackOutputNames.auth.clients.web.id }
+      [stacks.auth.outputs.cognito.arn]: {
+        Value: { "Fn::GetAtt": [logicalResourceNames.userPool, "Arn"] },
+        Export: { Name: stacks.auth.outputs.cognito.arn },
+      },
+
+      [stacks.auth.outputs.clients.web.id]: {
+        Value: { Ref: logicalResourceNames.userPoolWebClient },
+        Export: { Name: stacks.auth.outputs.clients.web.id }, 
       }
 
     }
-  },
 
+  },
 
   functions: {
 
+    /*
+     * function logical names are tied to the LambdaConfig of the cognito user pool.
+     * Only change them if you absolutely know what you are doing
+     */
     confirmSignUp: {
       handler: "functions/confirm-user-sign-up.handler",
       iamRoleStatements: [
         {
           Effect: 'Allow',
-          Action: ['dynamodb:PutItem', 'dynamodb:GetItem'],
+          Action: ['dynamodb:PutItem','dynamodb:UpdateItem'],
           Resource: [
             "${self:custom.tableArn}"
           ]
         }
       ],
+
       events: [
         {
           cognitoUserPool: {
-            pool: "${self:custom.userPoolName}",
-            existing: true,
-            forceDeploy: true,
-            trigger: "PostConfirmation"
+            pool: logicalResourceNames.userPool,
+            trigger: "PostConfirmation",
           }
         }
       ],
@@ -92,16 +103,17 @@ const serverlessConfiguration: AWS.Extended = {
        events: [
         {
           cognitoUserPool: {
-            pool: generateLogicalResourcelName("userPool"),
-            existing: true,
-            forceDeploy: true,
+            pool: logicalResourceNames.userPool,
             trigger: "PreSignUp"
           }
         }
       ],
+      
     }
 
-  }
+  },
+
+ 
 
 }
 

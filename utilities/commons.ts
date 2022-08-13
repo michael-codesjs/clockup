@@ -1,5 +1,5 @@
 import { esBuildConfig } from "../plugin-configs/esbuild";
-import { stackOutputNames } from "./constants";
+import { stacks } from "./constants";
 import { importLocalCloudFormationParam } from "./functions";
 
 export const commonPlugins = [
@@ -35,19 +35,20 @@ export const commonCloudFormationImports = {
 
   tableName: importLocalCloudFormationParam({
     stack: "root",
-    output: stackOutputNames.root.table.name,
+    output: stacks.root.outputs.table.name,
   }),
   tableArn:  importLocalCloudFormationParam({
     stack: "root",
-    output: stackOutputNames.root.table.arn
+    output: stacks.root.outputs.table.arn
   }),
+  
   apiId: importLocalCloudFormationParam({
     stack: "api",
-    output: stackOutputNames.api.id
+    output: stacks.api.outputs.api.id
   }),
   apiEndpoint: importLocalCloudFormationParam({
     stack: "api",
-    output: stackOutputNames.api.endpoint
+    output: stacks.api.outputs.api.endpoint
   })
 
 }

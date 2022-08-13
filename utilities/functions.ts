@@ -1,7 +1,15 @@
 
 import { config, stacks } from "./constants";
+import { config as dotenvConfig } from "dotenv";
 
-export { config as configureEnviromentVariables } from "dotenv";
+export function configureEnviromentVariables() {
+  dotenvConfig();
+  return process.env;
+}
+
+export function generateServicePath(serviceName:string) {
+  return `services/${serviceName}`;
+}
 
 export function createMappingTemplate({ field, type, source }: { field: string, type: string, source: string }) {
   return {

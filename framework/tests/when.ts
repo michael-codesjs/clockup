@@ -1,12 +1,9 @@
-import { AppSyncIdentityCognito, AppSyncResolverEvent, PostConfirmationTriggerEvent } from "aws-lambda";
+import { PostConfirmationTriggerEvent } from "aws-lambda";
 import { api, auth } from "../../lib/amplify";
+import { User } from "../types/types"
+import * as queries from "../../graphql/queries";
+import * as mutations from "../../graphql/mutations";
 import { configureEnviromentVariables } from "../../utilities/functions";
-import { User } from "../types/types";
-// import { GraphQLResult } from "aws-amplify";
-
-import {
-  getProfile as getProfileQuery
-} from "../../lib/graphql/queries";
 
 configureEnviromentVariables();
 
@@ -70,11 +67,37 @@ export module When {
   export async function getProfile() {
 
     const response = await api.graphql<User>({
-      query: getProfileQuery,
+      query: queries.getProfile,
       authMode: "AMAZON_COGNITO_USER_POOLS",
     });
 
     return response.data.getProfile;
+
+  }
+
+  export async function editUser(args: { [k:string]: any }) {
+
+    const response = await api.graphql<User>(({
+      query: mutations.editUser,
+      variables: {
+        input: {
+          ...args
+        }
+      }
+    }));
+
+    return response.data.editUser;
+
+  }
+
+  export async function deleteUser() {
+
+    const response = await api.graphql({
+      query: mutations.deleteUser,
+      authMode: "AMAZON_COGNITO_USER_POOLS"
+    });
+
+    return response.data.deleteUser;
 
   }
 

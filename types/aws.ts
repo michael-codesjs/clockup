@@ -22,6 +22,16 @@ export namespace AWS {
     }
   };
 
-  export type Extended = ChangeTypeOfKeys<DefaultAWS,"functions", AwsFunctionsWithIamRoleStatements>;
+  export type Compose = {
+    services: {
+      [k:string]: {
+        path: string,
+        dependsOn?: Array<string>,
+      }
+    }
+  }
+
+  export type Service = ChangeTypeOfKeys<DefaultAWS,"functions", AwsFunctionsWithIamRoleStatements>;
+
 
 }

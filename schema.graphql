@@ -4,15 +4,6 @@ schema {
   mutation: Mutation
 }
 
-type Query {
-  getProfile: User
-  getAlarm(id: ID!): Alarm
-}
-
-type Mutation {
-  editUser(user:UserInput): User
-}
-
 interface ICommom {
   id: ID!
   entityType: EntityType
@@ -26,21 +17,47 @@ enum EntityType {
 
 type User implements ICommom {
   id: ID!
-  entityType: EntityType
+  entityType: EntityType!
   created: AWSDateTime!
   email: AWSEmail!
   name: String!
   alarms: Int!
 }
 
-type Alarm {
+type AlarmRingTime {
+  hour: Int!
+  minute: Int!
+}
+
+type AlarmSnoozeSettings {
+  duration: Int!
+  interval: Int!
+}
+
+type Alarm implements ICommom {
   id: ID!
-  created: AWSDateTime
+  entityType: EntityType!
+  created: AWSDateTime!
+  name: String
+  enabled: Boolean,
+  modified: AWSDateTime,
+  days: [Int!],
+  time: AlarmRingTime!,
+  snooze: AlarmSnoozeSettings!,
+  onceOff: Boolean
+}
+
+input UpdateUserInput {
+  email: AWSEmail
   name: String
 }
 
+type Query {
+  getProfile: User
+  getAlarm(id: ID!): Alarm
+}
 
-input UserInput {
-  email: AWSEmail
-  name: String
+type Mutation {
+  editUser(input:UpdateUserInput): User
+  deleteUser: Boolean
 }

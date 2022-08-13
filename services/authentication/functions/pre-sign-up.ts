@@ -1,7 +1,5 @@
 import { PreSignUpTriggerEvent } from "aws-lambda";
 
-
-
 export const handler = async(event:PreSignUpTriggerEvent) => {
 
   console.log("pre sign up");

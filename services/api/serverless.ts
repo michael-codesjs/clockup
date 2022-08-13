@@ -1,10 +1,10 @@
 
 import { AWS } from "../../types/aws";
 import { commonCustom, commonEnviromentVariables, commonPluginConfig, commonPlugins } from "../../utilities/commons";
-import { config, stackOutputNames } from "../../utilities/constants";
+import { config, stacks } from "../../utilities/constants";
 import { generateServiceName, importLocalCloudFormationParam } from "../../utilities/functions";
 
-const serverlessConfiguration: AWS.Extended = {
+const serverlessConfiguration: AWS.Service = {
 
   service: generateServiceName("api"),
 
@@ -39,7 +39,7 @@ const serverlessConfiguration: AWS.Extended = {
       userPoolConfig: {
         userPoolId: importLocalCloudFormationParam({
           stack: "authentication",
-          output: stackOutputNames.auth.cogntio.id
+          output: stacks.auth.outputs.cognito.id
         }),
         defaultAction: "ALLOW",
       },
