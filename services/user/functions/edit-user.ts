@@ -1,14 +1,18 @@
 
 import { AppSyncIdentityCognito, AppSyncResolverHandler } from "aws-lambda";
-import { User } from "../../../framework/entities";
+import Entities from "../../../framework/entities";
 import { EditUserMutationVariables } from "../../../types/api";
 
 export const handler: AppSyncResolverHandler<EditUserMutationVariables,any> = async (event) => {
 
-  const identity = event.identity as AppSyncIdentityCognito;
-  const input = event.arguments.input!;
+  const { sub } = event.identity as AppSyncIdentityCognito;
+  const { email, name } = event.arguments.input!;
 
-  const user = await User.new({ id: identity.sub, name: input.name!, email: input.email! }).sync();
+  const user = await (
+    Entities
+    .user({ id: sub, email, name  })
+    .sync()
+  );
 
   return user.graphqlEntity();
 

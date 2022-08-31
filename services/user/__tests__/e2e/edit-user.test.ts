@@ -6,17 +6,14 @@ describe("Edit User Profile", () => {
 
   it("Edits a users profile", async () => {
 
-    const user = await Given.anAuthenticatedUser();
-    const edits = await Given.aRandomUser();
-    const updatedProfile = await When.editUser({
-      name: edits.name,
-      email: edits.email
-    });
+    const user = await Given.entities.autheticatedUser();
+    const { email, name } = await Given.attributes.user();
+    const updatedProfile = await When.api.editUser({ email, name });
 
     expect(updatedProfile).toMatchObject({
       id: user.id,
-      name: edits.name,
-      email: edits.email,
+      name: name,
+      email: email,
       alarms: 0,
     })
 

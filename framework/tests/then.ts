@@ -1,24 +1,22 @@
-import { dynamoDbOperations } from "../../lib/dynamoDb";
-import { EntityType } from "../../types/api";
-import { configureEnviromentVariables, constructKey } from "../../utilities/functions";
 
-configureEnviromentVariables();
+import * as types from "../../client/types/api";
 
-export abstract class Then {
+/*
+ * THEN:
+ * Collection of functions that perform common test suites.
+ */
 
-  static async userExistsInTable(id) {
 
-    const key = constructKey(EntityType.USER, id) as any;
 
-    const result = await dynamoDbOperations.get({
-      TableName: process.env.DYNAMO_DB_TABLE_NAME!,
-      Key: {
-        PK: key, SK: key
-      }
+export module Then {
+
+  type User = Omit<types.User, "__typename" | "created">
+  export function user(object:User, object1:User) {
+    /* tests one object against the other for user attributes */
+    const { id, name, email, alarms } = object1;
+    expect(object).toMatchObject({
+      id, name, email, alarms
     });
-
-    return result;
-
   }
 
 }

@@ -1,23 +1,20 @@
+import { EntityType } from "../../../../client/types/api";
 import { Given, Then, When } from "../../../../framework/tests";
-import { EntityType } from "../../../../types/api";
-import { constructKey } from "../../../../utilities/functions";
 
-describe("user sign-up", () => {
+describe("Confirm User Sign", () => {
 
-  it("confirms the user signs-up", async () => {
+  it("Confirms the user signs-up", async () => {
 
-    const { name, email, password } = Given.aRandomUser();
-    const user = await When.userSignUp({ name, email, password });
-    const result = await Then.userExistsInTable(user.id);
+    const attributes = Given.attributes.user(); // get random user attributes
+    const { name, email, password } = attributes;
+    const user = await When.auth.signUp({ name, email, password }); // sign up user e2e
+    const dbRecord = await When.database.getCustomer(user.id); // get record from the table 
 
-    expect(result.Item).toMatchObject({
-      entityType: EntityType.USER,
-      PK: constructKey(EntityType.USER, user.id),
-      SK: constructKey(EntityType.USER, user.id),
-      name: user.name,
-      email: user.email,
-      alarms: 0
-    });
+    Then.user(dbRecord,{
+      ...user,
+      alarms: 0,
+      entityType: EntityType.USER
+    }); // test match
 
   });
 

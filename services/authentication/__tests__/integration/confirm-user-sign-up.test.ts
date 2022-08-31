@@ -1,26 +1,18 @@
-import { Given, When, Then } from "../../../../framework/tests";
-import { EntityType } from "../../../../types/api";
-import { constructKey } from "../../../../utilities/functions";
+import { Given, Then, When } from "../../../../framework/tests";
 import { handler } from "../../functions/confirm-user-sign-up";
 
 describe("confirm-user-sign-up", () => {
 
   it("confirms the user signs-up", async () => {
 
-    const user = Given.aRandomUser();
-    const { event } = When.confirmUserSignUp(user);
-    await handler(event);
-    const result = await Then.userExistsInTable(user.username);
-
+    const userAttributes = Given.attributes.user(); // get random user attributes
+    const { event } = Given.handler.confirmSignUp(userAttributes); // get lambda handler params for confirmUserSignUp
     
-    expect(result.Item).toMatchObject({
-      entityType: EntityType.USER,
-      PK: constructKey(EntityType.USER, user.username),
-      SK: constructKey(EntityType.USER, user.username),
-      name: user.name,
-      email: user.email,
-      alarms: 0
-    })
+    await handler(event);
+
+    const dbRecord = await When.database.getCustomer(userAttributes.id);
+
+    Then.user(dbRecord,userAttributes);
 
   });
 

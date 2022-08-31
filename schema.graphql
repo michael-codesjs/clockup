@@ -53,8 +53,12 @@ input UpdateUserInput {
 }
 
 type Query {
+
   getProfile: User
   getAlarm(id: ID!): Alarm
+
+  getImageUploadURL(contentType:String, extension: String): String
+
 }
 
 type Mutation {

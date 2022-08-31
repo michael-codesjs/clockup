@@ -1,4 +1,5 @@
-import { Given, When } from "../../../../framework/tests"
+import { EntityType } from "../../../../client/types/api";
+import { Given, Then, When } from "../../../../framework/tests"
 
 
 
@@ -6,20 +7,21 @@ describe("Delete User", () => {
   
   it("Deletes a users account", async () => {
 
-    const user = await Given.anAuthenticatedUser();
+    const user = await Given.entities.autheticatedUser();
 
     // check if we actually created the user
-    let profile = await When.getProfile();
-    
-    expect(profile).toMatchObject({
-      ...user,
-      alarms: 0
-    });
+    let profile = await When.database.getCustomer(user.id);
+    expect(profile).toBeTruthy();
 
     // delete the user
-    const result = await When.deleteUser();
+    const result = await When.api.deleteUser();
 
     expect(result).toBe(true);
+
+    // check if the record was deleted in the table
+
+    const postDeleteDbRecord = When.database.getCustomer(user.id);
+    expect(postDeleteDbRecord).toBeNull();
 
   })
 })

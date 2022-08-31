@@ -1,5 +1,6 @@
 import { esBuildConfig } from "../plugin-configs/esbuild";
-import { stacks } from "./constants";
+import { AWS } from "../types/aws";
+import { stacks, config } from "./constants";
 import { importLocalCloudFormationParam } from "./functions";
 
 export const commonPlugins = [
@@ -27,6 +28,7 @@ export const commonEnviromentVariables = {
 export const commomEnviromentResources = {
   // use together with commonCloudFormationImports
   DYNAMO_DB_TABLE_NAME: "${self:custom.tableName}",
+  // ASSETS_BUCKET_NAME: "${self:custom.assetsBucketName}",
   GRAPHQL_API_ID: "${self:custom.apiId}",
   GRAPHQL_API_ENDPOINT: "${self:custom.apiEndpoint}",
 }
@@ -41,7 +43,15 @@ export const commonCloudFormationImports = {
     stack: "root",
     output: stacks.root.outputs.table.arn
   }),
-  
+  /*
+  assetsBucketName: importLocalCloudFormationParam({
+    stack: "root",
+    output: stacks.root.outputs.assetsBucket.name
+  }),
+  assetsBucketArn: importLocalCloudFormationParam({
+    stack: "root",
+    output: stacks.root.outputs.assetsBucket.arn
+  }), */
   apiId: importLocalCloudFormationParam({
     stack: "api",
     output: stacks.api.outputs.api.id
@@ -51,4 +61,11 @@ export const commonCloudFormationImports = {
     output: stacks.api.outputs.api.endpoint
   })
 
+}
+
+export const commonProviderAttributes: AWS.Service["provider"] = {
+  name: config.provider,
+  region: config.region,
+  stage: config.stage,
+  runtime: config.runtime,
 }

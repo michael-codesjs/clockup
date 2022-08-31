@@ -11,6 +11,7 @@ export type stacks = "root" | "authentication" | "api" | "user" | "alarm";
 
 export const logicalResourceNames = {
   table: "DynamoDbTable",
+  assetsBucket: "AssetsBucket",
   userPool: "CognitoUserPool",
   userPoolWebClient: "WebCognitoUserPoolClient",
   // functions:
@@ -27,11 +28,15 @@ export const stacks = {
   root: {
     name: "root",
     outputs: {
-
       table: {
         stack: "root",
         name: "dynamoDbTableName",
         arn: "dynamoDbTableArn",
+      },
+      assetsBucket: {
+        stack: "root",
+        name: "assetsBucketName",
+        arn: "assetsBucketArn",
       }
     }
   },

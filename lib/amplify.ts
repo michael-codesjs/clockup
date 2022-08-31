@@ -1,19 +1,24 @@
 import { Amplify, Auth, API } from "aws-amplify";
 import { configureEnviromentVariables } from "../utilities/functions";
 
-configureEnviromentVariables();
+const {
+  REGION,
+  COGNITO_USER_POOL_ID,
+  COGNITO_CLIENT_ID,
+  GRAPHQL_API_ENDPOINT
+} = configureEnviromentVariables();
 
 Amplify.configure({
 
   Auth: {
     mandatorySignIn: true,
-    region: process.env.REGION,
-    userPoolId: process.env.COGNITO_USER_POOL_ID,
-    userPoolWebClientId: process.env.COGNITO_CLIENT_ID,
+    region: REGION,
+    userPoolId: COGNITO_USER_POOL_ID,
+    userPoolWebClientId: COGNITO_CLIENT_ID,
   },
 
-  aws_appsync_graphqlEndpoint: process.env.GRAPHQL_API_ENDPOINT,
-  aws_appsync_region: process.env.REGION,
+  aws_appsync_graphqlEndpoint: GRAPHQL_API_ENDPOINT,
+  aws_appsync_region: REGION,
   aws_appsync_authenticationType: "AMAZON_COGNITO_USER_POOLS",
 
 });

@@ -1,4 +1,5 @@
 import { dynamoDbResource } from "../../resources";
+import { s3BucketResource } from "../../resources/s3-bucket";
 import { AWS } from "../../types/aws";
 import { commonCustom, commonPluginConfig, commonPlugins } from "../../utilities/commons";
 import { config, logicalResourceNames, stacks } from "../../utilities/constants";
@@ -36,6 +37,7 @@ const serverlessConfiguration: AWS.Service = {
 
     Resources: {
       ...dynamoDbResource,
+      ...s3BucketResource
     },
 
     Outputs: {
@@ -48,6 +50,16 @@ const serverlessConfiguration: AWS.Service = {
       [stacks.root.outputs.table.arn]: {
         Value: { "Fn::GetAtt": [logicalResourceNames.table, "Arn"] },
         Export: { Name: stacks.root.outputs.table.arn }
+      },
+
+      [stacks.root.outputs.assetsBucket.name]: {
+        Value: { Ref: logicalResourceNames.assetsBucket },
+        Export: { Name: stacks.root.outputs.assetsBucket.name },
+      },
+
+      [stacks.root.outputs.assetsBucket.arn]: {
+        Value: { "Fn::GetAtt": [logicalResourceNames.assetsBucket] },
+        Export: { Name: stacks.root.outputs.assetsBucket.arn }
       }
 
     }

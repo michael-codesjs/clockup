@@ -1,15 +1,18 @@
 import { PostConfirmationTriggerEvent } from "aws-lambda";
-import { User } from "../../../framework/entities";
+import Entities from "../../../framework/entities";
 
 export const handler = async function(event:PostConfirmationTriggerEvent) {
 
   if(event.triggerSource === "PostConfirmation_ConfirmSignUp") {
 
-    await User.new({
-      id: event.userName,
-      email: event.request.userAttributes.email,
-      name: event.request.userAttributes.name,
-    }).sync();
+    const { email, name } = event.request.userAttributes;
+    const id = event.userName;
+
+    await (
+      Entities
+      .user({ id, email, name })
+      .sync({ exists: false }) // insert user into the table
+    );
 
     return event; 
   
