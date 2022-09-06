@@ -1,4 +1,4 @@
-import { Given, Then, When } from "../../../../framework/test-utilities";
+import { Given, Then, When } from "@tests-utilities";
 import { handler } from "../../functions/confirm-user-sign-up";
 
 describe("confirm-user-sign-up", () => {

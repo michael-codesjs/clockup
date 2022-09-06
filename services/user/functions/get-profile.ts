@@ -3,7 +3,7 @@ import { configureEnviromentVariables } from "../../../utilities/functions";
 import Entities from "../../../framework/entities";
 configureEnviromentVariables();
 
-export const handler = async (event:AppSyncResolverEvent<null,any>) => {
+export const handler = async (event:AppSyncResolverEvent<null>) => {
 
   const { sub } = event.identity as AppSyncIdentityCognito;
 

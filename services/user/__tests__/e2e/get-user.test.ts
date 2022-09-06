@@ -1,4 +1,4 @@
-import { Given, Then, When } from "../../../../framework/test-utilities";
+import { Given, Then, When } from "@tests-utilities";
 
 jest.setTimeout(20000);
 

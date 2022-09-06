@@ -1,5 +1,5 @@
 import { EntityType } from "../../../../client/types/api";
-import { Given, Then, When } from "../../../../framework/test-utilities";
+import { Given, Then, When } from "@tests-utilities";
 
 describe("Confirm User Sign", () => {
 
