@@ -2,7 +2,14 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@lib/*": ["lib/*"]
+      "@entities": ["framework/entities/index.ts"],
+      "@resources": ["resources/index.ts"],
+      "@client/*": ["client/*"],
+      "@lib/*": ["lib/*"],
+      "@plugin-configs/*": ["plugin-configs/*"],
+      "@utilities/*": ["utilities/*"],
+      "@test-utilities/*": ["framework/test-utilities/*"],
+      "@local-types/*": ["types/*"]
     }
   }
 }

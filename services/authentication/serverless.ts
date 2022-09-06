@@ -1,8 +1,8 @@
-import type { AWS } from "../../types/aws";
-import { config, logicalResourceNames, stacks } from "../../utilities/constants";
-import { commonCloudFormationImports, commonCustom, commonEnviromentVariables, commonPlugins } from "../../utilities/commons";
-import { cognitoUserPoolResource, webCognitoClientResource } from "../../resources";
-import { generateLogicalResourcelName, generateServiceName, importLocalCloudFormationParam } from "../../utilities/functions";
+import type { AWS } from "@local-types/aws";
+import { cognitoUserPoolResource, webCognitoClientResource } from "@resources";
+import { config, logicalResourceNames, stacks } from "@utilities/constants";
+import { commonCloudFormationImports, commonCustom, commonEnviromentVariables, commonPlugins } from "@utilities/commons";
+import { generateLogicalResourcelName, generateServiceName, importLocalCloudFormationParam } from "@utilities/functions";
 
 const serverlessConfiguration: AWS.Service = {
 

@@ -2,7 +2,7 @@
   "name": "clock-up-backend",
   "version": "1.0.0",
   "description": "Serverless backend for the clock-up front end.",
-  "main": "serverless.ts",
+  "main": "serverless-compose.ts",
   "scripts": {
     "test": "jest --watchAll",
     "setup-dev": "node setup-dev.js",

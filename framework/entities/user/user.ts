@@ -1,19 +1,18 @@
+import { IEntityFactory } from "@local-types/interfaces";
 import { EntityType, User as TypeUser } from "../../../types/api";
 import { Entity } from "../entity";
-import { SyncOptions } from "../types";
+import { AbsoluteUserAttributes, NullUserAttributes, SyncOptions } from "../types";
 import { NullUserModel, UserModel } from "./model";
 
+namespace UserEntityGroup {
+  
+  export interface IUser {
 
-export namespace Users {
+  }
 
-  export type UserAttributes = {
-    id: string,
-    name: string,
-    email: string,
-    created?: Date,
-  };
+  /* ABSOLUTE USER (positive) */
 
-  export class User extends Entity {
+  export class User extends Entity implements IUser {
 
     readonly entityType: EntityType = EntityType.USER;
 
@@ -24,12 +23,12 @@ export namespace Users {
     protected readonly model = new UserModel(this);
 
     readonly id: string;
-    protected created: Date;
+    protected created: string; // Date.toJSON();
     private email: string;
     private name: string;
     private alarms: number;
 
-    constructor(attributes: UserAttributes) {
+    constructor(attributes: AbsoluteUserAttributes & { created?: string }) {
 
       let { id, created, email, name } = attributes;
 
@@ -77,7 +76,7 @@ export namespace Users {
         name: this.name,
         email: this.email,
         alarms: this.alarms,
-        created: this.created.toJSON(),
+        created: this.created,
         entityType: this.entityType
       };
 
@@ -87,11 +86,9 @@ export namespace Users {
 
   }
 
-  // NULL USER
+  /* NULL USER (negative) */
 
-  export type NullUserAttributes = { id?: string };
-
-  export class NullUser extends Entity {
+  export class NullUser extends Entity implements IUser {
 
     readonly TypeOfSelf = NullUser;
     readonly NullTypeOfSelf = NullUser;
@@ -100,7 +97,7 @@ export namespace Users {
     protected readonly model = new NullUserModel(this);
 
     readonly id: string;
-    protected created: Date;
+    protected created: string;
     protected email: string;
     protected name: string;
     protected alarms: number;
@@ -119,7 +116,12 @@ export namespace Users {
     }
 
     absolutify(): Entity {
-      return new this.AbsoluteTypeOfSelf({ id: this.id, name: this.name, email: this.email });
+      return new this.AbsoluteTypeOfSelf({
+        id: this.id,
+        name: this.name,
+        email: this.email,
+        created: this.created
+      });
     }
 
     nullify(): Entity {
@@ -144,7 +146,7 @@ export namespace Users {
           this[attribute] = Item[attribute];
         });
 
-        return new this.AbsoluteTypeOfSelf({ id: this.id, name: this.name, email: this.email });
+        return this.absolutify();
       }
 
       return this
@@ -154,3 +156,37 @@ export namespace Users {
   }
 
 }
+
+
+/* USER FACTORY */
+
+type Attributes = AbsoluteUserAttributes | NullUserAttributes;
+type UserVariant<T> = T extends AbsoluteUserAttributes ? UserEntityGroup.User : T extends NullUserAttributes ? UserEntityGroup.NullUser : never;
+
+class Factory implements IEntityFactory {
+
+  createEntity<T extends Attributes>(args: T): UserVariant<T> {
+
+     // returns a type/state of user depending on what data you provide.
+    
+     let instance:Entity;
+
+     if(args && "name" in args && "email" in args) {
+
+       instance = new UserEntityGroup.User(args);
+     
+      } else {
+      
+        instance = new UserEntityGroup.NullUser(args);
+     
+      }
+ 
+    return instance as UserVariant<T>;
+
+  }
+
+}
+
+const UserFactory = new Factory();
+
+export default UserFactory

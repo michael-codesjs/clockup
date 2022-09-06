@@ -2,7 +2,7 @@
 
 
 
-export default class User {
+export default class Photo {
   
 }
 

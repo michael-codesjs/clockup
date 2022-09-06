@@ -30,19 +30,28 @@ const serverlessConfiguration: AWS.Service = {
 
   functions: {
 
-    getImageUploadURL: {
-      handler: "functions/get-image-upload-url.handler",
+    uploadImageToS3: {
+      handler: 'functions/upload-image-to-s3.handler',
+      events: [
+        {
+          http: {
+            path: 'image-upload',
+            method: 'post',
+            cors: true,
+          },
+        },
+      ],
       iamRoleStatements: [
         {
-          Effect: "Allow",
-          Action: ["s3:PutObject", "s3:PutObjectAcl"],
+          Effect: 'Allow',
+          Action: ['s3:PutObject', 's3:PutObjectAcl'],
           Resource: [
-            "${self:custom.assetBucketArn}",
-            "${self:custom.assetBucketArn}/*"
-          ]
-        }
-      ]
-    }
+            '${self:custom.photoBucketArn}',
+            '${self:custom.photoBucketArn}' + '/*',
+          ],
+        },
+      ],
+    },
 
   }
 

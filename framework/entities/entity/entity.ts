@@ -13,17 +13,17 @@ export abstract class Entity {
 
   // readonly entityType: EntityType; // gotta be a function type so that I can use it in the constructor
   protected readonly id: string;
-  protected created: Date;
+  protected created: string;
   private PartitionKey: string;
   private SortKey: string;
 
   protected abstract model: Model | NullModel;
 
-  constructor(properties:{ id?: string, created?: Date }, readonly entityType: EntityType ) {
+  constructor(properties:{ id?: string, created?: string }, readonly entityType: EntityType ) {
     let { id, created } = properties;
     this.entityType = entityType;
     this.id = id || v4();
-    this.created = created || new Date();
+    this.created = created || new Date().toJSON();
     this.PartitionKey = constructKey(this.entityType, this.id);
     this.SortKey = this.PartitionKey;
   }

@@ -1,16 +1,20 @@
 {
   "extends": "./tsconfig.paths.json",
   "compilerOptions": {
-    "lib": ["ESNext"],
+    "lib": ["ES2020"],
+    "target": "ES2020",
+    "outDir": "bin",
     "moduleResolution": "node",
-    "noUnusedLocals": false,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false, // TODO: set to true after refactor
+    "noUnusedParameters": false, // TODO: set to true after refactor
     "removeComments": true,
     "sourceMap": true,
-    "target": "ES2020",
-    "outDir": "lib"
+    "esModuleInterop": true,
   },
-  "include": ["./serverless-compose.ts"],
+  "include": [
+    "**/*.ts",
+    "**/*.js",
+  ],
   "exclude": [
     "node_modules/**/*",
     ".serverless/**/*",
@@ -20,5 +24,7 @@
   "typeAcquisition": {
     "include": ["jest"]
   },
-
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  }
 }

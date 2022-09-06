@@ -1,5 +1,5 @@
 import { PostConfirmationTriggerEvent } from "aws-lambda";
-import Entities from "../../../framework/entities";
+import Entities from "@entities";
 
 export const handler = async function(event:PostConfirmationTriggerEvent) {
 
@@ -10,8 +10,8 @@ export const handler = async function(event:PostConfirmationTriggerEvent) {
 
     await (
       Entities
-      .user({ id, email, name })
-      .sync({ exists: false }) // insert user into the table
+      .user({ id, email, name }) // instanciate a new product of type User
+      .sync({ exists: false }) // insert user record into the table
     );
 
     return event; 

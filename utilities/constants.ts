@@ -17,7 +17,7 @@ export const logicalResourceNames = {
   // functions:
   ConfirmSignUpLambdaFunction: "ConfirmSignUpLambdaFunction",
   PreSignUpLambdaFunction: "PreSignUpLambdaFunction",
-  // permissions
+  // permissions:
   InvokeConfirmUserSignUpPermission: "InvokeConfirmUserSignUpPermission",
   InvokePreSignUpPermission: "InvokePreSignUpPermission"
 
