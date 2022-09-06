@@ -1,7 +1,5 @@
 import { EntityType } from "../../../../client/types/api";
-import { Given, Then, When } from "../../../../framework/tests"
-
-
+import { Given, Then, When } from "../../../../framework/test-utilities"
 
 describe("Delete User", () => {
   
