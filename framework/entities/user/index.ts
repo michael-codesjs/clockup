@@ -1,2 +1,2 @@
-export { Users } from "./user";
+export { UserFactory } from "./user";
 export { UserModel, NullUserModel } from "./model";

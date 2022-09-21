@@ -1,33 +1,41 @@
-import { AWS } from "../../types/aws";
-import { commonPluginConfig, commonEnviromentVariables, commomEnviromentResources, commonCloudFormationImports, commonCustom, commonPlugins, commonProviderAttributes } from "../../utilities/commons";
+import { AWS } from "@local-types/aws";
+import {
+	commonPluginConfig,
+	commonEnviromentVariables,
+	commomEnviromentResources,
+	commonCloudFormationImports,
+	commonCustom,
+	commonPlugins,
+	commonProviderSettings
+} from "@utilities/commons";
 
 
 const serverlessConfiguration: AWS.Service = {
 
-  service: "photo",
+	service: "photo",
 
-  provider: {
-    ...commonProviderAttributes,
-    environment: {
-      ...commonEnviromentVariables,
-      ...commomEnviromentResources
-    }
-  },
+	provider: {
+		...commonProviderSettings,
+		environment: {
+			...commonEnviromentVariables,
+			...commomEnviromentResources
+		}
+	},
 
-  plugins: [
-    ...commonPlugins
-  ],
+	plugins: [
+		...commonPlugins
+	],
 
-  custom: {
-    ...commonCustom,
-    ...commonCloudFormationImports,
-    ...commonPluginConfig
-  },
+	custom: {
+		...commonCustom,
+		...commonCloudFormationImports,
+		...commonPluginConfig
+	},
 
-  package: {
-    individually: true
-  }
+	package: {
+		individually: true
+	}
 
-}
+};
 
 module.exports = serverlessConfiguration;

@@ -4,10 +4,12 @@
   "description": "Serverless backend for the clock-up front end.",
   "main": "serverless-compose.ts",
   "scripts": {
-    "test": "jest --watchAll",
+    "lint": "eslint . --ext .ts --fix",
     "setup-dev": "node setup-dev.js",
-    "auth-integration-tests": "jest --verbose services/authentication/__tests__/integration",
-    "auth-e2e-tests": "jest --verbose services/authentication/__tests__/e2e",
+    "tests": "jest --verbose",
+    "authentication-tests:unit": "jest --verbose services/authentication/__tests__/unit",
+    "authentication-tests:integration": "jest --verbose services/authentication/__tests__/integration",
+    "authentication-tests:e2e": "jest --verbose services/authentication/__tests__/e2e",
     "user-unit-tests": "jest --verbose services/user/__tests__/unit",
     "user-e2e-tests": "jest --verbose services/user/__tests__/e2e"
   },
@@ -61,6 +63,6 @@
     "tsconfig-paths": "^3.9.0",
     "typescript": "^4.8.2"
   },
-  "author": "Michael Phiri",
+  "author": "Michael Phiri (michael-codesjs@gmail.com) | https://github.com/michael-codesjs",
   "license": "MIT"
 }

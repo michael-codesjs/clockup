@@ -1,159 +1,148 @@
-import { IEntityFactory } from "@local-types/interfaces";
-import { EntityType, User as TypeUser } from "../../../types/api";
-import { Entity } from "../entity";
-import { AbsoluteUserAttributes, NullUserAttributes, SyncOptions } from "../types";
+import type { IEntityFactory } from "@local-types/interfaces";
+import { EntityType, User as TypeUser } from "@local-types/api";
+import { Entity } from "../abstracts";
+import type { AbsoluteUserAttributes, NullUserAttributes, SyncOptions } from "../types";
 import { NullUserModel, UserModel } from "./model";
+import { IUser } from "../abstracts/interfaces";
 
 namespace UserEntityGroup {
-  
-  export interface IUser {
 
-  }
 
-  /* ABSOLUTE USER (positive) */
+	type UserMutableAttributes = {
+		email?: string,
+		name?: string
+	}
 
-  export class User extends Entity implements IUser {
+	/**
+	 * Absolute User:
+	 * A variant of the UserEntityGroup we absolutely know exists or have enough data to create one
+	 * Instanciate by:
+	 * 1. Providing an id, email and name to the UserEntityGroup factory
+	 * 2. A successful NullUser sync
+	 */
 
-    readonly entityType: EntityType = EntityType.USER;
+	export class User extends Entity implements IUser {
 
-    readonly TypeOfSelf = User;
-    readonly NullTypeOfSelf = NullUser;
-    readonly AbsoluteTypeOfSelf = User;
+		readonly entityType: EntityType = EntityType.USER;
 
-    protected readonly model = new UserModel(this);
+		readonly TypeOfSelf = User;
+		readonly NullTypeOfSelf = NullUser;
+		readonly AbsoluteTypeOfSelf = User;
 
-    readonly id: string;
-    protected created: string; // Date.toJSON();
-    private email: string;
-    private name: string;
-    private alarms: number;
+		/* ATTRIBUTES */
+		private Email: string;
+		private Name: string;
 
-    constructor(attributes: AbsoluteUserAttributes & { created?: string }) {
+		protected readonly model = new UserModel(this);
 
-      let { id, created, email, name } = attributes;
+		constructor(attributes: AbsoluteUserAttributes & { created?: string }) {
 
-      super({ id, created }, EntityType.USER);
+			const { id, created, name, email } = attributes;
 
-      this.email = email;
-      this.name = name;
-      this.alarms = 0;
+			super({ id, created }, EntityType.USER);
 
-    }
+			this.Email = email; // setup attributes
+			this.Name = name; // as attributes grow, move attribute setup to a seperate method
 
-    absolutify(): Entity {
-      return this;
-    }
+		}
 
-    nullify(): Entity {
-      return new this.NullTypeOfSelf({ id: this.id });
-    }
+		absolutify(): User {
+			return this;
+		}
 
-    mutableAttributes() {
-      return {
-        name: this.name,
-        email: this.email
-      }
-    }
+		nullify(): NullUser {
+			return new this.NullTypeOfSelf({ id: this.Id });
+		}
 
-    async sync(options: SyncOptions = { exists: true }) {
+		attributes() {
+			return {
+				id: this.Id,
+				created: this.Created,
+				email: this.Email,
+				name: this.Name
+			};
+		}
 
-      const { exists } = options;
-      const attributes = exists ? await this.model.mutate() : await this.model.put(); // update/create the entity in the db table depending on whether they exist or not
+		setAttributes(attributes: UserMutableAttributes) {
+			Object.entries(attributes).forEach(
+				([key, value]) => {
+					key = key[0].toUpperCase() + key.slice(1);
+					if (key in this) { // check if the property exists, typescript should warn you but an extra check for users that love casting ain't gonna hurt
+						this["_" + key] = value;
+					}
+				}
+			);
+		}
 
-      Object.entries(attributes).forEach(([attribute, value]) => {
-        // update entity with updated values;
-        this[attribute] = value;
-      });
+		async sync(options: SyncOptions = { exists: true }) {
 
-      return this;
+			const { exists } = options;
+			const attributes = exists ? await this.model.mutate() : await this.model.put(); // update/create the entity in the db table depending on whether they exist or not
 
-    }
+			Object.entries(attributes).forEach(([attribute, value]) => {
+				// update entity with updated values;
+				this[attribute] = value;
+			});
 
-    public graphqlEntity() {
+			return this;
 
-      const entity: Omit<TypeUser, "__typename"> = {
-        id: this.id,
-        name: this.name,
-        email: this.email,
-        alarms: this.alarms,
-        created: this.created,
-        entityType: this.entityType
-      };
+		}
 
-      return entity
+		public graphqlEntity() {
 
-    }
+			const entity: Omit<TypeUser, "__typename"> = {
+				...super.graphqlEntity(),
+				...this.attributes()
+			};
 
-  }
+			return entity;
 
-  /* NULL USER (negative) */
+		}
 
-  export class NullUser extends Entity implements IUser {
+	}
 
-    readonly TypeOfSelf = NullUser;
-    readonly NullTypeOfSelf = NullUser;
-    readonly AbsoluteTypeOfSelf = User;
+	/**
+	 * NULL USER:
+	 * A user whose existence and variant is unverified
+	 * A pseudo user you can use to obtain concrete absolute users using the sync method
+	 * Simply provide the concrete absolute users id
+	 */
 
-    protected readonly model = new NullUserModel(this);
+	export class NullUser extends Entity {
 
-    readonly id: string;
-    protected created: string;
-    protected email: string;
-    protected name: string;
-    protected alarms: number;
+		readonly entityType = EntityType.USER;
 
-    constructor(properties?: NullUserAttributes) {
+		readonly TypeOfSelf = NullUser;
+		readonly NullTypeOfSelf = NullUser;
+		readonly AbsoluteTypeOfSelf = User;
 
-      let { id } = properties || {};
-      id = id || "";
+		protected readonly model = new NullUserModel(this);
 
-      super({ id }, EntityType.USER);
+		constructor(properties: NullUserAttributes) {
+			super(properties, EntityType.USER);
+		}
 
-      this.email = "";
-      this.name = "";
-      this.alarms = 0;
+		attributes() {
 
-    }
+		}
 
-    absolutify(): Entity {
-      return new this.AbsoluteTypeOfSelf({
-        id: this.id,
-        name: this.name,
-        email: this.email,
-        created: this.created
-      });
-    }
+		setAttributes(): never {
+			throw new Error("Can not set mutable attributes of NullUser.");
+		}
 
-    nullify(): Entity {
-      return this;
-    }
+		async sync(params?:SyncOptions): Promise<User | NullUser | never> {
 
-    mutableAttributes(): { [k: string]: any; } {
-      return {
-        name: this.name,
-        email: this.email
-      }
-    }
+			const { Item } = await this.model.get(); // get user from db;
 
-    async sync() {
+			const { exists } = params || {};
 
-      const { Item } = await this.model.get(); // get attributes if user exists;
+			if (Item) return new User(Item);
+			else if(exists) throw new Error(`Could not sync user. Concrete absolute user(${+this.Id}) does not exist`); // if you pass exists as true, you are absolutely sure the user exists and want an error when we do not find one
+			else return this;
 
-      let keys: string[];
-      if (Item && (keys = Object.keys(Item)) && keys.length > 1) { // we actually got something
+		}
 
-        keys.forEach(attribute => {
-          this[attribute] = Item[attribute];
-        });
-
-        return this.absolutify();
-      }
-
-      return this
-
-    }
-
-  }
+	}
 
 }
 
@@ -165,28 +154,21 @@ type UserVariant<T> = T extends AbsoluteUserAttributes ? UserEntityGroup.User : 
 
 class Factory implements IEntityFactory {
 
-  createEntity<T extends Attributes>(args: T): UserVariant<T> {
+	private constructor() { }
+	static readonly instance = new Factory();
 
-     // returns a type/state of user depending on what data you provide.
-    
-     let instance:Entity;
+	createEntity<T extends Attributes>(args: T): UserVariant<T> | never {
 
-     if(args && "name" in args && "email" in args) {
+		if (args && "name" in args && "email" in args) {
+			return new UserEntityGroup.User(args) as UserVariant<T>;
+		} else if (args && "id" in args) {
+			return new UserEntityGroup.NullUser(args) as UserVariant<T>;
+		} else {
+			throw new Error("Can not instanciate variant of user");
+		}
 
-       instance = new UserEntityGroup.User(args);
-     
-      } else {
-      
-        instance = new UserEntityGroup.NullUser(args);
-     
-      }
- 
-    return instance as UserVariant<T>;
-
-  }
+	}
 
 }
 
-const UserFactory = new Factory();
-
-export default UserFactory
+export const UserFactory = Factory.instance;

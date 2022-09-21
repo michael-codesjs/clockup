@@ -14,7 +14,6 @@ export type User = {
   created: string,
   email: string,
   name: string,
-  alarms: number,
 };
 
 export type ICommom = {
@@ -68,7 +67,6 @@ export type EditUserMutation = {
     created: string,
     email: string,
     name: string,
-    alarms: number,
   } | null,
 };
 
@@ -84,7 +82,6 @@ export type GetProfileQuery = {
     created: string,
     email: string,
     name: string,
-    alarms: number,
   } | null,
 };
 

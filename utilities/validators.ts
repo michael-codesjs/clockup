@@ -7,11 +7,11 @@ type Properties<T> = Required<{
 }>;
 
 export const updateUserInputValidator:zod.ZodObject<Properties<UpdateUserInput>> = zod.object({
-  name: zod.string().min(1, { message: "A name is required" }),
-  email: zod.string().min(1, { message: "Email is required" })
+	name: zod.string().min(1, { message: "A name is required" }),
+	email: zod.string().min(1, { message: "Email is required" })
 });
 
 export const getImageUploadURLInputValidator:zod.ZodObject<Properties<GetImageUploadURLQueryVariables>> = zod.object({
-  extension: zod.string().min(2, { message: "Enter a valid extension length" }),
-  contentType: zod.string().min(1, { message: "Enter a valid contextType" })
-})
+	extension: zod.string().min(2, { message: "Enter a valid extension length" }),
+	contentType: zod.string().min(1, { message: "Enter a valid contextType" })
+});

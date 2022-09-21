@@ -14,7 +14,6 @@ export type User = {
   created: string,
   email: string,
   name: string,
-  alarms: number,
 };
 
 export type ICommom = {

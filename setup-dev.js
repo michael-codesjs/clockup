@@ -3,21 +3,19 @@
 const { execSync } = require("child_process");
 const { path } = require("path");
 
+const services = [
+  "root",
+  "authentication",
+  "api",
+  "user",
+  "test"
+]
+
 console.log("\n\n  -- Generating Enviroment Variables --\n");
 
-try {
-
-  execSync("cd services/root && sls export-env");
-  execSync("cd services/authentication && sls export-env");
-  execSync("cd services/api && sls export-env");
-  execSync("cd services/user && sls export-env");
-  execSync("cd services/test && sls export-env");
-  execSync("cd services/test && sls export-env --filename ../../.env");
-
-} catch(error) {
-
-  console.log("\n  -- Something went wrong --");
-  
+for (let service of services) {
+  execSync(`cd services/${service} && sls export-env`);
 }
+execSync("cd services/test && sls export-env --filename ../../.env");
 
 console.log("\n  -- Generated Successfully --");

@@ -1,21 +1,23 @@
 import { EntityType } from "../../../../client/types/api";
-import { Given, Then, When } from "@tests-utilities";
+import { Given, Then, When } from "@utilities/testing";
+import { chance } from "@utilities/constants";
 
 describe("Confirm User Sign", () => {
 
-  it("Confirms the user signs-up", async () => {
+	it("Confirms the user signs-up", async () => {
 
-    const attributes = Given.attributes.user(); // get random user attributes
-    const { name, email, password } = attributes;
-    const user = await When.auth.signUp({ name, email, password }); // sign up user e2e
-    const dbRecord = await When.database.getCustomer(user.id); // get record from the table 
+		const { name, email } = Given.user.attributes(); // get random user attributes
+		const password = chance.string({ length: 20, numeric: true, symbols: true });
 
-    Then.user(dbRecord,{
-      ...user,
-      alarms: 0,
-      entityType: EntityType.USER
-    }); // test match
+		const user = await When.auth.signUp({ name, email, password }); // sign up user e2e
 
-  });
+		const dbRecord = await Given.user.byId(user.id); // get user record from the table
 
-})
+		Then.user(dbRecord,{
+			...user,
+			entityType: EntityType.USER
+		}); // test attributes from cognito against record in our table
+
+	});
+
+});

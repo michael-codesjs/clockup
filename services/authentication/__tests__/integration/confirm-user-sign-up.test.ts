@@ -1,19 +1,19 @@
-import { Given, Then, When } from "@tests-utilities";
+import { Given, Then } from "@utilities/testing";
 import { handler } from "../../functions/confirm-user-sign-up";
 
 describe("confirm-user-sign-up", () => {
 
-  it("confirms the user signs-up", async () => {
+	it("confirms the user signs-up", async () => {
 
-    const userAttributes = Given.attributes.user(); // get random user attributes
-    const { event } = Given.handler.confirmSignUp(userAttributes); // get lambda handler params for confirmUserSignUp
-    
-    await handler(event);
+		const attributes = Given.user.attributes(); // get random user attributes
+		const { event } = Given.lambdaEventsHandlerArguments.cognito.confirmSignUp(attributes); // event payload for confirmUserSignUp lambda handler
 
-    const dbRecord = await When.database.getCustomer(userAttributes.id);
+		await handler(event);
 
-    Then.user(dbRecord,userAttributes);
+		const dbRecord = await Given.user.byId(attributes.id); // fetch user record created via our lambda
 
-  });
+		Then.user(dbRecord,attributes); // test recorded attributes against generated ones
 
-})
+	});
+
+});

@@ -8,7 +8,6 @@
       "@lib/*": ["lib/*"],
       "@plugin-configs/*": ["plugin-configs/*"],
       "@utilities/*": ["utilities/*"],
-      "@tests-utilities": ["framework/tests-utilities/index.ts"],
       "@local-types/*": ["types/*"]
     }
   }

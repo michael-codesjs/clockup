@@ -10,7 +10,6 @@ export const getProfile = /* GraphQL */ `
       created
       email
       name
-      alarms
     }
   }
 `;

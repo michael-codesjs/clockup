@@ -10,7 +10,6 @@ export const editUser = /* GraphQL */ `
       created
       email
       name
-      alarms
     }
   }
 `;
