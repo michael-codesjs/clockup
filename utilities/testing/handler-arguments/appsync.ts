@@ -2,28 +2,32 @@ import { configureEnviromentVariables } from "@utilities/functions";
 import { AppSyncIdentityCognito, AppSyncResolverEvent } from "aws-lambda";
 import { context } from "./context";
 
-const { t } = configureEnviromentVariables();
+configureEnviromentVariables();
 
 class AppsyncEventsHandlerArguments {
 
-	private constructor() { } // is a singleton
-	static readonly instance = new AppsyncEventsHandlerArguments(); // only available instance
+	private constructor() { }
+	static readonly instance = new AppsyncEventsHandlerArguments();
 
 	base<Arguments=null>(args: { arguments?: Arguments, identity?: Partial<AppSyncIdentityCognito> }) {
 
-		const { identity } = args;
+		const { identity } = args || {};
+
     type BaseResolverEvent = AppSyncResolverEvent<Arguments>;
-    const event: Partial<BaseResolverEvent> = {
+    
+		const event: Partial<BaseResolverEvent> = {
     	// will grow with time
     	arguments: args.arguments,
     	identity: identity as AppSyncIdentityCognito
     };
+
     return {
     	event: event as BaseResolverEvent,
     	context: context()
     };
+
 	}
 
 }
 
-export const appsyncEventsHandlerArguments = AppsyncEventsHandlerArguments.instance;
+export const Appsync = AppsyncEventsHandlerArguments.instance;

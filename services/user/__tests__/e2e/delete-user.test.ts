@@ -1,25 +1,20 @@
-import { EntityType } from "../../../../client/types/api";
-import { Given, Then, When } from "@utilities/testing";
+import { Given, When } from "@utilities/testing";
 
 describe("Delete User", () => {
   
 	it("Deletes a users account", async () => {
 
-		const user = await Given.entities.autheticatedUser();
+		const user = await Given.user.authenticated();
 
-		// check if we actually created the user
-		const profile = await When.database.getCustomer(user.id);
-		expect(profile).toBeTruthy();
+		const preDeleteRecord = await Given.user.byId(user.id); // check if we actually created the user
+		expect(preDeleteRecord).toBeTruthy(); // we only care if a record exists so a truthy test should be ok
 
-		// delete the user
-		const result = await When.api.deleteUser();
+		const deleteResult = await When.user.delete(); // delete user e2e
 
-		expect(result).toBe(true);
+		expect(deleteResult).toBe(true);
 
-		// check if the record was deleted in the table
-
-		const postDeleteDbRecord = When.database.getCustomer(user.id);
-		expect(postDeleteDbRecord).toBeNull();
+		const postDeleteDbRecord = await Given.user.byId(user.id); // get user record from the table(should not exist tho)
+		expect(postDeleteDbRecord).toBe(null);
 
 	});
 });

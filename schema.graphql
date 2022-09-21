@@ -60,6 +60,6 @@ type Query {
 }
 
 type Mutation {
-  editUser(input:UpdateUserInput): User
+  updateUser(input:UpdateUserInput): User
   deleteUser: Boolean
 }

@@ -15,7 +15,7 @@ export abstract class Model {
 	}
 
 	async get(): Promise<GetItemOutput> {
-    
+
 		return await dynamoDbOperations.get({
 			TableName: DYNAMO_DB_TABLE_NAME!,
 			Key: this.entity.primaryKeys() as any,
@@ -37,12 +37,15 @@ export abstract class Model {
 	async mutate(): Promise<UpdateItemOutput> {
 
 		const params = dynamoDbExpression({
-			Update: this.entity.attributes()
+			Update: {
+				...this.entity.GSI_Keys(),
+				...this.entity.mutableAttributes(),
+			}
 		});
 
 		return await dynamoDbOperations.update({
 			TableName: DYNAMO_DB_TABLE_NAME!,
-			Key: this.entity.keys,
+			Key: this.entity.primaryKeys(),
 			...params as any,
 			ReturnValues: "ALL_NEW"
 		});
@@ -65,12 +68,12 @@ export abstract class NullModel {
 
 	readonly entity: Entity;
 
-	constructor(entity:Entity) {
+	constructor(entity: Entity) {
 		this.entity = entity;
 	}
-  
+
 	async get(): Promise<GetItemOutput> {
-    
+
 		return await dynamoDbOperations.get({
 			TableName: DYNAMO_DB_TABLE_NAME!,
 			Key: this.entity.primaryKeys() as any,
@@ -83,8 +86,7 @@ export abstract class NullModel {
 		return await dynamoDbOperations.delete({
 			TableName: DYNAMO_DB_TABLE_NAME!,
 			Key: this.entity.primaryKeys() as any
-		});
-
+		})
 	}
 
 }

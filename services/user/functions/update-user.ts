@@ -10,8 +10,8 @@ export const handler: AppSyncResolverHandler<EditUserMutationVariables,any> = as
 
 	const user = await (
 		Entities
-			.user({ id: sub, email, name  })
-			.sync()
+			.User({ id: sub, email, name  })
+			.sync({ exists: true })
 	);
 
 	return user.graphqlEntity();

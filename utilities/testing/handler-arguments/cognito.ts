@@ -41,4 +41,4 @@ class CognitoEventsHandlerArguments {
 
 }
 
-export const cognitoEventsHandlerArguments = CognitoEventsHandlerArguments.instance;
+export const Cognito = CognitoEventsHandlerArguments.instance;

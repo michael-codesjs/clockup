@@ -5,12 +5,10 @@ export const handler:AppSyncResolverHandler<null,any> = async (event) => {
 
 	const { sub } = event.identity as AppSyncIdentityCognito;
 
-	const result = await (
-		Entities
-			.user({ id: sub })
-			.unsync()
-	);
+	const user = Entities.User({ id: sub });
 
-	return result;
+	await user.unsync(); // delete user
+
+	return user.graphqlEntity() === null;
 
 };

@@ -21,6 +21,8 @@ export class UserModel extends Model {
 
 		const recordUpdateResult = await super.mutate();
 
+		/*
+
 		const cognitoAdminUpdateParams = {
 			UserPoolId: COGNITO_USER_POOL_ID!,
 			Username: this.entity.id,
@@ -32,9 +34,14 @@ export class UserModel extends Model {
 			})
 		};
 
+
 		await cognitoProvider()
 			.adminUpdateUserAttributes(cognitoAdminUpdateParams) // update user attributes in the cognito user pool
 			.promise();
+
+			TODO: move this to a seperate lambda triggered by a dynamoDb stream 
+
+			*/
 
 		return recordUpdateResult;
 
@@ -45,6 +52,7 @@ export class UserModel extends Model {
 
 		const recordDeleteResult = await super.delete(); // delete record from the database
 
+		/*
 		const cognitoDeleteParams = {
 			Username: this.entity.id,
 			UserPoolId: COGNITO_USER_POOL_ID!
@@ -53,6 +61,9 @@ export class UserModel extends Model {
 		await cognitoProvider()
 			.adminDeleteUser(cognitoDeleteParams) // delete user in the cognito user pool
 			.promise();
+
+			TODO: move this to a seperate lambda triggered by a dynamoDb stream 
+		*/
 
 		return recordDeleteResult;
 

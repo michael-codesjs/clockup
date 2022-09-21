@@ -1,12 +1,12 @@
 import type { IEntityFactory } from "@local-types/interfaces";
-import { EntityType, User as TypeUser } from "@local-types/api";
+import * as types from "@local-types/api";
 import { Entity } from "../abstracts";
 import type { AbsoluteUserAttributes, NullUserAttributes, SyncOptions } from "../types";
 import { NullUserModel, UserModel } from "./model";
 import { IUser } from "../abstracts/interfaces";
+import { GraphQlEntity } from "@local-types/utility";
 
 namespace UserEntityGroup {
-
 
 	type UserMutableAttributes = {
 		email?: string,
@@ -23,7 +23,7 @@ namespace UserEntityGroup {
 
 	export class User extends Entity implements IUser {
 
-		readonly entityType: EntityType = EntityType.USER;
+		readonly entityType: types.EntityType = types.EntityType.USER;
 
 		readonly TypeOfSelf = User;
 		readonly NullTypeOfSelf = NullUser;
@@ -39,7 +39,7 @@ namespace UserEntityGroup {
 
 			const { id, created, name, email } = attributes;
 
-			super({ id, created }, EntityType.USER);
+			super({ id, created }, types.EntityType.USER);
 
 			this.Email = email; // setup attributes
 			this.Name = name; // as attributes grow, move attribute setup to a seperate method
@@ -61,6 +61,13 @@ namespace UserEntityGroup {
 				email: this.Email,
 				name: this.Name
 			};
+		}
+
+		mutableAttributes() {
+			return {
+				email: this.Email,
+				name: this.Name
+			}
 		}
 
 		setAttributes(attributes: UserMutableAttributes) {
@@ -88,9 +95,14 @@ namespace UserEntityGroup {
 
 		}
 
-		public graphqlEntity() {
+		async unsync() {
+			await this.model.delete();
+			return new this.NullTypeOfSelf({ id: this.id })
+		}
 
-			const entity: Omit<TypeUser, "__typename"> = {
+		graphqlEntity(): GraphQlEntity<types.User> {
+
+			const entity = {
 				...super.graphqlEntity(),
 				...this.attributes()
 			};
@@ -110,7 +122,7 @@ namespace UserEntityGroup {
 
 	export class NullUser extends Entity {
 
-		readonly entityType = EntityType.USER;
+		readonly entityType = types.EntityType.USER;
 
 		readonly TypeOfSelf = NullUser;
 		readonly NullTypeOfSelf = NullUser;
@@ -119,11 +131,16 @@ namespace UserEntityGroup {
 		protected readonly model = new NullUserModel(this);
 
 		constructor(properties: NullUserAttributes) {
-			super(properties, EntityType.USER);
+			super(properties, types.EntityType.USER);
 		}
 
-		attributes() {
+		attributes() { }
 
+		
+		mutableAttributes() {}
+
+		graphqlEntity(): null {
+			return null
 		}
 
 		setAttributes(): never {
@@ -140,6 +157,11 @@ namespace UserEntityGroup {
 			else if(exists) throw new Error(`Could not sync user. Concrete absolute user(${+this.Id}) does not exist`); // if you pass exists as true, you are absolutely sure the user exists and want an error when we do not find one
 			else return this;
 
+		}
+
+		async unsync() {
+			await this.model.delete();
+			return this;
 		}
 
 	}

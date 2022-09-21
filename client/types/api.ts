@@ -55,12 +55,12 @@ export type AlarmSnoozeSettings = {
   interval: number,
 };
 
-export type EditUserMutationVariables = {
+export type UpdateUserMutationVariables = {
   input?: UpdateUserInput | null,
 };
 
-export type EditUserMutation = {
-  editUser?:  {
+export type UpdateUserMutation = {
+  updateUser?:  {
     __typename: "User",
     id: string,
     entityType: EntityType,

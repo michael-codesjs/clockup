@@ -1,4 +1,4 @@
-import { Given, Then } from "@utilities/testing";
+import { Given, HandlerArguments, Then } from "@utilities/testing";
 import { handler } from "../../functions/confirm-user-sign-up";
 
 describe("confirm-user-sign-up", () => {
@@ -6,7 +6,7 @@ describe("confirm-user-sign-up", () => {
 	it("confirms the user signs-up", async () => {
 
 		const attributes = Given.user.attributes(); // get random user attributes
-		const { event } = Given.lambdaEventsHandlerArguments.cognito.confirmSignUp(attributes); // event payload for confirmUserSignUp lambda handler
+		const { event } = HandlerArguments.cognito.confirmSignUp(attributes); // event payload for confirmUserSignUp lambda handler
 
 		await handler(event);
 

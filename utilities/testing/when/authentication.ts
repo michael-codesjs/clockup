@@ -1,6 +1,5 @@
-import { BasicAuthCredentials } from "aws-sdk/clients/appflow";
-import { auth } from "../../../lib/amplify";
 import { SignInCredentials, SignUpCredentials } from "@local-types/index";
+import { auth } from "../../../lib/amplify";
 
 class AuthenticationUtility {
 

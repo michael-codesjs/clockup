@@ -26,6 +26,7 @@ export abstract class Entity implements IEntity {
 	protected readonly Id: string;
 	get id() { return this.Id; }
 	protected Created: string;
+	protected Modified: string;
 
 	/* MODEL */
 	protected abstract model: Model | NullModel;
@@ -61,7 +62,8 @@ export abstract class Entity implements IEntity {
 		};
 	}
 
-	abstract attributes(): any // entity specific attributes
+	abstract attributes(): any; // entity specific attributes
+	abstract mutableAttributes(): any;
 	abstract setAttributes(attributes: Record<string, any>): void;
 
 	/*
@@ -71,13 +73,9 @@ export abstract class Entity implements IEntity {
 	 */
 
 	abstract sync(syncOptions: SyncOptions): Promise<Entity>;
-	async unsync(): Promise<boolean> {
-		try {
-			await this.model.delete();
-			return true;
-		} catch (error) {
-			return false;
-		}
+	async unsync(): Promise<Entity> {
+		await this.model.delete();
+		return this;
 	}
 
 	/* END */
@@ -86,7 +84,8 @@ export abstract class Entity implements IEntity {
 		return {
 			id: this.Id,
 			entityType: this.entityType,
-			created: this.Created
+			created: this.Created,
+			modified: this.Modified
 		};
 	}
 

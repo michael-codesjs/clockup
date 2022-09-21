@@ -41,9 +41,16 @@ const serverlessConfiguration: AWS.Service = {
 	],
 
 	custom: {
+
 		...commonCustom,
 		...commonPluginConfig,
 		...commonCloudFormationImports,
+		
+		cognitoUserPoolArn: importLocalCloudFormationParam({
+			stack: "authentication",
+			output: stacks.authentication.outputs.cognito.arn
+		}),
+
 		appSync: {
 			apiId: "${self:custom.apiId}",
 			schema: "../../schema.graphql",
@@ -54,9 +61,9 @@ const serverlessConfiguration: AWS.Service = {
 					source: "getProfile",
 				}),
 				createMappingTemplate({
-					field: "editUser",
+					field: "updateUser",
 					type: "Mutation",
-					source: "editUser",
+					source: "updateUser",
 				}),
 				createMappingTemplate({
 					field: "deleteUser",
@@ -66,7 +73,7 @@ const serverlessConfiguration: AWS.Service = {
 			],
 			dataSources: [
 				createDataSource("getProfile"),
-				createDataSource("editUser"),
+				createDataSource("updateUser"),
 				createDataSource("deleteUser")
 			]
 		},
@@ -88,8 +95,8 @@ const serverlessConfiguration: AWS.Service = {
 			]
 		},
 
-		editUser: {
-			handler: "functions/edit-user.handler",
+		updateUser: {
+			handler: "functions/update-user.handler",
 			iamRoleStatements: [
 				{
 					Effect: "Allow",
@@ -116,7 +123,7 @@ const serverlessConfiguration: AWS.Service = {
 
 	}
 
-}; 
+};
 
 
 module.exports = serverlessConfiguration;

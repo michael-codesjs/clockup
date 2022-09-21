@@ -10,7 +10,7 @@ export const handler = async (event:AppSyncResolverEvent<null>) => {
 
 	const user = await ( 
 		Entities
-			.user({ id: sub })
+			.User({ id: sub })
 			.sync()
 	);
 

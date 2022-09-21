@@ -10,8 +10,8 @@
     "authentication-tests:unit": "jest --verbose services/authentication/__tests__/unit",
     "authentication-tests:integration": "jest --verbose services/authentication/__tests__/integration",
     "authentication-tests:e2e": "jest --verbose services/authentication/__tests__/e2e",
-    "user-unit-tests": "jest --verbose services/user/__tests__/unit",
-    "user-e2e-tests": "jest --verbose services/user/__tests__/e2e"
+    "user-tests:unit": "jest --verbose services/user/__tests__/unit",
+    "user-tests:e2e": "jest --verbose services/user/__tests__/e2e"
   },
   "engines": {
     "node": ">=14.15.0"

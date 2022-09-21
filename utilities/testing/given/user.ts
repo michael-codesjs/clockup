@@ -1,3 +1,4 @@
+import { ulid } from "ulid";
 import Entities from "@entities";
 import { EntityType } from "@local-types/api";
 import { chance } from "@utilities/constants";
@@ -12,7 +13,7 @@ class GivenUserAttributes {
 	attributes() {
 
 		const entityType = EntityType.USER;
-		const id = chance.guid({ version: 4 });
+		const id = ulid();
 		const name = chance.name();
 		const email = chance.email();
 
@@ -21,24 +22,18 @@ class GivenUserAttributes {
 	}
 
 	async byId(id: string) {
-		const user = await Entities.User({ id }).sync({ exists: false }); // not sure if the user exists
-		return user.graphqlEntity();
-	}
-
-	instance(attributes?: AbsoluteUserAttributes) {
-		// returns a random UserEntityGroup.User instance
-		attributes = attributes || this.attributes();
-		return Entities.User(attributes);
+		const instance = await Entities.User({ id }).sync({ exists: false }); // not sure if the user exists thus the exists: false, if we pass true, sync will throw an error
+		return instance.graphqlEntity();
 	}
 
 	async new(attributes: AbsoluteUserAttributes) {
-		const instance = await this.instance(attributes).sync({ exists: false });
+		const instance = await Entities.User(attributes).sync({ exists: false });
 		return instance.graphqlEntity(); 
 	}
 
 	async random() {
-		const instance = await this.instance().sync();
-		return instance.graphqlEntity();
+		const attributes = this.attributes();
+		return await this.new(attributes);
 	}
 
 	async authenticated() {
@@ -48,8 +43,14 @@ class GivenUserAttributes {
 			password: chance.string({ symbols: true, numeric: true, alpha: true, length: 20 })
 		};
 
-		const user = await Authentication.signUp(attributes);
-		return this.byId(user.id);
+		const { id } = await Authentication.signUp(attributes); // sign up user
+
+		await Authentication.signIn({
+			username: attributes.email,
+			password: attributes.password
+		}); // sign in user
+
+		return this.byId(id);
 
 	}
 
