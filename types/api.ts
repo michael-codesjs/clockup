@@ -1,125 +1,123 @@
-/* tslint:disable */
-/* eslint-disable */
-//  This file was automatically generated and should not be edited.
-
-export type UpdateUserInput = {
-  email?: string | null,
-  name?: string | null,
+import { z } from 'zod'
+export type Maybe<T> = T | null;
+export type InputMaybe<T> = Maybe<T>;
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+/** All built-in and custom scalars, mapped to their actual values */
+export type Scalars = {
+  ID: string;
+  String: string;
+  Boolean: boolean;
+  Int: number;
+  Float: number;
+  AWSDateTime: any;
+  AWSEmail: any;
+  AWSDate: any;
+  AWSIPAddress: any;
+  AWSJSON: any;
+  AWSPhone: any;
+  AWSTime: any;
+  AWSTimestamp: any;
+  AWSURL: any;
 };
 
-export type User = {
-  __typename: "User",
-  id: string,
-  entityType: EntityType,
-  created: string,
-  email: string,
-  name: string,
+export type Query = {
+  __typename?: 'Query';
+  getAlarm?: Maybe<Alarm>;
+  getImageUploadURL?: Maybe<Scalars['String']>;
+  getProfile?: Maybe<User>;
+};
+
+
+export type QueryGetAlarmArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryGetImageUploadUrlArgs = {
+  contentType?: InputMaybe<Scalars['String']>;
+  extension?: InputMaybe<Scalars['String']>;
+};
+
+export type Alarm = ICommom & {
+  __typename?: 'Alarm';
+  created: Scalars['AWSDateTime'];
+  days?: Maybe<Array<Scalars['Int']>>;
+  enabled?: Maybe<Scalars['Boolean']>;
+  entityType: EntityType;
+  id: Scalars['ID'];
+  modified?: Maybe<Scalars['AWSDateTime']>;
+  name?: Maybe<Scalars['String']>;
+  onceOff?: Maybe<Scalars['Boolean']>;
+  snooze: AlarmSnoozeSettings;
+  time: AlarmRingTime;
 };
 
 export type ICommom = {
-  __typename: "ICommom",
-  id: string,
-  entityType?: EntityType | null,
-  created?: string | null,
-};
-
-export type Alarm = {
-  __typename: "Alarm",
-  id: string,
-  entityType: EntityType,
-  created: string,
-  name?: string | null,
-  enabled?: boolean | null,
-  modified?: string | null,
-  days?: Array< number > | null,
-  time: AlarmRingTime,
-  snooze: AlarmSnoozeSettings,
-  onceOff?: boolean | null,
+  created?: Maybe<Scalars['AWSDateTime']>;
+  entityType?: Maybe<EntityType>;
+  id: Scalars['ID'];
 };
 
 export enum EntityType {
-  USER = "USER",
-  ALARM = "ALARM",
+  Alarm = 'ALARM',
+  User = 'USER'
 }
 
+export type AlarmSnoozeSettings = {
+  __typename?: 'AlarmSnoozeSettings';
+  duration: Scalars['Int'];
+  interval: Scalars['Int'];
+};
 
 export type AlarmRingTime = {
-  __typename: "AlarmRingTime",
-  hour: number,
-  minute: number,
+  __typename?: 'AlarmRingTime';
+  hour: Scalars['Int'];
+  minute: Scalars['Int'];
 };
 
-export type AlarmSnoozeSettings = {
-  __typename: "AlarmSnoozeSettings",
-  duration: number,
-  interval: number,
+export type User = ICommom & {
+  __typename?: 'User';
+  created: Scalars['AWSDateTime'];
+  email: Scalars['AWSEmail'];
+  entityType: EntityType;
+  id: Scalars['ID'];
+  name: Scalars['String'];
 };
 
-export type EditUserMutationVariables = {
-  input?: UpdateUserInput | null,
+export type Mutation = {
+  __typename?: 'Mutation';
+  deleteUser?: Maybe<Scalars['Boolean']>;
+  updateUser?: Maybe<User>;
 };
 
-export type EditUserMutation = {
-  editUser?:  {
-    __typename: "User",
-    id: string,
-    entityType: EntityType,
-    created: string,
-    email: string,
-    name: string,
-    alarms: number,
-  } | null,
+
+export type MutationUpdateUserArgs = {
+  input?: InputMaybe<UpdateUserInput>;
 };
 
-export type DeleteUserMutation = {
-  deleteUser?: boolean | null,
+export type UpdateUserInput = {
+  email?: InputMaybe<Scalars['AWSEmail']>;
+  name?: InputMaybe<Scalars['String']>;
 };
 
-export type GetProfileQuery = {
-  getProfile?:  {
-    __typename: "User",
-    id: string,
-    entityType: EntityType,
-    created: string,
-    email: string,
-    name: string,
-    alarms: number,
-  } | null,
-};
 
-export type GetAlarmQueryVariables = {
-  id: string,
-};
+type Properties<T> = Required<{
+  [K in keyof T]: z.ZodType<T[K], any, T[K]>;
+}>;
 
-export type GetAlarmQuery = {
-  getAlarm?:  {
-    __typename: "Alarm",
-    id: string,
-    entityType: EntityType,
-    created: string,
-    name?: string | null,
-    enabled?: boolean | null,
-    modified?: string | null,
-    days?: Array< number > | null,
-    time:  {
-      __typename: "AlarmRingTime",
-      hour: number,
-      minute: number,
-    },
-    snooze:  {
-      __typename: "AlarmSnoozeSettings",
-      duration: number,
-      interval: number,
-    },
-    onceOff?: boolean | null,
-  } | null,
-};
+type definedNonNullAny = {};
 
-export type GetImageUploadURLQueryVariables = {
-  contentType?: string | null,
-  extension?: string | null,
-};
+export const isDefinedNonNullAny = (v: any): v is definedNonNullAny => v !== undefined && v !== null;
 
-export type GetImageUploadURLQuery = {
-  getImageUploadURL?: string | null,
-};
+export const definedNonNullAnySchema = z.any().refine((v) => isDefinedNonNullAny(v));
+
+export const EntityTypeSchema = z.nativeEnum(EntityType);
+
+export function UpdateUserInputSchema(): z.ZodObject<Properties<UpdateUserInput>> {
+  return z.object({
+    email: definedNonNullAnySchema.nullish(),
+    name: z.string().nullish()
+  })
+}
