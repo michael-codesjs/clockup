@@ -86,7 +86,7 @@ export abstract class NullModel {
 		return await dynamoDbOperations.delete({
 			TableName: DYNAMO_DB_TABLE_NAME!,
 			Key: this.entity.primaryKeys() as any
-		})
+		});
 	}
 
 }

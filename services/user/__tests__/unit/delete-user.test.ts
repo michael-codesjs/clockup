@@ -5,18 +5,18 @@ import { handler } from "../../functions/delete-user";
 
 describe("Delete User", () => {
 
-  it("Deletes a user", async () => {
+	it("Deletes a user", async () => {
 
-    const user = await Given.user.random();
+		const user = await Given.user.random();
 
-    const { event, context } = HandlerArguments.user.delete(user.id); // get payload for handler
+		const { event, context } = HandlerArguments.user.delete(user.id); // get payload for handler
 
 		const lambdaResponse = await handler(event, context, () => {});
 		expect(lambdaResponse).toBeTruthy();
 
-    const postDeleteRecord = await Given.user.byId(user.id);
-    expect(postDeleteRecord).toBe(null);
+		const postDeleteRecord = await Given.user.byId(user.id);
+		expect(postDeleteRecord).toBe(null);
 
-  });
+	});
 
-})
+});

@@ -38,7 +38,8 @@ export function importCloudFormationParam(args: { name: config.serviceName | str
 }
 
 export function importLocalCloudFormationParam(args: { stack: stacks, stage?: string, output: string }) {
-	let { stack, stage, output } = args;
+	const { stack, output } = args;
+	let { stage } = args;
 	stage = stage || "${self:custom.stage}";
 	const name = config.serviceName;
 	return importCloudFormationParam({ name, stack, stage, output });

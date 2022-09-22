@@ -9,22 +9,21 @@ class AppsyncEventsHandlerArguments {
 	private constructor() { }
 	static readonly instance = new AppsyncEventsHandlerArguments();
 
-	base<Arguments=null>(args: { arguments?: Arguments, identity?: Partial<AppSyncIdentityCognito> }) {
+	base<Arguments = null>(args: { arguments?: Arguments, identity?: Partial<AppSyncIdentityCognito> }) {
 
 		const { identity } = args || {};
 
-    type BaseResolverEvent = AppSyncResolverEvent<Arguments>;
-    
-		const event: Partial<BaseResolverEvent> = {
-    	// will grow with time
-    	arguments: args.arguments,
-    	identity: identity as AppSyncIdentityCognito
-    };
+		type BaseResolverEvent = AppSyncResolverEvent<Arguments>;
 
-    return {
-    	event: event as BaseResolverEvent,
-    	context: context()
-    };
+		const event: Partial<BaseResolverEvent> = { 
+			arguments: args.arguments,
+			identity: identity as AppSyncIdentityCognito
+		};
+
+		return {
+			event: event as BaseResolverEvent,
+			context: context()
+		};
 
 	}
 

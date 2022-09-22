@@ -67,7 +67,7 @@ namespace UserEntityGroup {
 			return {
 				email: this.Email,
 				name: this.Name
-			}
+			};
 		}
 
 		setAttributes(attributes: UserMutableAttributes) {
@@ -97,7 +97,7 @@ namespace UserEntityGroup {
 
 		async unsync() {
 			await this.model.delete();
-			return new this.NullTypeOfSelf({ id: this.id })
+			return new this.NullTypeOfSelf({ id: this.id });
 		}
 
 		graphqlEntity(): GraphQlEntity<types.User> {
@@ -140,7 +140,7 @@ namespace UserEntityGroup {
 		mutableAttributes() {}
 
 		graphqlEntity(): null {
-			return null
+			return null;
 		}
 
 		setAttributes(): never {

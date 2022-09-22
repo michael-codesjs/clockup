@@ -11,7 +11,7 @@ describe("Edit User Profile", () => {
 		Then.user(updatedProfile, {
 			...user,
 			name, email
-		})
+		});
 
 	});
 

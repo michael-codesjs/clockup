@@ -10,7 +10,7 @@ class HandlerArgumentsUtility {
 
 	readonly cognito = Cognito;
 	readonly appsync = Appsync;
-	readonly user = User
+	readonly user = User;
   
 }
 

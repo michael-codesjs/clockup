@@ -5,39 +5,39 @@ import { Appsync } from "./appsync";
 
 class UserHandlerArgumentsUtility {
 
-  private constructor() {}
-  static readonly instance = new UserHandlerArgumentsUtility();
+	private constructor() {}
+	static readonly instance = new UserHandlerArgumentsUtility();
 
-  readonly delete = this.get; // same as get payload
+	readonly delete = this.get; // same as get payload
 
-  get(id:string) {
+	get(id:string) {
 
-    // returns lambda payload for the get-user handler
+		// returns lambda payload for the get-user handler
 
-    return Appsync.base({
-      identity: {
-        sub: id
-      }
-    });
+		return Appsync.base({
+			identity: {
+				sub: id
+			}
+		});
 
-  }
+	}
 
-  update(params: { id: string } & UpdateUserInput) {
+	update(params: { id: string } & UpdateUserInput) {
 
-    const { id, name, email } = params;
+		const { id, name, email } = params;
 
-    return Appsync.base({
-      identity: {
-        sub: id
-      },
-      arguments: {
-        input: {
-          name, email
-        }
-      }
-    });
+		return Appsync.base({
+			identity: {
+				sub: id
+			},
+			arguments: {
+				input: {
+					name, email
+				}
+			}
+		});
 
-  }
+	}
 
 
 }
