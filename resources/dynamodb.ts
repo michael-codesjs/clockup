@@ -1,6 +1,5 @@
 
 import { logicalResourceNames } from "../utilities/constants";
-import { generateLogicalResourcelName } from "../utilities/functions";
 
 export const dynamoDbResource = {
 	[logicalResourceNames.table]: {

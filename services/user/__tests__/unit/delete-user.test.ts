@@ -1,4 +1,3 @@
-import Entities from "@entities";
 import { Given, HandlerArguments } from "@utilities/testing";
 import { handler } from "../../functions/delete-user";
 

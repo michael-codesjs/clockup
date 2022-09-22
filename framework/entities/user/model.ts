@@ -1,11 +1,10 @@
-import type { DeleteItemOutput, UpdateItemOutput } from "aws-sdk/clients/dynamodb";
-import type { AbsoluteUserAttributes } from "../types";
-import { cognitoProvider } from "@lib/cognito";
 import { configureEnviromentVariables } from "@utilities/functions";
+import type { DeleteItemOutput, UpdateItemOutput } from "aws-sdk/clients/dynamodb";
 import { Model, NullModel } from "../abstracts/model";
+import type { AbsoluteUserAttributes } from "../types";
 import { UserFactory } from "./user";
 
-const { COGNITO_USER_POOL_ID } = configureEnviromentVariables();
+configureEnviromentVariables();
 
 type AbsoluteUserVariant = ReturnType<typeof UserFactory.createEntity<AbsoluteUserAttributes>>;
 

@@ -1,6 +1,5 @@
-import { Context } from "aws-lambda";
-import { Cognito } from "./cognito";
 import { Appsync } from "./appsync";
+import { Cognito } from "./cognito";
 import { User } from "./user";
 
 class HandlerArgumentsUtility {
