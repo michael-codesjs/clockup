@@ -23,7 +23,7 @@ namespace UserEntityGroup {
 
 	export class User extends Entity implements IUser {
 
-		readonly entityType: types.EntityType = types.EntityType.USER;
+		readonly entityType: types.EntityType = types.EntityType.User;
 
 		readonly TypeOfSelf = User;
 		readonly NullTypeOfSelf = NullUser;
@@ -39,7 +39,7 @@ namespace UserEntityGroup {
 
 			const { id, created, name, email } = attributes;
 
-			super({ id, created }, types.EntityType.USER);
+			super({ id, created }, types.EntityType.User);
 
 			this.Email = email; // setup attributes
 			this.Name = name; // as attributes grow, move attribute setup to a seperate method
@@ -122,7 +122,7 @@ namespace UserEntityGroup {
 
 	export class NullUser extends Entity {
 
-		readonly entityType = types.EntityType.USER;
+		readonly entityType = types.EntityType.User;
 
 		readonly TypeOfSelf = NullUser;
 		readonly NullTypeOfSelf = NullUser;
@@ -131,7 +131,7 @@ namespace UserEntityGroup {
 		protected readonly model = new NullUserModel(this);
 
 		constructor(properties: NullUserAttributes) {
-			super(properties, types.EntityType.USER);
+			super(properties, types.EntityType.User);
 		}
 
 		attributes() { }

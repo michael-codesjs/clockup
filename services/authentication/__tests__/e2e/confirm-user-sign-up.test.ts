@@ -1,6 +1,5 @@
-import { EntityType } from "../../../../client/types/api";
-import { Given, Then, When } from "@utilities/testing";
 import { chance } from "@utilities/constants";
+import { Given, Then, When } from "@utilities/testing";
 
 describe("Confirm User Sign", () => {
 
@@ -13,10 +12,7 @@ describe("Confirm User Sign", () => {
 
 		const dbRecord = await Given.user.byId(user.id); // get user record from the table
 
-		Then.user(dbRecord,{
-			...user,
-			entityType: EntityType.USER
-		}); // test attributes from cognito against record in our table
+		Then.user(dbRecord,user); // test attributes from cognito against record in our table
 
 	});
 

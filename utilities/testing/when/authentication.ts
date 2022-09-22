@@ -1,3 +1,4 @@
+import { EntityType } from "@local-types/api";
 import { SignInCredentials, SignUpCredentials } from "@local-types/index";
 import { auth } from "../../../lib/amplify";
 
@@ -26,6 +27,7 @@ class AuthenticationUtility {
 
 		return {
 			name, id: userSub, email,
+			entityType: EntityType.User,
 			cognitoUser: user
 		};
 

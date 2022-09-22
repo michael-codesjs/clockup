@@ -8,10 +8,7 @@ describe("Edit User Profile", () => {
 		const { email, name } = Given.user.attributes(); // new user attributes
 		const updatedProfile = await When.user.update({ email, name });
 
-		Then.user(updatedProfile, {
-			...user,
-			name, email
-		});
+		Then.user(updatedProfile, { ...user, name, email });
 
 	});
 

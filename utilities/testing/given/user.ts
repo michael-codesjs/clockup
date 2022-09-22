@@ -12,7 +12,7 @@ class GivenUserAttributes {
 
 	attributes() {
 
-		const entityType = EntityType.USER;
+		const entityType = EntityType.User;
 		const id = ulid();
 		const name = chance.name();
 		const email = chance.email();

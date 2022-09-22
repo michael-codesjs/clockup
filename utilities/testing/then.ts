@@ -1,7 +1,7 @@
 
 import * as types from "@local-types/api";
 
-type User = Omit<types.User, "__typename" | "created">
+type User = Omit<types.User, "__typename" | "created" | "entityType">; // created and entityType are still gonna be tested for
 
 class ThenUtility {
 
@@ -17,6 +17,7 @@ class ThenUtility {
 		const { id, name, email } = object1;
 		expect(object).toMatchObject({
 			id, name, email,
+			entityType: types.EntityType.User,
 			created: this.dateMatch()
 		});
 	}

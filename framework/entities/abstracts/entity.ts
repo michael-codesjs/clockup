@@ -1,6 +1,6 @@
 import { ulid } from "ulid";
-import type { EntityType } from "../../../types/api";
-import { constructKey } from "../../../utilities/functions";
+import type { EntityType } from "@local-types/api";
+import { constructKey } from "@utilities/functions";
 import { SyncOptions } from "../types";
 import { IEntity } from "./interfaces";
 import { Keys } from "./keys";

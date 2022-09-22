@@ -1,9 +1,9 @@
 
 import { AppSyncIdentityCognito, AppSyncResolverHandler } from "aws-lambda";
 import Entities from "@entities";
-import { EditUserMutationVariables } from "@local-types/api";
+import { MutationUpdateUserArgs } from "@local-types/api";
 
-export const handler: AppSyncResolverHandler<EditUserMutationVariables,any> = async (event) => {
+export const handler: AppSyncResolverHandler<MutationUpdateUserArgs,any> = async (event) => {
 
 	const { sub } = event.identity as AppSyncIdentityCognito;
 	const { email, name } = event.arguments.input!;
