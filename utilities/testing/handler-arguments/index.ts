@@ -1,5 +1,6 @@
 import { Appsync } from "./appsync";
 import { Cognito } from "./cognito";
+import { Stream } from "./dynamoDb-stream";
 import { User } from "./user";
 
 class HandlerArgumentsUtility {
@@ -9,6 +10,7 @@ class HandlerArgumentsUtility {
 
 	readonly cognito = Cognito;
 	readonly appsync = Appsync;
+	readonly stream = Stream;
 	readonly user = User;
   
 }

@@ -12,7 +12,7 @@ describe("Confirm User Sign", () => {
 
 		const dbRecord = await Given.user.byId(user.id); // get user record from the table
 
-		Then.user(dbRecord,user); // test attributes from cognito against record in our table
+		Then.user_VS_user(dbRecord,user); // test attributes from cognito against record in our table
 
 	});
 

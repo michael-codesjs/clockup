@@ -58,7 +58,8 @@ export abstract class Entity implements IEntity {
 	get putItemInput() {
 		return {
 			...this.keys(),
-			...this.attributes()
+			...this.attributes(),
+			entityType: this.entityType
 		};
 	}
 

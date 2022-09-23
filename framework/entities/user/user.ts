@@ -5,6 +5,11 @@ import type { AbsoluteUserAttributes, NullUserAttributes, SyncOptions } from "..
 import { NullUserModel, UserModel } from "./model";
 import { IUser } from "../abstracts/interfaces";
 import { GraphQlEntity } from "@local-types/utility";
+import { UpdateItemOutput } from "aws-sdk/clients/dynamodb";
+import { configureEnviromentVariables } from "@utilities/functions";
+import { cognitoProvider } from "@lib/cognito";
+
+const { COGNITO_USER_POOL_ID } = configureEnviromentVariables();
 
 namespace UserEntityGroup {
 
@@ -84,8 +89,14 @@ namespace UserEntityGroup {
 		async sync(options: SyncOptions = { exists: true }) {
 
 			const { exists } = options;
-			const attributes = exists ? await this.model.mutate() : await this.model.put(); // update/create the entity in the db table depending on whether they exist or not
-
+			let attributes: UpdateItemOutput;
+			if (exists) {
+				// update cognito details first
+				await this.updateCognito();
+				attributes = await this.model.mutate();
+			} else {
+				attributes = await this.model.put();
+			}
 			Object.entries(attributes).forEach(([attribute, value]) => {
 				// update entity with updated values;
 				this[attribute] = value;
@@ -109,6 +120,28 @@ namespace UserEntityGroup {
 
 			return entity;
 
+		}
+
+		/**
+		 * update user attributes in cognito
+		 */
+		private async updateCognito() {
+
+			const cognitoAdminUpdateParams = {
+				UserPoolId: COGNITO_USER_POOL_ID!,
+				Username: this.Id,
+				UserAttributes: Object.entries({ email: this.Email, name: this.Name }).map(([key, value]) => {
+					return {
+						Name: key,
+						Value: value as string
+					};
+				})
+			};
+
+
+			return await cognitoProvider()
+				.adminUpdateUserAttributes(cognitoAdminUpdateParams) // update user attributes in the cognito user pool
+				.promise();
 		}
 
 	}
@@ -136,8 +169,8 @@ namespace UserEntityGroup {
 
 		attributes() { }
 
-		
-		mutableAttributes() {}
+
+		mutableAttributes() { }
 
 		graphqlEntity(): null {
 			return null;
@@ -147,14 +180,14 @@ namespace UserEntityGroup {
 			throw new Error("Can not set mutable attributes of NullUser.");
 		}
 
-		async sync(params?:SyncOptions): Promise<User | NullUser | never> {
+		async sync(params?: SyncOptions): Promise<User | NullUser | never> {
 
 			const { Item } = await this.model.get(); // get user from db;
 
 			const { exists } = params || {};
 
 			if (Item) return new User(Item);
-			else if(exists) throw new Error(`Could not sync user. Concrete absolute user(${+this.Id}) does not exist`); // if you pass exists as true, you are absolutely sure the user exists and want an error when we do not find one
+			else if (exists) throw new Error(`Could not sync user. Concrete absolute user(${+this.Id}) does not exist`); // if you pass exists as true, you are absolutely sure the user exists and want an error when we do not find one
 			else return this;
 
 		}

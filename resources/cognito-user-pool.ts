@@ -43,7 +43,7 @@ export const cognitoUserPoolResource = {
 			Principal: "cognito-idp.amazonaws.com",
 			SourceArn: {
 				"Fn::GetAtt": [logicalResourceNames.userPool, "Arn"],
-			},
+			}
 		},
 	},
 	[logicalResourceNames.InvokePreSignUpPermission]: {
@@ -56,7 +56,7 @@ export const cognitoUserPoolResource = {
 			Principal: "cognito-idp.amazonaws.com",
 			SourceArn: {
 				"Fn::GetAtt": [logicalResourceNames.userPool, "Arn"],
-			},
-		},
-	},
+			}
+		}
+	}
 };

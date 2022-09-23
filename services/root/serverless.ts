@@ -10,7 +10,7 @@ import { generateLogicalResourcelName, generateServiceName } from "@utilities/fu
 const serverlessConfiguration: AWS.Service = {
 
 	service: generateServiceName("root"),
-  
+
 	provider: {
 		...commonProviderSettings
 	},
@@ -57,7 +57,14 @@ const serverlessConfiguration: AWS.Service = {
 			[stacks.root.outputs.assetsBucket.arn]: {
 				Value: { "Fn::GetAtt": [logicalResourceNames.assetsBucket, "Arn"] },
 				Export: { Name: stacks.root.outputs.assetsBucket.arn }
-			}
+			},
+
+			[stacks.root.outputs.tableStream.arn]: {
+				Value: { "Fn::GetAtt": [logicalResourceNames.table, "StreamArn"] },
+				Export: {
+					Name: stacks.root.outputs.tableStream.arn,
+				},
+			},
 
 		}
 	}

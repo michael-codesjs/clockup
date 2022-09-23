@@ -12,7 +12,7 @@ describe("confirm-user-sign-up", () => {
 
 		const dbRecord = await Given.user.byId(attributes.id); // fetch user record created via our lambda
 
-		Then.user(dbRecord,attributes); // test recorded attributes against generated ones
+		Then.user_VS_user(dbRecord,attributes); // test recorded attributes against generated ones
 
 	});
 

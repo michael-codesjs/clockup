@@ -29,7 +29,10 @@ export const dynamoDbResource = {
 					AttributeName: "SK",
 					AttributeType: "S"
 				}
-			]
+			],
+			StreamSpecification: {
+				StreamViewType: "NEW_AND_OLD_IMAGES",
+			},
 		}
 	}
 };

@@ -6,7 +6,7 @@ describe("Delete User", () => {
 
 	it("Deletes a user", async () => {
 
-		const user = await Given.user.random();
+		const user = await Given.user.authenticated();
 
 		const { event, context } = HandlerArguments.user.delete(user.id); // get payload for handler
 

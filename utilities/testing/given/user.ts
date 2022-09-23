@@ -4,6 +4,11 @@ import { EntityType } from "@local-types/api";
 import { chance } from "@utilities/constants";
 import { AbsoluteUserAttributes } from "framework/entities/types";
 import { Authentication } from "../when/authentication";
+import { cognitoProvider } from "@lib/cognito";
+import { configureEnviromentVariables } from "@utilities/functions";
+import { CognitoIdentityServiceProvider } from "aws-sdk";
+
+const { COGNITO_USER_POOL_ID } = configureEnviromentVariables();
 
 class GivenUserAttributes {
 
@@ -28,7 +33,7 @@ class GivenUserAttributes {
 
 	async new(attributes: AbsoluteUserAttributes) {
 		const instance = await Entities.User(attributes).sync({ exists: false });
-		return instance.graphqlEntity(); 
+		return instance.graphqlEntity();
 	}
 
 	async random() {
@@ -52,6 +57,28 @@ class GivenUserAttributes {
 
 		return this.byId(id);
 
+	}
+
+	async fromPool(id: string) {
+
+		const cognitoResponse = await cognitoProvider()
+			.adminGetUser({
+				Username: id,
+				UserPoolId: COGNITO_USER_POOL_ID!
+			})
+			.promise();
+
+		const parsedAttributes = this.parseCognitoUserAttributes(cognitoResponse.UserAttributes);
+
+		return parsedAttributes;
+	
+	}
+
+	private parseCognitoUserAttributes(attributes: CognitoIdentityServiceProvider.AdminGetUserResponse["UserAttributes"]): Record<string, any> {
+		return attributes.reduce((collective, attribute) => {
+			collective[attribute.Name] = attribute.Value;
+			return collective;
+		}, {});
 	}
 
 }

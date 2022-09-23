@@ -52,6 +52,10 @@ export const commonCloudFormationImports = Object.freeze({
 		stack: "root",
 		output: stacks.root.outputs.table.arn
 	}),
+	tableStreamArn: importLocalCloudFormationParam({
+		stack: "root",
+		output: stacks.root.outputs.tableStream.arn
+	}),
 	/*
   assetsBucketName: importLocalCloudFormationParam({
     stack: "root",

@@ -7,6 +7,9 @@ export const root = Object.freeze({
 			name: "dynamoDbTableName",
 			arn: "dynamoDbTableArn",
 		},
+		tableStream: {
+			arn: "dynamoDbTableStreamArn"
+		},
 		assetsBucket: {
 			stack: "root",
 			name: "assetsBucketName",

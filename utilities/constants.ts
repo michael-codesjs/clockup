@@ -20,7 +20,9 @@ export const logicalResourceNames = Object.freeze({
 	// functions:
 	ConfirmSignUpLambdaFunction: "ConfirmSignUpLambdaFunction",
 	PreSignUpLambdaFunction: "PreSignUpLambdaFunction",
+	SyncOnUpdateLambdaFunction: "SyncOnUpdateLambdaFunction", 
 	// permissions:
 	InvokeConfirmUserSignUpPermission: "InvokeConfirmUserSignUpPermission",
-	InvokePreSignUpPermission: "InvokePreSignUpPermission"
+	InvokePreSignUpPermission: "InvokePreSignUpPermission",
+	InvokeSyncOnUpdatePermission: "InvokeSyncOnUpdatePermission"
 });

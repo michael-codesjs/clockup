@@ -1,9 +1,9 @@
 import type { AWS } from "@local-types/aws";
 import { cognitoUserPoolResource, webCognitoClientResource } from "@resources";
-import { logicalResourceNames } from "@utilities/constants";
-import { stacks } from "@utilities/stacks";
 import { commonCloudFormationImports, commonCustom, commonEnviromentVariables, commonPlugins, commonProviderSettings } from "@utilities/commons";
+import { logicalResourceNames } from "@utilities/constants";
 import { generateLogicalResourcelName, generateServiceName, importLocalCloudFormationParam } from "@utilities/functions";
+import { stacks } from "@utilities/stacks";
 
 const serverlessConfiguration: AWS.Service = {
 
@@ -68,10 +68,8 @@ const serverlessConfiguration: AWS.Service = {
 
 	functions: {
 
-		/*
-     * function logical names are tied to the LambdaConfig of the cognito user pool.
-     * Only change them if you absolutely know what you are doing
-     */
+		// only change the function logical names if you absolutely know what you are doing
+		// changing them without changing the cognito resource will cause some errors
 		confirmSignUp: {
 			handler: "functions/confirm-user-sign-up.handler",
 			iamRoleStatements: [
@@ -83,7 +81,6 @@ const serverlessConfiguration: AWS.Service = {
 					]
 				}
 			],
-
 			events: [
 				{
 					cognitoUserPool: {
@@ -107,7 +104,7 @@ const serverlessConfiguration: AWS.Service = {
       
 		}
 
-	},
+	}
 
  
 

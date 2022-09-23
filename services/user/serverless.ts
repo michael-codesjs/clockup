@@ -11,6 +11,7 @@ import {
 import { config } from "@utilities/constants";
 import { stacks } from "@utilities/stacks";
 import { createDataSource, createMappingTemplate, generateServiceName, importLocalCloudFormationParam } from "@utilities/functions";
+import { EntityType } from "@local-types/api";
 
 const serverlessConfiguration: AWS.Service = {
 
@@ -45,7 +46,7 @@ const serverlessConfiguration: AWS.Service = {
 		...commonCustom,
 		...commonPluginConfig,
 		...commonCloudFormationImports,
-		
+		tableStreamArn: commonCloudFormationImports.tableStreamArn,
 		cognitoUserPoolArn: importLocalCloudFormationParam({
 			stack: "authentication",
 			output: stacks.authentication.outputs.cognito.arn
@@ -83,6 +84,7 @@ const serverlessConfiguration: AWS.Service = {
 	functions: {
 
 		getProfile: {
+			description: "Gets a user information",
 			handler: "functions/get-profile.handler",
 			iamRoleStatements: [
 				{
@@ -96,6 +98,7 @@ const serverlessConfiguration: AWS.Service = {
 		},
 
 		updateUser: {
+			description: "Updates a user with the supplied attributes",
 			handler: "functions/update-user.handler",
 			iamRoleStatements: [
 				{
@@ -104,11 +107,19 @@ const serverlessConfiguration: AWS.Service = {
 					Resource: [
 						"${self:custom.tableArn}"
 					]
+				},
+				{
+					Effect: "Allow",
+					Action: ["cognito-idp:AdminUpdateUserAttributes"],
+					Resource: [
+						"${self:custom.cognitoUserPoolArn}"
+					]
 				}
 			]
 		},
 
 		deleteUser: {
+			description: "Deletes a user from our table on their request",
 			handler: "functions/delete-user.handler",
 			iamRoleStatements: [
 				{
@@ -118,6 +129,42 @@ const serverlessConfiguration: AWS.Service = {
 						"${self:custom.tableArn}"
 					]
 				}
+			]
+		},
+
+		syncUserDeleteWithCognito: {
+			description: "Deletes a user from cognito when deleted from our table",
+			handler: "functions/sync-user-delete-with-cognito.handler",
+			iamRoleStatements: [
+				{
+					Effect: "Allow",
+					Action: ["cognito-idp:AdminDeleteUser"],
+					Resource: [
+						"${self:custom.cognitoUserPoolArn}"
+					]
+				}
+			],
+			events: [
+				{
+					stream: {
+						type: "dynamodb",
+						arn: "${self:custom.tableStreamArn}",
+						maximumRetryAttempts: 2,
+						batchSize: 1,
+						filterPatterns: [
+							{
+								eventName: ["REMOVE"],
+								dynamodb: {
+									OldImage: {
+										entityType: {
+											S: [EntityType.User],
+										},
+									},
+								},
+							},
+						],
+					},
+				},
 			]
 		}
 
