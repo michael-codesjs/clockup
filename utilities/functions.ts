@@ -58,6 +58,6 @@ export function generateLogicalResourcelName(name: string) {
 	return "${self:service}-" + name + "-${self:custom.stage}";
 }
 
-export function constructKey(entityType: string, id: string) {
-	return `${entityType.toUpperCase()}#${id}`;
+export function constructKey(descriptor: string, value: string) {
+	return `${descriptor.toUpperCase()}#${value}`;
 }

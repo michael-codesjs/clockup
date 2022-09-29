@@ -5,8 +5,9 @@ schema {
 
 interface ICommom {
   id: ID!
-  entityType: EntityType
-  created: AWSDateTime
+  entityType: EntityType!
+  created: AWSDateTime!
+  modified: AWSDateTime
 }
 
 enum EntityType {
@@ -18,6 +19,7 @@ type User implements ICommom {
   id: ID!
   entityType: EntityType!
   created: AWSDateTime!
+  modified: AWSDateTime
   email: AWSEmail!
   name: String!
 }

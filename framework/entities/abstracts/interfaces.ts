@@ -1,16 +1,9 @@
+import { EntityType, ICommom, User } from "@local-types/api";
 
 export interface IEntity {
-  attributes(): {
-    id: string,
-    created: string
-  }
+  attributes(): ICommom
 }
 
 export interface IUser extends IEntity {
-  attributes(): {
-    id: string,
-    created: string,
-    name: string,
-    email: string
-  }
+  attributes(): User
 }

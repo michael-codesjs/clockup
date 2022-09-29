@@ -27,13 +27,17 @@ class GivenUserAttributes {
 	}
 
 	async byId(id: string) {
-		const instance = await Entities.User({ id }).sync({ exists: false }); // not sure if the user exists thus the exists: false, if we pass true, sync will throw an error
-		return instance.graphqlEntity();
+		try {
+			const instance = await Entities.User({ id }).sync(); // not sure if the user exists thus the exists: false, if we pass true, sync will throw an error
+			return instance.graphQlEntity();
+		} catch(error) {
+			return null;
+		}
 	}
 
 	async new(attributes: AbsoluteUserAttributes) {
 		const instance = await Entities.User(attributes).sync({ exists: false });
-		return instance.graphqlEntity();
+		return instance.graphQlEntity();
 	}
 
 	async random() {
@@ -71,7 +75,7 @@ class GivenUserAttributes {
 		const parsedAttributes = this.parseCognitoUserAttributes(cognitoResponse.UserAttributes);
 
 		return parsedAttributes;
-	
+
 	}
 
 	private parseCognitoUserAttributes(attributes: CognitoIdentityServiceProvider.AdminGetUserResponse["UserAttributes"]): Record<string, any> {

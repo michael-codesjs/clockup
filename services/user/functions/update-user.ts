@@ -14,6 +14,6 @@ export const handler: AppSyncResolverHandler<MutationUpdateUserArgs,any> = async
 			.sync({ exists: true })
 	);
 
-	return user.graphqlEntity();
+	return user.graphQlEntity();
 
 };

@@ -2,7 +2,6 @@ import type { IEntityFactory } from "@local-types/interfaces";
 import * as types from "@local-types/api";
 import { Entity } from "../abstracts";
 import type { AbsoluteUserAttributes, NullUserAttributes, SyncOptions } from "../types";
-import { NullUserModel, UserModel } from "./model";
 import { IUser } from "../abstracts/interfaces";
 import { GraphQlEntity } from "@local-types/utility";
 import { UpdateItemOutput } from "aws-sdk/clients/dynamodb";
@@ -13,17 +12,15 @@ const { COGNITO_USER_POOL_ID } = configureEnviromentVariables();
 
 namespace UserEntityGroup {
 
-	type UserMutableAttributes = {
+	type MutableUserAttributes = {
 		email?: string,
 		name?: string
 	}
 
 	/**
-	 * Absolute User:
-	 * A variant of the UserEntityGroup we absolutely know exists or have enough data to create one
-	 * Instanciate by:
-	 * 1. Providing an id, email and name to the UserEntityGroup factory
-	 * 2. A successful NullUser sync
+	 * A variant from the UserEntityGroup we absolutely know exists or have enough data to create one.
+	 * @constructor
+	 * @param {AbsoluteUserAttributes} attribute object with the users email, name and id.
 	 */
 
 	export class User extends Entity implements IUser {
@@ -35,61 +32,57 @@ namespace UserEntityGroup {
 		readonly AbsoluteTypeOfSelf = User;
 
 		/* ATTRIBUTES */
+		/** Email address of the user, also acts as their username in cognito */
 		private Email: string;
+		/** Name of the user */
 		private Name: string;
 
-		protected readonly model = new UserModel(this);
-
 		constructor(attributes: AbsoluteUserAttributes & { created?: string }) {
+			super(attributes, types.EntityType.User);
+			this.setupAttributes(attributes);
+			this.set_GSI_keys();
+		}
 
-			const { id, created, name, email } = attributes;
-
-			super({ id, created }, types.EntityType.User);
-
+		/** Configures self with attributes provided by the client */
+		protected setupAttributes(params: ConstructorParameters<typeof User>[0]) {
+			const { email, name } = params;
 			this.Email = email; // setup attributes
 			this.Name = name; // as attributes grow, move attribute setup to a seperate method
-
 		}
 
-		absolutify(): User {
-			return this;
-		}
-
-		nullify(): NullUser {
-			return new this.NullTypeOfSelf({ id: this.Id });
-		}
+		/** Sets the GSI partition keys used by self */
+		protected set_GSI_keys() { } // TODO: populate
 
 		attributes() {
 			return {
-				id: this.Id,
-				created: this.Created,
+				...super.attributes(), // get id, entityType, created and modified
 				email: this.Email,
 				name: this.Name
 			};
 		}
 
-		mutableAttributes() {
-			return {
-				email: this.Email,
-				name: this.Name
-			};
+		setAttributes(attributes: MutableUserAttributes): void {
+			// only overriding so we i can get that nice intellisense in vscode
+			super.setAttributes(attributes);
 		}
 
-		setAttributes(attributes: UserMutableAttributes) {
-			Object.entries(attributes).forEach(
-				([key, value]) => {
-					key = key[0].toUpperCase() + key.slice(1);
-					if (key in this) { // check if the property exists, typescript should warn you but an extra check for users that love casting ain't gonna hurt
-						this["_" + key] = value;
-					}
-				}
-			);
+		/**
+		 * Use to obtain graphql representation of UserEntityGroup.User
+		 * @returns {types.User}
+		 */
+		graphQlEntity(): GraphQlEntity<types.User> {
+			const entity = {
+				...super.graphQlEntity(),
+				...this.attributes()
+			};
+			return entity;
 		}
 
 		async sync(options: SyncOptions = { exists: true }) {
 
 			const { exists } = options;
 			let attributes: UpdateItemOutput;
+
 			if (exists) {
 				// update cognito details first
 				await this.updateCognito();
@@ -97,28 +90,10 @@ namespace UserEntityGroup {
 			} else {
 				attributes = await this.model.put();
 			}
-			Object.entries(attributes).forEach(([attribute, value]) => {
-				// update entity with updated values;
-				this[attribute] = value;
-			});
+
+			this.setAttributes(attributes as MutableUserAttributes);
 
 			return this;
-
-		}
-
-		async unsync() {
-			await this.model.delete();
-			return new this.NullTypeOfSelf({ id: this.id });
-		}
-
-		graphqlEntity(): GraphQlEntity<types.User> {
-
-			const entity = {
-				...super.graphqlEntity(),
-				...this.attributes()
-			};
-
-			return entity;
 
 		}
 
@@ -161,16 +136,15 @@ namespace UserEntityGroup {
 		readonly NullTypeOfSelf = NullUser;
 		readonly AbsoluteTypeOfSelf = User;
 
-		protected readonly model = new NullUserModel(this);
-
 		constructor(properties: NullUserAttributes) {
 			super(properties, types.EntityType.User);
 		}
 
-		attributes() { }
+		protected set_GSI_keys(): void { }
 
-
-		mutableAttributes() { }
+		attributes(): null {
+			return null;
+		}
 
 		graphqlEntity(): null {
 			return null;
@@ -180,21 +154,12 @@ namespace UserEntityGroup {
 			throw new Error("Can not set mutable attributes of NullUser.");
 		}
 
-		async sync(params?: SyncOptions): Promise<User | NullUser | never> {
-
-			const { Item } = await this.model.get(); // get user from db;
-
-			const { exists } = params || {};
-
-			if (Item) return new User(Item);
-			else if (exists) throw new Error(`Could not sync user. Concrete absolute user(${+this.Id}) does not exist`); // if you pass exists as true, you are absolutely sure the user exists and want an error when we do not find one
-			else return this;
-
-		}
-
-		async unsync() {
-			await this.model.delete();
-			return this;
+		async sync(): Promise<User | never> {
+			const { Item } = await this.model.get(); // get user record from db;
+			if(!Item) throw new Error(`Could not sync user. Concrete absolute user(${+this.Id}) does not exist`);
+			const user = new User(Item as AbsoluteUserAttributes);
+			user.setAttributes(Item as MutableUserAttributes);
+			return user;
 		}
 
 	}
@@ -205,19 +170,21 @@ namespace UserEntityGroup {
 /* USER FACTORY */
 
 type Attributes = AbsoluteUserAttributes | NullUserAttributes;
-type UserVariant<T> = T extends AbsoluteUserAttributes ? UserEntityGroup.User : T extends NullUserAttributes ? UserEntityGroup.NullUser : never;
+type UserVariant<T> =
+	T extends AbsoluteUserAttributes ? UserEntityGroup.User :
+	T extends NullUserAttributes ? UserEntityGroup.NullUser : never;
 
 class Factory implements IEntityFactory {
 
 	private constructor() { }
 	static readonly instance = new Factory();
 
-	createEntity<T extends Attributes>(args: T): UserVariant<T> | never {
+	createEntity<T extends Attributes>(params: T): UserVariant<T> | never {
 
-		if (args && "name" in args && "email" in args) {
-			return new UserEntityGroup.User(args) as UserVariant<T>;
-		} else if (args && "id" in args) {
-			return new UserEntityGroup.NullUser(args) as UserVariant<T>;
+		if (params && "name" in params && "email" in params) {
+			return new UserEntityGroup.User(params as AbsoluteUserAttributes) as UserVariant<T>;
+		} else if (params && "id" in params) {
+			return new UserEntityGroup.NullUser(params) as UserVariant<T>;
 		} else {
 			throw new Error("Can not instanciate variant of user");
 		}
@@ -226,4 +193,4 @@ class Factory implements IEntityFactory {
 
 }
 
-export const UserFactory = Factory.instance;
+export const UserEntityFactory = Factory.instance;

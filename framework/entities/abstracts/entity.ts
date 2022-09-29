@@ -1,93 +1,128 @@
 import { ulid } from "ulid";
-import type { EntityType } from "@local-types/api";
+import * as types from "@local-types/api";
 import { constructKey } from "@utilities/functions";
 import { SyncOptions } from "../types";
 import { IEntity } from "./interfaces";
 import { Keys } from "./keys";
-import { Model, NullModel } from "./model";
+import { Model } from "./model";
 
+
+/**
+ * Base abstract class that all entities and their variants should extend.
+ * It implements common functionality shared by all entities and sets rules for them.
+ * @constructor
+ * @param {Object} properties predefined object properties.
+ * @param {types.EntityType} entityType type of entity.
+ */
 
 export abstract class Entity implements IEntity {
 
-	/* KEYS */
-	private Keys = new Keys();
-	// only expose the setGSI function and the key getters
-	protected setGSI = (params: Parameters<typeof this.Keys.setGSI>[0]) => this.Keys.setGSI(params); // binding the functions to the Keys object did not work so we gotta call these like this
-	public primaryKeys = () => this.Keys.primary();
-	public GSI_Keys = () => this.Keys.GSIs();
-	public keys = () => this.Keys.all();
+	/** Entity DynamoDb keys for the table and all its Global Secondary Index */
+	public Keys = new Keys();
 
-	/* VARIANTS */
 	abstract readonly TypeOfSelf: typeof Entity;
-	abstract readonly NullTypeOfSelf: typeof Entity | Array<typeof Entity>;
+	abstract readonly NullTypeOfSelf: typeof Entity;
 	abstract readonly AbsoluteTypeOfSelf: typeof Entity | Array<typeof Entity>;
 
-	/* ATTRIBUTES */
-	protected readonly Id: string;
-	get id() { return this.Id; }
-	protected Created: string;
+	protected EntityType: types.EntityType;
+	protected Id: string;
+	protected Created: string; // REVIEW: got a feeling should be readonly, not sure at the moment.
 	protected Modified: string;
 
-	/* MODEL */
-	protected abstract model: Model | NullModel;
+	protected model = new Model(this);
 
-	constructor(properties: { id?: string, created?: string }, readonly entityType: EntityType) {
-
-		const { id, created } = properties;
-		this.entityType = entityType;
-		this.Id = id || ulid();
-		this.Created = created || new Date().toJSON();
-
-		this.setupKeys();
-
+	protected constructor(properties: { id?: string, created?: string } | null, type: types.EntityType) {
+		// constructor is protected for entity variants that may offer a static creational method and private constructor.
+		const { id, created } = properties = properties || {};
+		this.EntityType = type;
+		this.Id = "id" in properties ? id! : ulid();
+		this.Created = "created" in properties ? created! : new Date().toJSON();
+		this.Modified =  this.Created;
+		this.setBaseKeys();
 	}
 
-	private setupKeys() {
+	/**
+	 * sets the tables partition and entity index gsi keys.
+	 * These are the only keys that should not be handled by the derived entity classes.
+	 */
+	private setBaseKeys() {
 
 		this.Keys.setPrimary({
-			partition: constructKey(this.entityType, this.Id)
+			partition: constructKey(this.EntityType, this.Id)
 		});
 
 		this.Keys.setEntity({
-			entity: this.entityType,
-			sort: ""
+			entity: this.EntityType,
+			sort: this.Created
 		});
 
 	}
 
-	get putItemInput() {
-		return {
-			...this.keys(),
-			...this.attributes(),
-			entityType: this.entityType
-		};
-	}
-
-	abstract attributes(): any; // entity specific attributes
-	abstract mutableAttributes(): any;
-	abstract setAttributes(attributes: Record<string, any>): void;
-
-	/*
-	 * Sync and Unsync functions should be the only functions to work with the model
-	 * for absolute sub classes, sync should insert/update/delete the entity record in the database
-	 * for null sub classes, sync should fetch the entity record from the db and return an absolute type of self
+	/**
+	 * Returns an entities attributes
+	 * @method
+	 * @abstract
+	 * @returns {types.ICommom & Record<string, any>} an entities attributes
 	 */
-
-	abstract sync(syncOptions: SyncOptions): Promise<Entity>;
-	async unsync(): Promise<Entity> {
-		await this.model.delete();
-		return this;
-	}
-
-	/* END */
-
-	public graphqlEntity(): any {
+	attributes(): (types.ICommom & Record<string, any>) | null {
 		return {
 			id: this.Id,
-			entityType: this.entityType,
 			created: this.Created,
-			modified: this.Modified
+			modified: this.Modified,
+			entityType: this.EntityType,
 		};
+	}
+
+	/**
+	 * @returns {Object} type matching definition in the GraphQL Schema
+	 * @abstract
+	 */
+
+	graphQlEntity(): (types.ICommom & { [k: string]: any }) | null {
+		return this.attributes();
+	}
+
+	setAttributes(attributes: Record<string, any> | null) {
+		if (!attributes) return;
+		Object.entries(attributes).forEach( // loop throught every attribute supplied, Object.entries: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries
+			([key, value]) => {
+				if(key === "id") return;
+				key = key[0].toUpperCase() + key.slice(1, key.length); // turn "key" to "Key" because that's how attribute keys are stored in 
+				if (key in this) { // check if the attributes should exist, we do not want to add none existent attributes,
+					this[key] = value;
+				}
+			}
+		);
+		this.set_GSI_keys(); // update GSI keys since some may be depended on an entites attributes
+	}
+
+	/**
+	 * Sets an entities GSI partition keys.
+	 * @abstract
+	 */
+	protected abstract set_GSI_keys(): void;
+
+	/**
+	 * Keeps the entity in sync with it's record in the database and vice versa.
+	 * For Absolute variants of entities, it upserts the entities attributes into the table.
+	 * For Null variants of entities, it gets the attributes from the table and updates the entity with the fetched attributes.
+	 * @abstract
+	 * @param syncOptions 
+	 */
+	abstract sync(syncOptions: SyncOptions): Promise<Entity>;
+
+	/**
+	 * deletes an entites record from the database
+	 * @returns {boolean} delete result
+	 */
+	async unsync(): Promise<Entity> {
+		await this.model.delete();
+		const ConstructableNullTypeOfSelf = this.NullTypeOfSelf as new () => Entity;
+		return new ConstructableNullTypeOfSelf();
+	}
+
+	get id() {
+		return this.Id;
 	}
 
 }

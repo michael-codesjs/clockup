@@ -14,6 +14,6 @@ export const handler = async (event:AppSyncResolverEvent<null>) => {
 			.sync()
 	);
 
-	return user.graphqlEntity();
+	return user.graphQlEntity();
   
 };
