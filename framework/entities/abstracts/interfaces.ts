@@ -1,4 +1,4 @@
-import { EntityType, ICommom, User } from "@local-types/api";
+import { ICommom, User } from "@local-types/api";
 
 export interface IEntity {
   attributes(): ICommom

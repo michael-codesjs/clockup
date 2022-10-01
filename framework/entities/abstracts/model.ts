@@ -14,32 +14,24 @@ export class Model {
 		this.entity = entity;
 	}
 
-	/** Returns non null attributes that can be inserted to a table */
-	private getNonNullAttributes(attributes: Record<string, any>): Record<string, any> {
-		return Object.entries(attributes)
-			.reduce((cumulative, current) => {
-				const [key, value] = current;
-				if (value !== null || value !== undefined) {
-					cumulative[key] = value;
-				}
-				return cumulative;
-			}, {});
-	}
+	/** Returns non null attributes that can be upserted to a table */
 
 	/** DynamoDb item input for upsert operations on the table for the entity */
 	private entityDynamoDbPutItemInput() {
-		return this.getNonNullAttributes({
+		return this.entity.nonNullAttributes({
 			...this.entity.Keys.all(),
 			...this.entity.attributes(),
 		});
 	}
 
 	/** Returns non null attributes that can be upserted to a table */
-	private entityUpdateItemParams() {
-		const attributes = this.getNonNullAttributes({
+	public entityUpdateItemParams() {
+		const attributes = this.entity.nonNullAttributes({
 			...this.entity.Keys.GSIs(),
 			...this.entity.attributes()
 		});
+		delete attributes.created; // do not override created
+		attributes.modified = new Date().toJSON();
 		const params = dynamoDbExpression({
 			Update: attributes
 		});

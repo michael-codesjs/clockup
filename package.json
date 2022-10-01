@@ -8,9 +8,13 @@
     "setup-dev": "node setup-dev.js",
     "tests": "jest --verbose",
     "entity-tests:user": "jest --verbose framework/entities/user/__tests__",
+
+    "authentication-tests": "jest --verbose services/authentication/__tests__",
     "authentication-tests:unit": "jest --verbose services/authentication/__tests__/unit",
     "authentication-tests:integration": "jest --verbose services/authentication/__tests__/integration",
     "authentication-tests:e2e": "jest --verbose services/authentication/__tests__/e2e",
+    
+    "user-tests": "jest --verbose services/user/__tests__",
     "user-tests:unit": "jest --verbose services/user/__tests__/unit",
     "user-tests:e2e": "jest --verbose services/user/__tests__/e2e",
     "codegen": "graphql-codegen --config codegen.yml"

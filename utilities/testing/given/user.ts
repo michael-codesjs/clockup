@@ -36,7 +36,7 @@ class GivenUserAttributes {
 	}
 
 	async new(attributes: AbsoluteUserAttributes) {
-		const instance = await Entities.User(attributes).sync({ exists: false });
+		const instance = await Entities.User(attributes).put();
 		return instance.graphQlEntity();
 	}
 

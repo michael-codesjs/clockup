@@ -1,19 +1,17 @@
-import { AppSyncIdentityCognito, AppSyncResolverEvent } from "aws-lambda";
-import { configureEnviromentVariables } from "@utilities/functions";
 import Entities from "@entities";
+import { configureEnviromentVariables } from "@utilities/functions";
+import { AppSyncIdentityCognito, AppSyncResolverEvent } from "aws-lambda";
 
 configureEnviromentVariables();
 
-export const handler = async (event:AppSyncResolverEvent<null>) => {
+export const handler = async (event: AppSyncResolverEvent<null>) => {
 
 	const { sub } = event.identity as AppSyncIdentityCognito;
 
-	const user = await ( 
-		Entities
-			.User({ id: sub })
-			.sync()
-	);
+	const user = await Entities
+		.User({ id: sub })
+		.sync()
 
 	return user.graphQlEntity();
-  
+
 };

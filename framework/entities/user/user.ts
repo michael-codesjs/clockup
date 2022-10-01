@@ -1,4 +1,4 @@
-import type { IEntityFactory } from "@local-types/interfaces";
+import type { IAbsoluteEntity, IEntityFactory } from "@local-types/interfaces";
 import * as types from "@local-types/api";
 import { Entity } from "../abstracts";
 import type { AbsoluteUserAttributes, NullUserAttributes, SyncOptions } from "../types";
@@ -18,12 +18,49 @@ namespace UserEntityGroup {
 	}
 
 	/**
-	 * A variant from the UserEntityGroup we absolutely know exists or have enough data to create one.
-	 * @constructor
-	 * @param {AbsoluteUserAttributes} attribute object with the users email, name and id.
+	 * NULL USER:
+	 * A user whose existence and variant is unverified
+	 * An intermidiary you use to obtain an absolute user via it's sync method.
+	 * @param {NullUserAttributes} properties object containing the id of the absolute user the client wishes to obtain.
 	 */
 
-	export class User extends Entity implements IUser {
+	export class NullUser extends Entity {
+
+		readonly entityType = types.EntityType.User;
+
+		readonly TypeOfSelf = NullUser;
+		readonly NullTypeOfSelf = NullUser;
+		readonly AbsoluteTypeOfSelf = User;
+
+		protected PrimaryAttributes: string[];
+
+		constructor(properties: NullUserAttributes) {
+			super(properties, types.EntityType.User);
+		}
+
+		protected set_GSI_keys(): void { }
+
+		attributes(): null {
+			return null;
+		}
+
+		graphQlEntity(): null {
+			return null;
+		}
+
+		setAttributes(): never {
+			throw new Error("Can not set mutable attributes of NullUser.");
+		}
+
+		async sync(params: SyncOptions = { exists: false }): Promise<User | never> {
+			const { Item } = await this.model.get(); // get user record from db;
+			if (!Item) throw new Error(`Could not sync user. Concrete absolute user(${+this.Id}) does not exist`);
+			return new User(Item as AbsoluteUserAttributes);
+		}
+
+	}
+
+	export class User extends Entity implements IAbsoluteEntity, IUser {
 
 		readonly entityType: types.EntityType = types.EntityType.User;
 
@@ -32,15 +69,14 @@ namespace UserEntityGroup {
 		readonly AbsoluteTypeOfSelf = User;
 
 		/* ATTRIBUTES */
-		/** Email address of the user, also acts as their username in cognito */
-		private Email: string;
-		/** Name of the user */
 		private Name: string;
+		private Email: string;
+		protected PrimaryAttributes: string[] = ["Email", "Name"]
 
 		constructor(attributes: AbsoluteUserAttributes & { created?: string }) {
 			super(attributes, types.EntityType.User);
 			this.setupAttributes(attributes);
-			this.set_GSI_keys();
+			// this.setAttributes(attributes); will set non null attributes
 		}
 
 		/** Configures self with attributes provided by the client */
@@ -62,7 +98,7 @@ namespace UserEntityGroup {
 		}
 
 		setAttributes(attributes: MutableUserAttributes): void {
-			// only overriding so we i can get that nice intellisense in vscode
+			// only overriding so I can get that nice intellisense in vscode
 			super.setAttributes(attributes);
 		}
 
@@ -78,39 +114,43 @@ namespace UserEntityGroup {
 			return entity;
 		}
 
-		async sync(options: SyncOptions = { exists: true }) {
-
-			const { exists } = options;
-			let attributes: UpdateItemOutput;
-
-			if (exists) {
-				// update cognito details first
-				await this.updateCognito();
-				attributes = await this.model.mutate();
-			} else {
-				attributes = await this.model.put();
-			}
-
-			this.setAttributes(attributes as MutableUserAttributes);
-
-			return this;
-
+		async update(attributes: MutableUserAttributes): Promise<User> {
+			this.setAttributes(attributes);
+			return await this.sync();
 		}
 
-		/**
-		 * update user attributes in cognito
-		 */
+		async put(): Promise<User | never> {
+			if (!this.validatePrimaryAttributes()) throw new Error("Insufficient attributes provided for record creation.");
+			const { Attributes } = await this.model.put();
+			this.setAttributes(Attributes);
+			return this;
+		}
+
+		async sync(): Promise<User> {
+			await this.updateCognito();
+			const { Attributes } = await this.model.mutate();
+			this.setAttributes(Attributes);
+			return this;
+		}
+
+		/** updates user attributes in cognito */
 		private async updateCognito() {
+
+			const attributes = [];
+
+			/** populate attributes to contain non null values */
+			Object.entries({ email: this.Email, name: this.Name })
+				.forEach(([key, value]) => {
+					value !== null && value !== undefined && attributes.push({
+						Name: key,
+						Value: value as string
+					});
+				});
 
 			const cognitoAdminUpdateParams = {
 				UserPoolId: COGNITO_USER_POOL_ID!,
 				Username: this.Id,
-				UserAttributes: Object.entries({ email: this.Email, name: this.Name }).map(([key, value]) => {
-					return {
-						Name: key,
-						Value: value as string
-					};
-				})
+				UserAttributes: attributes
 			};
 
 
@@ -121,58 +161,20 @@ namespace UserEntityGroup {
 
 	}
 
-	/**
-	 * NULL USER:
-	 * A user whose existence and variant is unverified
-	 * A pseudo user you can use to obtain concrete absolute users using the sync method
-	 * Simply provide the concrete absolute users id
-	 */
-
-	export class NullUser extends Entity {
-
-		readonly entityType = types.EntityType.User;
-
-		readonly TypeOfSelf = NullUser;
-		readonly NullTypeOfSelf = NullUser;
-		readonly AbsoluteTypeOfSelf = User;
-
-		constructor(properties: NullUserAttributes) {
-			super(properties, types.EntityType.User);
-		}
-
-		protected set_GSI_keys(): void { }
-
-		attributes(): null {
-			return null;
-		}
-
-		graphqlEntity(): null {
-			return null;
-		}
-
-		setAttributes(): never {
-			throw new Error("Can not set mutable attributes of NullUser.");
-		}
-
-		async sync(): Promise<User | never> {
-			const { Item } = await this.model.get(); // get user record from db;
-			if(!Item) throw new Error(`Could not sync user. Concrete absolute user(${+this.Id}) does not exist`);
-			const user = new User(Item as AbsoluteUserAttributes);
-			user.setAttributes(Item as MutableUserAttributes);
-			return user;
-		}
-
-	}
-
 }
 
 
-/* USER FACTORY */
+/*USER FACTORY */
 
 type Attributes = AbsoluteUserAttributes | NullUserAttributes;
 type UserVariant<T> =
 	T extends AbsoluteUserAttributes ? UserEntityGroup.User :
 	T extends NullUserAttributes ? UserEntityGroup.NullUser : never;
+
+/**
+ * Factory used to obtain variants from the UserEntityGroup.
+ * @param {Attribtues} params containing attributes that determine which variant from the UserEntityGroup it gets.
+ */
 
 class Factory implements IEntityFactory {
 
@@ -181,8 +183,8 @@ class Factory implements IEntityFactory {
 
 	createEntity<T extends Attributes>(params: T): UserVariant<T> | never {
 
-		if (params && "name" in params && "email" in params) {
-			return new UserEntityGroup.User(params as AbsoluteUserAttributes) as UserVariant<T>;
+		if (params && ("name" in params || "email" in params)) {
+			return new UserEntityGroup.User(params) as UserVariant<T>;
 		} else if (params && "id" in params) {
 			return new UserEntityGroup.NullUser(params) as UserVariant<T>;
 		} else {

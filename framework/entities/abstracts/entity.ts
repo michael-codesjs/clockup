@@ -28,6 +28,8 @@ export abstract class Entity implements IEntity {
 	protected Id: string;
 	protected Created: string; // REVIEW: got a feeling should be readonly, not sure at the moment.
 	protected Modified: string;
+	/** Attributes absolutely needed for inserting a record into the table  */
+	protected abstract PrimaryAttributes: Array<string>;
 
 	protected model = new Model(this);
 
@@ -73,6 +75,15 @@ export abstract class Entity implements IEntity {
 		};
 	}
 
+	public nonNullAttributes(attributes: Record<string, any>): Record<string, any> {
+		return Object.entries(attributes)
+			.reduce((cumulative, current) => {
+				const [key, value] = current;
+				if (value !== null && value !== undefined) cumulative[key] = value;
+				return cumulative;
+			}, {});
+	}
+
 	/**
 	 * @returns {Object} type matching definition in the GraphQL Schema
 	 * @abstract
@@ -93,7 +104,15 @@ export abstract class Entity implements IEntity {
 				}
 			}
 		);
-		this.set_GSI_keys(); // update GSI keys since some may be depended on an entites attributes
+		this.set_GSI_keys(); // update GSI keys since some may be dependent on the attributes
+	}
+
+	/* checks if the primary attributes are set for creation */
+	protected validatePrimaryAttributes():boolean {
+		return this.PrimaryAttributes.every(attribute => {
+			const value = this[attribute];
+			return value !== null && value !== undefined;
+		})
 	}
 
 	/**
