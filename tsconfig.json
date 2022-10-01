@@ -26,5 +26,9 @@
   },
   "ts-node": {
     "require": ["tsconfig-paths/register"]
+  },
+  "typedocOptions": {
+    "mode": "modules",
+    "out": "./docs"
   }
 }

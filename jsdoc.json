@@ -1,0 +1,19 @@
+{
+  "tags": {
+    "allowUnknownTags": ["true"]
+  },
+  "source": {
+    "include": ["."],
+    "includePattern": "\\.(jsx|js|ts|tsx)$",
+    "excludePattern": "node_modules"
+  },
+  "plugins": ["node_modules/better-docs/typescript"],
+  "templates": {
+    "cleverLinks": true,
+    "monospaceLinks": true
+  },
+  "opts": {
+    "recurse": true,
+    "destination": "./documentation"
+  }
+}

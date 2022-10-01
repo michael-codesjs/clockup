@@ -2,6 +2,9 @@
 node_modules
 jspm_packages
 
+# Docs
+documentation
+
 # Serverless directories
 .serverless
 
