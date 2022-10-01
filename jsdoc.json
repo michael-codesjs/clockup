@@ -13,6 +13,7 @@
     "monospaceLinks": true
   },
   "opts": {
+    "template": "node_modules/better-docs",
     "recurse": true,
     "destination": "./documentation"
   }
