@@ -1,7 +1,6 @@
 import { dynamoDbOperations } from "@lib/dynamoDb";
-import { AbsoluteAlarm } from "@local-types/index";
 import { configureEnviromentVariables } from "@utilities/functions";
-import { DeleteItemOutput, ExecuteTransactionOutput } from "aws-sdk/clients/dynamodb";
+import { ExecuteTransactionOutput } from "aws-sdk/clients/dynamodb";
 import { Entity, Model } from "../abstracts";
 import { ICreatable } from "../abstracts/interfaces";
 

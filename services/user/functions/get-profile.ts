@@ -1,7 +1,7 @@
 import Entities from "@entities";
 import type { User } from "@local-types/api";
 import { configureEnviromentVariables } from "@utilities/functions";
-import { AppSyncIdentityCognito, AppSyncResolverEvent, AppSyncResolverHandler } from "aws-lambda";
+import { AppSyncIdentityCognito, AppSyncResolverHandler } from "aws-lambda";
 
 configureEnviromentVariables();
 

@@ -1,9 +1,8 @@
 import Entities from "@entities";
 import { AlarmRingTime, AlarmSnoozeSettings, EntityType } from "@local-types/api";
 import { chance } from "@utilities/constants";
-import { AbsoluteUserAttributes, AlarmAttributes } from "framework/entities/types";
+import { AlarmAttributes } from "framework/entities/types";
 import { ulid } from "ulid";
-import { Authentication } from "../when/authentication";
 import { User } from "./user";
 
 class GivenAlarmUtility {

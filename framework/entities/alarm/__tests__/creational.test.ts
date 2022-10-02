@@ -1,7 +1,6 @@
 
 import { chance } from "@utilities/constants";
 import { Given } from "@utilities/testing";
-import Chance from "chance";
 import { AlarmEntityFactory } from "..";
 
 describe("AlarmEntityGroup Creational Tests", () => {
