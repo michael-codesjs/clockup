@@ -45,6 +45,10 @@ class GivenUserAttributes {
 		return await this.new(attributes);
 	}
 
+	absoluteEntity(attributes = this.attributes()) {
+		return Entities.User(attributes);
+	}
+
 	async authenticated() {
 
 		const attributes = {

@@ -10,6 +10,7 @@
     "documentation": "npx jsdoc -c jsdoc.json",
     "tests": "jest --verbose",
     "entity-tests:user": "jest --verbose framework/entities/user/__tests__",
+    "entity-tests:alarm": "jest --verbose framework/entities/alarm/__tests__",
     "authentication-tests": "jest --verbose services/authentication/__tests__",
     "authentication-tests:unit": "jest --verbose services/authentication/__tests__/unit",
     "authentication-tests:integration": "jest --verbose services/authentication/__tests__/integration",
@@ -26,7 +27,7 @@
     "@middy/http-json-body-parser": "^2.5.3",
     "@tuplo/dynoexpr": "^2.15.0",
     "uuid": "^8.3.2",
-    "zod": "^3.19.1"
+    "zod": "^3.14.2"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "2.12.1",
@@ -56,7 +57,7 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-n": "^15.2.5",
     "eslint-plugin-promise": "^6.0.1",
-    "graphql-codegen-typescript-validation-schema": "^0.6.2",
+    "graphql-codegen-typescript-validation-schema": "^0.4.0",
     "jest": "^28.1.3",
     "jsdoc": "^3.6.11",
     "json-schema-to-ts": "^1.5.0",

@@ -1,10 +1,11 @@
 import Entities from "@entities";
+import type { User } from "@local-types/api";
 import { configureEnviromentVariables } from "@utilities/functions";
-import { AppSyncIdentityCognito, AppSyncResolverEvent } from "aws-lambda";
+import { AppSyncIdentityCognito, AppSyncResolverEvent, AppSyncResolverHandler } from "aws-lambda";
 
 configureEnviromentVariables();
 
-export const handler = async (event: AppSyncResolverEvent<null>) => {
+export const handler: AppSyncResolverHandler<null,User> = async (event: AppSyncResolverEvent<null>) => {
 
 	const { sub } = event.identity as AppSyncIdentityCognito;
 

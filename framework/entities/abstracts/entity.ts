@@ -31,7 +31,7 @@ export abstract class Entity implements IEntity {
 	/** Attributes absolutely needed for inserting a record into the table  */
 	protected abstract PrimaryAttributes: Array<string>;
 
-	protected model = new Model(this);
+	protected model: Model = new Model(this);
 
 	protected constructor(properties: { id?: string, created?: string } | null, type: types.EntityType) {
 		// constructor is protected for entity variants that may offer a static creational method and private constructor.
@@ -39,7 +39,7 @@ export abstract class Entity implements IEntity {
 		this.EntityType = type;
 		this.Id = "id" in properties ? id! : ulid();
 		this.Created = "created" in properties ? created! : new Date().toJSON();
-		this.Modified =  this.Created;
+		this.Modified = this.Created;
 		this.setBaseKeys();
 	}
 
@@ -97,7 +97,7 @@ export abstract class Entity implements IEntity {
 		if (!attributes) return;
 		Object.entries(attributes).forEach( // loop throught every attribute supplied, Object.entries: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries
 			([key, value]) => {
-				if(key === "id") return;
+				if (key === "id") return;
 				key = key[0].toUpperCase() + key.slice(1, key.length); // turn "key" to "Key" because that's how attribute keys are stored in 
 				if (key in this) { // check if the attributes should exist, we do not want to add none existent attributes,
 					this[key] = value;
@@ -108,7 +108,7 @@ export abstract class Entity implements IEntity {
 	}
 
 	/* checks if the primary attributes are set for creation */
-	protected validatePrimaryAttributes():boolean {
+	protected validatePrimaryAttributes(): boolean {
 		return this.PrimaryAttributes.every(attribute => {
 			const value = this[attribute];
 			return value !== null && value !== undefined;
@@ -134,7 +134,7 @@ export abstract class Entity implements IEntity {
 	 * deletes an entites record from the database
 	 * @returns {boolean} delete result
 	 */
-	async unsync(): Promise<Entity> {
+	async terminate(): Promise<Entity> {
 		await this.model.delete();
 		const ConstructableNullTypeOfSelf = this.NullTypeOfSelf as new () => Entity;
 		return new ConstructableNullTypeOfSelf();

@@ -10,8 +10,8 @@ describe("UserEntityGroup Functionality Tests", () => {
 		const user = UserEntityFactory.createEntity({ name });
 		try {
 			await user.put();
-			expect(true).toBe(false); // we expect put to fail so fail the test if it goes through
-		} catch(error) {
+			expect(true).toBe(false);
+		} catch (error) {
 			expect(error.message).toBe("Insufficient attributes provided for record creation.");
 		}
 	})

@@ -1,12 +1,12 @@
-import type { IAbsoluteEntity, IEntityFactory } from "@local-types/interfaces";
-import * as types from "@local-types/api";
-import { Entity } from "../abstracts";
-import type { AbsoluteUserAttributes, NullUserAttributes, SyncOptions } from "../types";
-import { IUser } from "../abstracts/interfaces";
-import { GraphQlEntity } from "@local-types/utility";
-import { UpdateItemOutput } from "aws-sdk/clients/dynamodb";
-import { configureEnviromentVariables } from "@utilities/functions";
 import { cognitoProvider } from "@lib/cognito";
+import * as types from "@local-types/api";
+import type { IAbsoluteEntity, IEntityFactory } from "@local-types/interfaces";
+import { GraphQlEntity } from "@local-types/utility";
+import { configureEnviromentVariables } from "@utilities/functions";
+import { Entity } from "../abstracts";
+import { IUser } from "../abstracts/interfaces";
+import type { AbsoluteUserAttributes, NullUserAttributes } from "../types";
+import { UserModel } from "./model";
 
 const { COGNITO_USER_POOL_ID } = configureEnviromentVariables();
 
@@ -32,6 +32,8 @@ namespace UserEntityGroup {
 		readonly NullTypeOfSelf = NullUser;
 		readonly AbsoluteTypeOfSelf = User;
 
+		protected readonly model = new UserModel(this);
+
 		protected PrimaryAttributes: string[];
 
 		constructor(properties: NullUserAttributes) {
@@ -52,7 +54,7 @@ namespace UserEntityGroup {
 			throw new Error("Can not set mutable attributes of NullUser.");
 		}
 
-		async sync(params: SyncOptions = { exists: false }): Promise<User | never> {
+		async sync(): Promise<User | never> {
 			const { Item } = await this.model.get(); // get user record from db;
 			if (!Item) throw new Error(`Could not sync user. Concrete absolute user(${+this.Id}) does not exist`);
 			return new User(Item as AbsoluteUserAttributes);
@@ -68,15 +70,19 @@ namespace UserEntityGroup {
 		readonly NullTypeOfSelf = NullUser;
 		readonly AbsoluteTypeOfSelf = User;
 
+		protected readonly model = new UserModel(this);
+
 		/* ATTRIBUTES */
 		private Name: string;
 		private Email: string;
+		private Alarms: number = 0;
 		protected PrimaryAttributes: string[] = ["Email", "Name"]
+		protected ImmutableAttributes: string[] = ["Alarms"];
 
 		constructor(attributes: AbsoluteUserAttributes & { created?: string }) {
 			super(attributes, types.EntityType.User);
 			this.setupAttributes(attributes);
-			// this.setAttributes(attributes); will set non null attributes
+			this.setAttributes(attributes);
 		}
 
 		/** Configures self with attributes provided by the client */
@@ -93,12 +99,12 @@ namespace UserEntityGroup {
 			return {
 				...super.attributes(), // get id, entityType, created and modified
 				email: this.Email,
-				name: this.Name
+				name: this.Name,
+				alarms: this.Alarms
 			};
 		}
 
 		setAttributes(attributes: MutableUserAttributes): void {
-			// only overriding so I can get that nice intellisense in vscode
 			super.setAttributes(attributes);
 		}
 

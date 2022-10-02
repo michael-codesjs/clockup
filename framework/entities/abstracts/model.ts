@@ -1,10 +1,12 @@
-import type { GetItemOutput, PutItemOutput, UpdateItemOutput, DeleteItemOutput } from "aws-sdk/clients/dynamodb";
+import type { GetItemOutput, PutItemOutput, UpdateItemOutput, DeleteItemOutput, ExecuteTransactionOutput } from "aws-sdk/clients/dynamodb";
 import dynamoDbExpression from "@tuplo/dynoexpr";
 import { Entity } from ".";
 import { dynamoDbOperations } from "../../../lib/dynamoDb";
 import { configureEnviromentVariables } from "../../../utilities/functions";
 
 const { DYNAMO_DB_TABLE_NAME } = configureEnviromentVariables();
+
+/* Base Model for interacting with entity model */
 
 export class Model {
 
@@ -17,7 +19,7 @@ export class Model {
 	/** Returns non null attributes that can be upserted to a table */
 
 	/** DynamoDb item input for upsert operations on the table for the entity */
-	private entityDynamoDbPutItemInput() {
+	entityDynamoDbPutItemInput() {
 		return this.entity.nonNullAttributes({
 			...this.entity.Keys.all(),
 			...this.entity.attributes(),
@@ -25,17 +27,21 @@ export class Model {
 	}
 
 	/** Returns non null attributes that can be upserted to a table */
-	public entityUpdateItemParams() {
+	entityUpdateItemAttributes() {
 		const attributes = this.entity.nonNullAttributes({
 			...this.entity.Keys.GSIs(),
 			...this.entity.attributes()
 		});
 		delete attributes.created; // do not override created
 		attributes.modified = new Date().toJSON();
+		return attributes;
+	}
+
+	entityUpdateItemParams() {
 		const params = dynamoDbExpression({
-			Update: attributes
+			Update: this.entityUpdateItemAttributes()
 		});
-		return params;
+		return params
 	}
 
 	/** gets an entities record from the table using it's Partition and Sort key values */
@@ -47,7 +53,7 @@ export class Model {
 	}
 
 	/** inserts a record of an entity into the table */
-	async put(): Promise<PutItemOutput> {
+	async put(): Promise<PutItemOutput | ExecuteTransactionOutput> {
 		return await dynamoDbOperations.put({
 			TableName: DYNAMO_DB_TABLE_NAME!,
 			Item: this.entityDynamoDbPutItemInput() as any
@@ -61,7 +67,8 @@ export class Model {
 			TableName: DYNAMO_DB_TABLE_NAME!,
 			Key: this.entity.Keys.primary(),
 			...params as any,
-			ReturnValues: "ALL_NEW"
+			ReturnValues: "ALL_NEW",
+			ConditionExpression: "attribute_exists(id)"
 		});
 
 	}

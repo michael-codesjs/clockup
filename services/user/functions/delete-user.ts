@@ -10,7 +10,7 @@ export const handler:AppSyncResolverHandler<null,any> = async (event) => {
 
 	const user = await Entities
 		.User({ id: sub })
-		.unsync(); // delete user
+		.terminate(); // delete user
 
 	return user.graphQlEntity() === null;
 

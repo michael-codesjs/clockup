@@ -10,6 +10,10 @@ interface ICommom {
   modified: AWSDateTime
 }
 
+interface ICreatable {
+  creator: ID!
+}
+
 enum EntityType {
   USER
   ALARM
@@ -22,6 +26,7 @@ type User implements ICommom {
   modified: AWSDateTime
   email: AWSEmail!
   name: String!
+  alarms: Int
 }
 
 type AlarmRingTime {
@@ -34,13 +39,14 @@ type AlarmSnoozeSettings {
   interval: Int!
 }
 
-type Alarm implements ICommom {
+type Alarm implements ICommom & ICreatable {
   id: ID!
   entityType: EntityType!
   created: AWSDateTime!
+  modified: AWSDateTime,
+  creator: ID!
   name: String
   enabled: Boolean,
-  modified: AWSDateTime,
   days: [Int!],
   time: AlarmRingTime!,
   snooze: AlarmSnoozeSettings!,
@@ -52,15 +58,39 @@ input UpdateUserInput {
   name: String
 }
 
+# BEGIN: "Alarm Inputs":
+
+input AlarmRingTimeInput {
+  hour: Int!
+  minute: Int!
+}
+
+input AlarmSnoozeSettingsInput {
+  duration: Int!
+  interval: Int!
+}
+
+input UpsertAlarmInput {
+  id: ID
+  name: String
+  enabled: Boolean
+  days: [Int!]
+  time: AlarmRingTimeInput!
+  snooze: AlarmSnoozeSettingsInput!
+  onceOff: Boolean
+}
+
+# END: "Alarm Inputs"
+
 type Query {
 
-  getProfile: User
-  getAlarm(id: ID!): Alarm
-  getImageUploadURL(contentType:String, extension: String): String
+  getProfile: User @aws_cognito_user_pools 
+  getAlarm(id: ID!): Alarm @aws_cognito_user_pools
 
 }
 
 type Mutation {
-  updateUser(input:UpdateUserInput): User
-  deleteUser: Boolean
+  updateUser(input:UpdateUserInput): User @aws_cognito_user_pools
+  deleteUser: Boolean @aws_cognito_user_pools
+  upsertAlarm(input:UpsertAlarmInput!): Alarm @aws_cognito_user_pools
 }

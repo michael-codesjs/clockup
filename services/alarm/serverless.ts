@@ -33,6 +33,12 @@ const serverlessConfiguration: AWS.Service = {
 			schema: "../../schema.graphql",
 			mappingTemplates: [
 				createMappingTemplate({
+					field: "createAlarm",
+					type: "Mutation",
+					source: "createAlarm"
+				}),
+				/*
+				createMappingTemplate({
 					field: "getAlarm",
 					type: "Query",
 					source: "getAlarm",
@@ -52,12 +58,16 @@ const serverlessConfiguration: AWS.Service = {
 					type: "Query",
 					source: "deleteAlarm",
 				})
+				*/
 			],
 			dataSources: [
+				createDataSource("createAlarm")
+				/*
 				createDataSource("getAlarm"),
 				createDataSource("getAlarms"),
 				createDataSource("editAlarm"),
 				createDataSource("editAlarm"),
+				*/
 			]
 		},
 
