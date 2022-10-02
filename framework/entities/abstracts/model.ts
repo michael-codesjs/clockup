@@ -41,7 +41,7 @@ export class Model {
 		const params = dynamoDbExpression({
 			Update: this.entityUpdateItemAttributes()
 		});
-		return params
+		return params;
 	}
 
 	/** gets an entities record from the table using it's Partition and Sort key values */
@@ -74,7 +74,7 @@ export class Model {
 	}
 
 	/** deletes an entities record from the table */
-	async delete(): Promise<DeleteItemOutput> {
+	async delete(): Promise<DeleteItemOutput | ExecuteTransactionOutput> {
 		return await dynamoDbOperations.delete({
 			TableName: DYNAMO_DB_TABLE_NAME!,
 			Key: this.entity.Keys.primary() as any

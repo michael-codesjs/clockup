@@ -14,7 +14,7 @@ describe("UserEntityGroup Functionality Tests", () => {
 		} catch (error) {
 			expect(error.message).toBe("Insufficient attributes provided for record creation.");
 		}
-	})
+	});
 
 	it("Partial Attribute Update Does Not Nullify Exisiting Attributes In The Table", async () => {
 		const preEditAttributes = (await Given.user.authenticated())!;

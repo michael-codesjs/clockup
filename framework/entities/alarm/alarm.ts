@@ -2,103 +2,128 @@ import { EntityType, ICommom, Alarm as AlarmType, AlarmSnoozeSettings, AlarmRing
 import { AbsoluteUser, NullUser } from "@local-types/index";
 import { IEntityFactory } from "@local-types/interfaces";
 import { Entity, Model } from "../abstracts";
-import { IAlarm } from "../abstracts/interfaces";
-import { AlarmAttributes, NullAlarmAttributes } from "../types";
+import { IAlarm, ICreatable } from "../abstracts/interfaces";
+import { AlarmAttributes, EntityErrorTypes, NullAlarmAttributes, NullEntityAttributes } from "../types";
 import { UserEntityFactory } from "../user";
-import { AlarmModel } from "./model";
+import { AlarmModel, BaseAlarmModel } from "./model";
 
 
 namespace AlarmEntityGroup {
 
-  export class NullAlarm extends Entity {
+  export class NullAlarm extends Entity implements ICreatable {
 
-    readonly TypeOfSelf = NullAlarm;
-    readonly NullTypeOfSelf = NullAlarm;
-    readonly AbsoluteTypeOfSelf = Alarm;
+  	readonly TypeOfSelf = NullAlarm;
+  	readonly NullTypeOfSelf = NullAlarm;
+  	readonly AbsoluteTypeOfSelf = Alarm;
 
-    protected PrimaryAttributes: string[];
+  	Creator: NullUser | AbsoluteUser;
+  	protected PrimaryAttributes: string[];
 
-    constructor(params: NullAlarmAttributes) {
-      super(params, EntityType.Alarm)
-    }
+  	protected model: Model = new BaseAlarmModel(this);
 
-    protected set_GSI_keys(): void {
+  	protected _constructor(params: Parameters<typeof NullAlarm.new>[0]) {
+  		this.Creator = params.creator;
+  	}
 
-    }
+  	/** static creatonal method so that the constructor signature can match the base entity class */
+  	static new(params:NullAlarmAttributes) {
+  		const instance = new NullAlarm(params, EntityType.Alarm);
+  		instance._constructor(params);
+  		return instance;
+  	}
 
-    attributes(): ICommom & Record<string, any> {
-      return null;
-    }
+  	protected set_GSI_keys(): void {}
 
-    async sync(): Promise<Alarm> {
-      const { Item } = await this.model.get();
-      const creator = UserEntityFactory.createEntity({ id: Item.creator as string });
-      return new Alarm({
-        ...Item as AlarmAttributes,
-        creator
-      });
-    }
+  	attributes(): ICommom & Record<string, any> {
+  		return null;
+  	}
+
+  	async sync(): Promise<Alarm> {
+  		const { Item } = await this.model.get();
+  		const creator = UserEntityFactory.createEntity({ id: Item.creator as string });
+  		return Alarm.new({
+  			...Item as AlarmAttributes,
+  			creator
+  		}) as any;
+  	}
+
+  	async terminate(): Promise<NullAlarm> {
+  		// if you're gonna be deleting an alarm, provide a creator when instanciating it or sync it to obtain an absolute alarm.
+  		if(!this.Creator) throw new Error(EntityErrorTypes.CREATABLE_TERMINATE_MISSING_CREATOR);
+  		await this.model.delete();
+  		return this;
+  	}
 
   }
 
   export class Alarm extends Entity implements IAlarm {
 
-    readonly TypeOfSelf = Alarm;
-    readonly NullTypeOfSelf = NullAlarm;
-    readonly AbsoluteTypeOfSelf = Alarm;
+  	readonly TypeOfSelf = Alarm;
+  	readonly NullTypeOfSelf = NullAlarm;
+  	readonly AbsoluteTypeOfSelf = Alarm;
 
-    protected readonly model: Model = new AlarmModel(this);
+  	protected readonly model: Model = new AlarmModel(this);
 
-    /* ATTRIBUTES */
-    public Creator: NullUser | AbsoluteUser;
-    protected Time: AlarmRingTime;
-    protected Snooze: AlarmSnoozeSettings;
-    protected Name: string = null;
-    readonly PrimaryAttributes = ["Time", "Snooze", "Creator"];
+  	/* ATTRIBUTES */
+  	public Creator: NullUser | AbsoluteUser;
+  	protected Time: AlarmRingTime;
+  	protected Snooze: AlarmSnoozeSettings;
+  	protected Name: string = null;
+  	readonly PrimaryAttributes = ["Time", "Snooze", "Creator"];
 
-    constructor(params: AlarmAttributes) {
-      super(params, EntityType.Alarm);
-      this.setupAttributes(params);
-      this.setAttributes(params);
-    }
+  	private _constructor(params: Parameters<typeof Alarm.new>[0]) {
+  		this.setupAttributes(params);
+  		this.setAttributes(params);
+  	}
 
-    private setupAttributes(params: ConstructorParameters<typeof Alarm>[0]) {
-      const { creator, time, snooze } = params;
-      this.Creator = creator;
-      this.Time = time;
-      this.Snooze = snooze;
-    }
+  	static new(params: AlarmAttributes) {
+  		const instance = new Alarm(params, EntityType.Alarm);
+  		instance._constructor(params);
+  		return instance;
+  	}
 
-    protected set_GSI_keys(): void {
+  	private setupAttributes(params: Parameters<typeof Alarm.new>[0]) {
+  		const { creator, time, snooze } = params;
+  		this.Creator = creator;
+  		this.Time = time;
+  		this.Snooze = snooze;
+  	}
 
-    }
+  	protected set_GSI_keys(): void {
 
-    attributes(): AlarmType {
-      return {
-        ...super.attributes(),
-        creator: this.Creator.id,
-        name: this.Name,
-        snooze: this.Snooze,
-        time: this.Time,
-      }
-    }
+  	}
 
-    graphQlEntity(): AlarmType {
-      return this.attributes();
-    }
+  	attributes(): AlarmType {
+  		return {
+  			...super.attributes(),
+  			creator: this.Creator.id,
+  			name: this.Name,
+  			snooze: this.Snooze,
+  			time: this.Time,
+  		};
+  	}
 
-    async sync(): Promise<Alarm> {
-      const { Attributes } = await this.model.mutate();
-      delete Attributes.creator;
-			this.setAttributes(Attributes);
-      return this;
-    }
+  	graphQlEntity(): AlarmType {
+  		return this.attributes();
+  	}
 
-    async put(): Promise<Alarm> {
-      if (!this.validatePrimaryAttributes()) throw new Error("Insufficient attributes provided for record creation.");
-      await this.model.put();
-      return this;
-    }
+  	async sync(): Promise<Alarm> {
+  		const { Attributes } = await this.model.mutate();
+  		delete Attributes.creator;
+  		this.setAttributes(Attributes);
+  		return this;
+  	}
+
+  	async put(): Promise<Alarm> {
+  		if (!this.validatePrimaryAttributes()) throw new Error("Insufficient attributes provided for record creation.");
+  		await this.model.put();
+  		return this;
+  	}
+
+  	async terminate(): Promise<Alarm> {
+  		await this.model.delete();
+  		return this;
+  	}
 
   }
 
@@ -119,20 +144,20 @@ type AlarmVariant<T> =
 
 class Factory implements IEntityFactory {
 
-  private constructor() { }
-  static readonly instance = new Factory();
+	private constructor() { }
+	static readonly instance = new Factory();
 
-  createEntity<T extends Attributes>(params: T): AlarmVariant<T> | never {
+	createEntity<T extends Attributes>(params: T): AlarmVariant<T> | never {
 
-    if (params && "creator" in params && ("snooze" in params || "time" in params)) {
-      return new AlarmEntityGroup.Alarm(params) as AlarmVariant<T>;
-    } else if (params && "id" in params) {
-      return new AlarmEntityGroup.NullAlarm(params as any) as AlarmVariant<T>;
-    } else {
-      throw new Error("Can not instanciate variant of user");
-    }
+		if (params && "creator" in params && ("snooze" in params || "time" in params)) {
+			return AlarmEntityGroup.Alarm.new(params) as AlarmVariant<T>;
+		} else if (params && "id" in params) {
+			return AlarmEntityGroup.NullAlarm.new(params as any) as AlarmVariant<T>;
+		} else {
+			throw new Error("Can not instanciate variant of alarm");
+		}
 
-  }
+	}
 
 }
 

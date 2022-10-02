@@ -9,7 +9,7 @@ configureEnviromentVariables();
 export const handler: AppSyncResolverHandler<MutationUpdateUserArgs, User> = async (event) => {
 
 	const { sub } = event.identity as AppSyncIdentityCognito;
-	const { email, name } = event.arguments.input
+	const { email, name } = event.arguments.input;
 
 	const user = await Entities
 		.User({ id: sub, email, name })

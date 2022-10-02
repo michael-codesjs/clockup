@@ -76,7 +76,7 @@ Their **sync** methods query the database for an absolute entity and if one is f
 
 ***
 
-## **"attribute"** _in_ **this** syntax in Entity.setAttributes**
+## **`"attribute" in this`** when setting optional attributes.
 The setAttributes function of the _abstract_ **Entity** is used to upsert an entities attributes.
 To do so, it loops through all the entries of the attributes provided to it and upserts the attributes that should exist in the class, into class (get it?).
 
@@ -93,3 +93,13 @@ class ExampleEntity {
 This is absolutely necesary, if you do not assign some value(null preffered) to the optional attribute at creation, **"attribute" in this** will return false and result into that attribute not being upserted.
 
 This null assignment to optional attributes is done by the class and not the client. So unless you're writing some entity variant classes, you need not worry about this.
+
+
+## **`static new()`** and **`private _constructor()`** methods
+These utility methods are used to instanciate variants of a particular entity group whose constructor signature can't seem to match the abstract **`Entity`** class.
+
+For this to work, the constructor in the class is marked **`protected`**.
+
+The **`static new()`** method is available to the client, which in most cases is the **`EntityFactory`**. The method creates a new instance of the variant and calls the **`_constructor()`** method.
+
+The **`protected _constructor()`** method acts like the constructor and does whatever was meant to be done in the constructor.

@@ -75,8 +75,8 @@ namespace UserEntityGroup {
 		/* ATTRIBUTES */
 		private Name: string;
 		private Email: string;
-		private Alarms: number = 0;
-		protected PrimaryAttributes: string[] = ["Email", "Name"]
+		private Alarms = 0;
+		protected PrimaryAttributes: string[] = ["Email", "Name"];
 		protected ImmutableAttributes: string[] = ["Alarms"];
 
 		constructor(attributes: AbsoluteUserAttributes & { created?: string }) {

@@ -17,13 +17,13 @@ class GivenAlarmUtility {
 		const id = ulid();
 		const name = chance.sentence({ words: 5 });
 		const time: AlarmRingTime = {
-      hour: chance.integer({ min: 0, max: 23 }),
-      minute: chance.integer({ min: 0, max: 59 })
-    };
-    const snooze: AlarmSnoozeSettings = {
-      duration: chance.integer({ min: 0, max: 10 }),
-      interval: chance.integer({ min: 1, max: 5 })
-    }
+			hour: chance.integer({ min: 0, max: 23 }),
+			minute: chance.integer({ min: 0, max: 59 })
+		};
+		const snooze: AlarmSnoozeSettings = {
+			duration: chance.integer({ min: 0, max: 10 }),
+			interval: chance.integer({ min: 1, max: 5 })
+		};
 
 		return { entityType, id, name, time, snooze };
 
@@ -43,18 +43,18 @@ class GivenAlarmUtility {
 		return instance.graphQlEntity();
 	}
 
-	async partialRandom(creator: AlarmAttributes["creator"]) {
+	async randomByCreator(creator: AlarmAttributes["creator"]) {
 		const attributes = this.attributes();
 		return await this.new({
-      ...attributes,
-      creator
-    });
+			...attributes,
+			creator
+		});
 	}
 
-  async random() {
-    const creator = Entities.User(await User.random());
-    return this.partialRandom(creator);
-  }
+	async random() {
+		const creator = Entities.User(await User.random());
+		return await this.randomByCreator(creator);
+	}
 }
 
 export const Alarm = GivenAlarmUtility.instance;

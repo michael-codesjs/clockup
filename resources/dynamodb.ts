@@ -11,7 +11,7 @@ function GSI_Attribute_Definition(gsi: number) {
 			AttributeName: `GSI${gsi}_SK`,
 			AttributeType: "S"
 		}
-	]
+	];
 }
 
 function GSI_Schema(gsi: number) {
@@ -20,11 +20,11 @@ function GSI_Schema(gsi: number) {
 		KeySchema: [
 			{
 				AttributeName: `GSI${gsi}_PK`,
-				KeyType: 'HASH',
+				KeyType: "HASH",
 			},
 			{
 				AttributeName: `GSI${gsi}_SK`,
-				KeyType: 'RANGE',
+				KeyType: "RANGE",
 			},
 		],
 		ProvisionedThroughput: {
@@ -32,7 +32,7 @@ function GSI_Schema(gsi: number) {
 			WriteCapacityUnits: 1
 		},
 		Projection: {
-			ProjectionType: 'ALL',
+			ProjectionType: "ALL",
 		}
 	};
 }
@@ -70,11 +70,11 @@ export const dynamoDbResource = {
 						},
 						{
 							AttributeName: "EntityIndexSK",
-							KeyType: 'RANGE',
+							KeyType: "RANGE",
 						},
 					],
 					Projection: {
-						ProjectionType: 'ALL',
+						ProjectionType: "ALL",
 					},
 					ProvisionedThroughput: {
 						ReadCapacityUnits: 1,

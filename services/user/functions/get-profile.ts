@@ -5,13 +5,13 @@ import { AppSyncIdentityCognito, AppSyncResolverEvent, AppSyncResolverHandler } 
 
 configureEnviromentVariables();
 
-export const handler: AppSyncResolverHandler<null,User> = async (event: AppSyncResolverEvent<null>) => {
+export const handler: AppSyncResolverHandler<null,User> = async (event) => {
 
 	const { sub } = event.identity as AppSyncIdentityCognito;
 
 	const user = await Entities
 		.User({ id: sub })
-		.sync()
+		.sync();
 
 	return user.graphQlEntity();
 

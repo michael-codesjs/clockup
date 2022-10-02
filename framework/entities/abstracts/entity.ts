@@ -112,7 +112,7 @@ export abstract class Entity implements IEntity {
 		return this.PrimaryAttributes.every(attribute => {
 			const value = this[attribute];
 			return value !== null && value !== undefined;
-		})
+		});
 	}
 
 	/**
