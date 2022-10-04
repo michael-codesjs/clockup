@@ -6,9 +6,28 @@ By the way, I'm really sorry if you don't get my explainations, they confuse eve
 
 ### **Some Terms Before Progressing**:
 * **Upsert**: Update or Insert operation.
-* **Client**: Higher level backend code(lambda function, testing utility) that uses some class. Client does not refer to the client front-end.
+* **Client**: Higher level backend code(lambda function, testing utility) that uses some class unless explicitly specified to be the client front end, **client** does not refer to the front-end.
+* **Entities**: Users, Alarms, etc
+* **ATW**: At Time Of Writing
 
 Alright, Let's get into it !!!
+
+## **ABOUT**
+I wanted to build something fun using **The Serverless Framework** and **DynamoDB**. When I took up this project, I was working on a simple React/Typescript clock web application and then had the bad idea to add a serverless backend to it, this has delayed the completion of the react app a great deal and I somehow regret the decision. I had and still have no concrete idea of what the final front & back-end application is gonna look like. This is also I learning project, I got some really good books on **DynamoDB** and **Object Oriented Software Design Patterns** and try to incorporate what I learn into this project and that's why spend most of my time refactoring. Oh and these books are:
+* **[Dive Into DESIGN PATTERNS](https://refactoring.guru/design-patterns/book)**
+* **[Design Patterns: Elements of Reusable Object-Oriented Software 1st Edition, Kindle Edition](https://www.amazon.com/Design-Patterns-Object-Oriented-Addison-Wesley-Professional-ebook/dp/B000SEIBB8)**
+* **[The DynamoDB Book](https://www.dynamodbbook.com/)**
+
+## **DynamoDB Single Table Design.**
+At the moment, this project is too early to show true Single Table Design. I'm still figuring things out and writing down my access patterns.
+
+I'm fairly new to the pattern and DynamoDB itself. I started this project thinking Single Table Design is dogma in DynamoDB. I didn't really understand the **What, Why and When's** of it.
+
+Anyway, here are some resources on the topic:
+
+* [Alex Debrie: The What, Why, and When of Single-Table Design with DynamoDB](https://www.alexdebrie.com/posts/dynamodb-single-table/) : In this article, He explains why a Single Table Design is somewhat pointless when working with GraphQL. I'm yet to find any drowbacks to using a Single Table for this use case tho.
+* [Fundamentals of Amazon DynamoDB Single Table Design with Rick Houlihan](https://youtu.be/KYy8X8t4MB8) - ATW, I'm only halfway watching this.
+
 
 ## **Singletons**
 
@@ -73,6 +92,7 @@ Their **sync** methods query the database for an absolute entity and if one is f
 ### * **List Of All Entity Groups And Their Variants:** (still growing)
 
 1. **UserEntityGroup**: NullUser and User.
+2. **AlarmEntityGroup**: NullAlarm and Alarm.
 
 ***
 

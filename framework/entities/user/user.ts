@@ -3,7 +3,7 @@ import * as types from "@local-types/api";
 import type { IAbsoluteEntity, IEntityFactory } from "@local-types/interfaces";
 import { GraphQlEntity } from "@local-types/utility";
 import { configureEnviromentVariables } from "@utilities/functions";
-import { Entity } from "../abstracts";
+import { Entity, Model } from "../abstracts";
 import { IUser } from "../abstracts/interfaces";
 import type { AbsoluteUserAttributes, NullUserAttributes } from "../types";
 import { UserModel } from "./model";
@@ -70,12 +70,15 @@ namespace UserEntityGroup {
 		readonly NullTypeOfSelf = NullUser;
 		readonly AbsoluteTypeOfSelf = User;
 
-		protected readonly model = new UserModel(this);
+		protected readonly model:Model = new UserModel(this);
 
 		/* ATTRIBUTES */
+		// primary
 		private Name: string;
 		private Email: string;
+		// secondary
 		private Alarms = 0;
+
 		protected PrimaryAttributes: string[] = ["Email", "Name"];
 		protected ImmutableAttributes: string[] = ["Alarms"];
 
@@ -127,8 +130,7 @@ namespace UserEntityGroup {
 
 		async put(): Promise<User | never> {
 			if (!this.validatePrimaryAttributes()) throw new Error("Insufficient attributes provided for record creation.");
-			const { Attributes } = await this.model.put();
-			this.setAttributes(Attributes);
+			await this.model.put();
 			return this;
 		}
 
