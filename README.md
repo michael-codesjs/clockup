@@ -1,25 +1,33 @@
-# **clock-up backend**
-This repository contains the serverless backend for the [clock-up](https://github.com/michael-codesjs/clock-up) front-end.
+# clock-up
+> Serverless backend for the clock up front-end. The app is split into several separate services that are all dependent on a root infrastructure & framework.
 
-If you are gonna take a lot the actual code, read the [**TECHNICAL_README.md**](https://github.com/michael-codesjs/clock-up-backend/blob/main/TECHNICAL_README.md) first.
+## Installation
 
-## **Documentation**
-To generate documentation, run `npm run documentation`.
-A **documentation** folder will be created in the project root directory with some .html files innit.
-Run the index.html file with live server or any other way of your choosing to view the generated docs.
+Make sure you have the serverless framework version "3" globally installed on your machines. To install & learn more about the serverless framework, follow [this](https://www.serverless.com/framework/docs/getting-started).
 
-**Note:** At the time of writing, the docs generated are not done well and are probably not gonna be of much help to you. 
+## Deploying
 
-## **Installation**
-The app is split into several separate micro-services that are all dependent on a root infrastructure.
+Make sure you have your AWS credentials set, to do so follow [these](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html) instructions.
 
-Make sure you have the serverless framework version "3" globally installed on your machines. To install & learn more about the serverless framework, follow [these instructions](https://www.serverless.com/framework/docs/getting-started).
+To deploy a service, run `npx sls deploy` in the service directory. This will by default deploy the service to the **dev** stage. To deploy to a preffered stage, run `npx sls deploy --stage [stage-name]` where [stage-name] is replaced with your desired stage, eg: production.
 
-## **Deploying**
-This app is meant to run on AWS infrastructure, you'll need to have your **aws credentials** set on your local machine. To do so, follow [these instructions](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html)
-Make sure the AWS account you will use can create AppSync apps. To make sure it does, create an appsync app using one of the aws templates in the console. You can delete it immediately afterwards.
+To deploy all services at once, run `npx sls deploy` in the root project directory and let **serverless compose** deploy our services for us.
 
-To deploy, run `sls deploy --aws-profile your-aws-profile-name` in the root folder.
+## Testing
+Refer to the `package.json` for service specific tests. Otherwise, run:
+```sh
+npm test
+```
+to run every test in existence.
 
-## **Contributing**
-If you wish to contribute to this project, go on and folk the repo and open that PR when you're done. Even the smallest of changes/bug fixes/improvements will be appreciated.
+## Meta
+
+Michael – [@michael_wcjs](https://twitter.com/michael_wcjs) – michael.codesjs@gmail.com
+
+## Contributing
+
+1. Fork it (<https://github.com/michael-codesjs/clock-up-backend/fork>)
+2. Create your feature branch (`git checkout -b feature/fooBar`)
+3. Commit your changes (`git commit -am 'Add some fooBar'`)
+4. Push to the branch (`git push origin feature/fooBar`)
+5. Create a new Pull Request
