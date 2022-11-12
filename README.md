@@ -2,8 +2,7 @@
 > Serverless backend for the clock up front-end. The app is split into several separate services that are all dependent on a root infrastructure & framework.
 
 ## Installation
-
-Make sure you have the serverless framework version "3" globally installed on your machines. To install & learn more about the serverless framework, follow [this](https://www.serverless.com/framework/docs/getting-started).
+Running `npm install` in the root project directory should set you up with all the project dependencies.
 
 ## Deploying
 
@@ -14,6 +13,12 @@ To deploy a service, run `npx sls deploy` in the service directory. This will by
 To deploy all services at once, run `npx sls deploy` in the root project directory and let **serverless compose** deploy our services for us.
 
 ## Testing
+
+You'll first need to set the **AWS_REGION** enviroment variable to whatever region you deployed the services to. For example:
+```sh
+export AWS_REGION=eu-central-1 
+```
+
 Refer to the `package.json` for service specific tests. Otherwise, run:
 ```sh
 npm test

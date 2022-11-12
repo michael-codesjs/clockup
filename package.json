@@ -8,7 +8,7 @@
     "setup-dev": "node setup-dev.js",
     "codegen": "graphql-codegen --config codegen.yml",
     "documentation": "npx jsdoc -c jsdoc.json",
-    "tests": "jest --verbose",
+    "test": "jest --verbose",
     "entity-tests:user": "jest --verbose framework/entities/user/__tests__",
     "entity-tests:alarm": "jest --verbose framework/entities/alarm/__tests__",
     "authentication-tests": "jest --verbose services/authentication/__tests__",
