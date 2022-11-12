@@ -8,8 +8,11 @@ export const getProfile = /* GraphQL */ `
       id
       entityType
       created
+      modified
+      discontinued
       email
       name
+      alarms
     }
   }
 `;
@@ -19,9 +22,11 @@ export const getAlarm = /* GraphQL */ `
       id
       entityType
       created
+      modified
+      discontinued
+      creator
       name
       enabled
-      modified
       days
       time {
         hour
@@ -33,10 +38,5 @@ export const getAlarm = /* GraphQL */ `
       }
       onceOff
     }
-  }
-`;
-export const getImageUploadURL = /* GraphQL */ `
-  query GetImageUploadURL($contentType: String, $extension: String) {
-    getImageUploadURL(contentType: $contentType, extension: $extension)
   }
 `;

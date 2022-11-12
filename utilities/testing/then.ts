@@ -15,7 +15,7 @@ class ThenUtility {
 	private constructor() {}
 	static readonly instance = new ThenUtility();
 
-	private readonly dateMatch = () => expect.stringMatching(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?Z?/g);
+	readonly dateMatch = () => expect.stringMatching(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?Z?/g);
 
 	user_VS_user(object:User, object1:User) {
 		/* tests one object against the other for user attributes */

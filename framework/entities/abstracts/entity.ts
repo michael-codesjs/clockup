@@ -5,7 +5,7 @@ import { SyncOptions } from "../types";
 import { IEntity } from "./interfaces";
 import { Keys } from "./keys";
 import { Model } from "./model";
-
+import { Attributes } from "./attributes";
 
 /**
  * Base abstract class that all entities and their variants should extend.
@@ -14,6 +14,8 @@ import { Model } from "./model";
  * @param {Object} properties predefined object properties.
  * @param {types.EntityType} entityType type of entity.
  */
+
+type EntityParams = { id?: string, created?: string, modified?: string, discontinued?: boolean } | null
 
 export abstract class Entity implements IEntity {
 
@@ -24,22 +26,13 @@ export abstract class Entity implements IEntity {
 	abstract readonly NullTypeOfSelf: typeof Entity;
 	abstract readonly AbsoluteTypeOfSelf: typeof Entity | Array<typeof Entity>;
 
-	protected EntityType: types.EntityType;
-	protected Id: string;
-	protected Created: string; // REVIEW: got a feeling should be readonly, not sure at the moment.
-	protected Modified: string;
-	/** Attributes absolutely needed for inserting a record into the table  */
-	protected abstract PrimaryAttributes: Array<string>;
+	abstract Attributes: Attributes;
 
 	protected model: Model = new Model(this);
 
-	protected constructor(properties: { id?: string, created?: string } | null, type: types.EntityType) {
+	protected constructor(properties: EntityParams, type: types.EntityType) {
 		// constructor is protected for entity variants that may offer a static creational method and private constructor.
 		const { id, created } = properties = properties || {};
-		this.EntityType = type;
-		this.Id = "id" in properties ? id! : ulid();
-		this.Created = "created" in properties ? created! : new Date().toJSON();
-		this.Modified = this.Created;
 		this.setBaseKeys();
 	}
 
@@ -50,7 +43,7 @@ export abstract class Entity implements IEntity {
 	private setBaseKeys() {
 
 		this.Keys.setPrimary({
-			partition: constructKey(this.EntityType, this.Id)
+			partition: constructKey(this.Entit, this.Id)
 		});
 
 		this.Keys.setEntity({

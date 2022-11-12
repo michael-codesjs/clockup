@@ -61,3 +61,7 @@ export function generateLogicalResourcelName(name: string) {
 export function constructKey(descriptor: string, value: string) {
 	return `${descriptor.toUpperCase()}#${value}`;
 }
+
+export const capitalizeFirstLetter = (str: string) => {
+	return str[0].toUpperCase()+str.slice(1);
+}

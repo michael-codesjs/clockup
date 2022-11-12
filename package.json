@@ -9,6 +9,7 @@
     "codegen": "graphql-codegen --config codegen.yml",
     "documentation": "npx jsdoc -c jsdoc.json",
     "test": "jest --verbose",
+    "entity-tests:abstract": "jest --verbose framework/entities/abstracts/__tests__",
     "entity-tests:user": "jest --verbose framework/entities/user/__tests__",
     "entity-tests:alarm": "jest --verbose framework/entities/alarm/__tests__",
     "authentication-tests": "jest --verbose services/authentication/__tests__",
@@ -23,9 +24,10 @@
     "node": ">=14.15.0"
   },
   "dependencies": {
-    "@middy/core": "^2.5.3",
+    "@middy/core": "^2.5.7",
     "@middy/http-json-body-parser": "^2.5.3",
     "@tuplo/dynoexpr": "^2.15.0",
+    "dynamoose": "^3.1.0",
     "uuid": "^8.3.2",
     "zod": "^3.14.2"
   },

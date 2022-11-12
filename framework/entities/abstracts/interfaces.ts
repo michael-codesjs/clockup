@@ -16,3 +16,7 @@ export interface IUser extends IEntity {
 export interface IAlarm extends IEntity, ICreatable {
   attributes(): Alarm
 }
+
+export interface IPutable {
+  putable(): boolean
+}

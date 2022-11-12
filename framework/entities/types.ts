@@ -1,4 +1,4 @@
-import { AlarmRingTime, AlarmSnoozeSettings, UpsertAlarmInput } from "@local-types/api";
+import { AlarmRingTime, AlarmSnoozeSettings, UpsertAlarmInput, EntityType } from "@local-types/api";
 import { AbsoluteUser, NullUser } from "@local-types/index";
 
 
@@ -6,6 +6,14 @@ import { AbsoluteUser, NullUser } from "@local-types/index";
 export type SyncOptions = {
   exists: boolean
 }
+
+export type AttributesParams = {
+  entityType: EntityType,
+  id?: string,
+  created?: string,
+  modified?: string,
+  discontinued?: boolean
+};
 
 export enum EntityErrorTypes {
   CREATABLE_TERMINATE_MISSING_CREATOR = "Cannot terminate creatable entity without specifying it's creator"

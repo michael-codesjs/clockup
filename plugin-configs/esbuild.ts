@@ -1,5 +1,5 @@
 
-export const esBuildConfig = {
+export const esBuildConfig = Object.freeze({
 	esbuild: {
 		bundle: true,
 		minify: false,
@@ -10,4 +10,4 @@ export const esBuildConfig = {
 		platform: "node",
 		concurrency: 1
 	}
-};
+});

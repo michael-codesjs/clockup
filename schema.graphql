@@ -8,6 +8,7 @@ interface ICommom {
   entityType: EntityType!
   created: AWSDateTime!
   modified: AWSDateTime
+  discontinued: Boolean!
 }
 
 interface ICreatable {
@@ -24,6 +25,7 @@ type User implements ICommom {
   entityType: EntityType!
   created: AWSDateTime!
   modified: AWSDateTime
+  discontinued: Boolean!
   email: AWSEmail!
   name: String!
   alarms: Int
@@ -44,6 +46,7 @@ type Alarm implements ICommom & ICreatable {
   entityType: EntityType!
   created: AWSDateTime!
   modified: AWSDateTime,
+  discontinued: Boolean!
   creator: ID!
   name: String
   enabled: Boolean,

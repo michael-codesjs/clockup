@@ -12,15 +12,20 @@ export type User = {
   id: string,
   entityType: EntityType,
   created: string,
+  modified?: string | null,
+  discontinued: boolean,
   email: string,
   name: string,
+  alarms?: number | null,
 };
 
 export type ICommom = {
   __typename: "ICommom",
   id: string,
-  entityType?: EntityType | null,
-  created?: string | null,
+  entityType: EntityType,
+  created: string,
+  modified?: string | null,
+  discontinued: boolean,
 };
 
 export type Alarm = {
@@ -28,13 +33,20 @@ export type Alarm = {
   id: string,
   entityType: EntityType,
   created: string,
+  modified?: string | null,
+  discontinued: boolean,
+  creator: string,
   name?: string | null,
   enabled?: boolean | null,
-  modified?: string | null,
   days?: Array< number > | null,
   time: AlarmRingTime,
   snooze: AlarmSnoozeSettings,
   onceOff?: boolean | null,
+};
+
+export type ICreatable = {
+  __typename: "ICreatable",
+  creator: string,
 };
 
 export enum EntityType {
@@ -55,6 +67,26 @@ export type AlarmSnoozeSettings = {
   interval: number,
 };
 
+export type UpsertAlarmInput = {
+  id?: string | null,
+  name?: string | null,
+  enabled?: boolean | null,
+  days?: Array< number > | null,
+  time: AlarmRingTimeInput,
+  snooze: AlarmSnoozeSettingsInput,
+  onceOff?: boolean | null,
+};
+
+export type AlarmRingTimeInput = {
+  hour: number,
+  minute: number,
+};
+
+export type AlarmSnoozeSettingsInput = {
+  duration: number,
+  interval: number,
+};
+
 export type UpdateUserMutationVariables = {
   input?: UpdateUserInput | null,
 };
@@ -65,8 +97,11 @@ export type UpdateUserMutation = {
     id: string,
     entityType: EntityType,
     created: string,
+    modified?: string | null,
+    discontinued: boolean,
     email: string,
     name: string,
+    alarms?: number | null,
   } | null,
 };
 
@@ -74,30 +109,21 @@ export type DeleteUserMutation = {
   deleteUser?: boolean | null,
 };
 
-export type GetProfileQuery = {
-  getProfile?:  {
-    __typename: "User",
-    id: string,
-    entityType: EntityType,
-    created: string,
-    email: string,
-    name: string,
-  } | null,
+export type UpsertAlarmMutationVariables = {
+  input: UpsertAlarmInput,
 };
 
-export type GetAlarmQueryVariables = {
-  id: string,
-};
-
-export type GetAlarmQuery = {
-  getAlarm?:  {
+export type UpsertAlarmMutation = {
+  upsertAlarm?:  {
     __typename: "Alarm",
     id: string,
     entityType: EntityType,
     created: string,
+    modified?: string | null,
+    discontinued: boolean,
+    creator: string,
     name?: string | null,
     enabled?: boolean | null,
-    modified?: string | null,
     days?: Array< number > | null,
     time:  {
       __typename: "AlarmRingTime",
@@ -113,11 +139,46 @@ export type GetAlarmQuery = {
   } | null,
 };
 
-export type GetImageUploadURLQueryVariables = {
-  contentType?: string | null,
-  extension?: string | null,
+export type GetProfileQuery = {
+  getProfile?:  {
+    __typename: "User",
+    id: string,
+    entityType: EntityType,
+    created: string,
+    modified?: string | null,
+    discontinued: boolean,
+    email: string,
+    name: string,
+    alarms?: number | null,
+  } | null,
 };
 
-export type GetImageUploadURLQuery = {
-  getImageUploadURL?: string | null,
+export type GetAlarmQueryVariables = {
+  id: string,
+};
+
+export type GetAlarmQuery = {
+  getAlarm?:  {
+    __typename: "Alarm",
+    id: string,
+    entityType: EntityType,
+    created: string,
+    modified?: string | null,
+    discontinued: boolean,
+    creator: string,
+    name?: string | null,
+    enabled?: boolean | null,
+    days?: Array< number > | null,
+    time:  {
+      __typename: "AlarmRingTime",
+      hour: number,
+      minute: number,
+    },
+    snooze:  {
+      __typename: "AlarmSnoozeSettings",
+      duration: number,
+      interval: number,
+    },
+    onceOff?: boolean | null,
+  } | null,
 };
