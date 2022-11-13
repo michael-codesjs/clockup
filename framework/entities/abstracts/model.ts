@@ -20,18 +20,18 @@ export class Model {
 
 	/** DynamoDb item input for upsert operations on the table for the entity */
 	entityDynamoDbPutItemInput() {
-		return this.entity.nonNullAttributes({
-			...this.entity.Keys.all(),
-			...this.entity.attributes(),
-		});
+		return {
+			...this.entity.keys.all(),
+			...this.entity.attributes.collective(),
+		};
 	}
 
 	/** Returns non null attributes that can be upserted to a table */
 	entityUpdateItemAttributes() {
-		const attributes = this.entity.nonNullAttributes({
-			...this.entity.Keys.GSIs(),
-			...this.entity.attributes()
-		});
+		const attributes = {
+			...this.entity.keys.GSIs(),
+			...this.entity.attributes.collective()
+		};
 		delete attributes.created; // do not override created
 		attributes.modified = new Date().toJSON();
 		return attributes;
@@ -48,7 +48,7 @@ export class Model {
 	async get(): Promise<GetItemOutput> {
 		return await dynamoDbOperations.get({
 			TableName: DYNAMO_DB_TABLE_NAME!,
-			Key: this.entity.Keys.primary() as any,
+			Key: this.entity.keys.primary() as any,
 		});
 	}
 
@@ -65,7 +65,7 @@ export class Model {
 		const params = this.entityUpdateItemParams();
 		return await dynamoDbOperations.update({
 			TableName: DYNAMO_DB_TABLE_NAME!,
-			Key: this.entity.Keys.primary(),
+			Key: this.entity.keys.primary(),
 			...params as any,
 			ReturnValues: "ALL_NEW",
 			ConditionExpression: "attribute_exists(id)"
@@ -77,7 +77,7 @@ export class Model {
 	async delete(): Promise<DeleteItemOutput | ExecuteTransactionOutput> {
 		return await dynamoDbOperations.delete({
 			TableName: DYNAMO_DB_TABLE_NAME!,
-			Key: this.entity.Keys.primary() as any
+			Key: this.entity.keys.primary() as any
 		});
 	}
 

@@ -1,8 +1,6 @@
-import { Attributes as AbstractAttributes } from "../attributes";
+import { Attributes } from "./utilities/instantiable-abstracts";
 import { EntityType } from "../../../../types/api";
 import { Then } from "../../../../utilities/testing/then";
-
-class Attributes extends AbstractAttributes { } // class we can instanciate
 
 describe("Attributes", () => {
 

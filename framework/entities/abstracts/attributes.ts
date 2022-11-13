@@ -1,11 +1,12 @@
 import * as types from "@local-types/api";
-import { ulid } from "ulid";
 import { capitalizeFirstLetter } from "@utilities/functions";
+import { ulid } from "ulid";
 import { AttributesParams } from "../types";
 import { Attribute } from "./attribute";
 import { IPutable } from "./interfaces";
+import { Publisher } from "./publisher";
 
-export abstract class Attributes implements IPutable {
+export abstract class Attributes extends Publisher implements IPutable {
 
   protected EntityType: Attribute<types.EntityType, "entityType">;
   protected Id: Attribute<string, "id">;
@@ -16,8 +17,9 @@ export abstract class Attributes implements IPutable {
   private ImmutableAttributes = ["entityType", "id", "modified"] as const; // https://melvingeorge.me/blog/convert-array-into-string-literal-union-type-typescript
 
   constructor({ entityType, id, created, modified, discontinued }: AttributesParams) {
+    super();
     this.EntityType = new Attribute({ required: true, name: "entityType", value: entityType });
-    this.Id = new Attribute({ required: true, name: "id", value: id || ulid() });
+    this.Id = new Attribute({ required: true, name: "id", value: id || ulid(), validate: value => value.length > 0 });
     this.Created = new Attribute({ required: true, name: "created", value: created || new Date().toJSON() });
     this.Modified = new Attribute({ name: "modified", value: modified || null });
     this.Discontinued = new Attribute({ name: "discontinued", value: discontinued || false });
@@ -43,6 +45,11 @@ export abstract class Attributes implements IPutable {
     return this.isAttributeInThis(attribute) ? (this[capitalizeFirstLetter(attribute)] as Attribute).value : undefined;
   }
 
+  /**
+   * @method
+   * @abstract
+   * @returns {types.ICommom & Record<string, any>} an entities attributes
+   */
   collective(): types.ICommom {
     return {
       entityType: this.EntityType.value,

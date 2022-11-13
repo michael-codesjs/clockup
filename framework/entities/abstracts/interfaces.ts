@@ -2,11 +2,16 @@ import { Alarm, ICommom, User } from "@local-types/api";
 import { AbsoluteUser, NullUser } from "@local-types/index";
 
 export interface IEntity {
-  attributes(): ICommom
+
+}
+
+
+export interface IGraphQlEntity {
+  graphQlEntity(): Record<string, any> | null
 }
 
 export interface ICreatable {
-  Creator: NullUser | AbsoluteUser
+  creator: AbsoluteUser
 }
 
 export interface IUser extends IEntity {
@@ -19,4 +24,15 @@ export interface IAlarm extends IEntity, ICreatable {
 
 export interface IPutable {
   putable(): boolean
+}
+
+export interface IPublisher {
+  subscribers: Array<ISubscriber>
+  subscribe(subscriber: ISubscriber): void
+  unsubscribe(subscriber: ISubscriber): void
+  publish(): void
+};
+
+export interface ISubscriber {
+  update(): void;
 }
