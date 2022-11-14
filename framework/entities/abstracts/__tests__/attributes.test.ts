@@ -1,14 +1,41 @@
-import { Attributes } from "./utilities/instantiable-abstracts";
+import { chance } from "@utilities/constants";
+import { Then } from "@utilities/testing";
 import { EntityType } from "../../../../types/api";
-import { Then } from "../../../../utilities/testing/then";
+import { Attributes } from "../attributes";
 
 describe("Attributes", () => {
 
+  const getRandomEntityType = () => {
+    const entityTypes = Object.values(EntityType);
+    return entityTypes[chance.integer({ min: 0, max: entityTypes.length - 1 })];
+  }
+
+  let entityType: EntityType;
+  let id: string;
+  let created: string;
+  let modified: string;
+  let discontinued: boolean;
+  let attribute: string;
+  let attribute1: number;
+  let attribute2: boolean;
+
+  beforeEach(() => {
+    entityType = getRandomEntityType();
+    id = chance.fbid();
+    created = chance.date().toJSON();
+    modified = chance.date().toJSON();
+    discontinued = chance.bool();
+    attribute = "string",
+      attribute1 = 1,
+      attribute2 = true
+  });
+  
   test("Base attributes", () => {
-    const attributes = new Attributes({ entityType: EntityType.User, id: "ID" });
+    const attributes = new Attributes({});
+    attributes.parse({ entityType, id });
     expect(attributes.collective()).toMatchObject({
-      entityType: EntityType.User,
-      id: "ID",
+      entityType,
+      id,
       created: Then.dateMatch(),
       modified: null,
       discontinued: false
@@ -16,69 +43,85 @@ describe("Attributes", () => {
   });
 
   test("Explicit base attributes", () => {
-    const attributes = new Attributes({
-      entityType: EntityType.User,
-      id: "ID",
-      created: new Date().toJSON(),
-      modified: new Date().toJSON(),
-      discontinued: true
+
+    const attributes = new Attributes<{ attribute: string, attribute1: number, attribute2: boolean }>({
+      attribute: { initial: null },
+      attribute1: { initial: null },
+      attribute2: { initial: null }
     });
+
+    attributes.parse({
+      entityType, id, created, modified, discontinued,
+      attribute,
+      attribute1,
+      attribute2
+    });
+
     expect(attributes.collective()).toMatchObject({
-      entityType: EntityType.User,
-      id: "ID",
+      entityType,
+      id,
       created: Then.dateMatch(),
       modified: Then.dateMatch(),
-      discontinued: true
+      discontinued,
+      attribute,
+      attribute1,
+      attribute2
     });
+
   });
 
   test("Attributes.get", () => {
 
-    const values = { entityType: EntityType.User, id: "ID", created: new Date().toJSON(), modified: new Date().toJSON(), discontinued: true };
-    const attributes = new Attributes(values);
+    const values = { entityType, id, created, modified, discontinued, attribute };
+    const attributes = new Attributes<{ attribute: string }>({ attribute: { initial: null }});
+
+    attributes.parse(values);
 
     for(const key in values) {
-      expect(attributes.get(key)).toBe(values[key]);
+      expect(attributes.get(key as keyof typeof values)).toBe(values[key]);
     }
 
   });
 
   test("Attributes.set", () => {
-    
-    const attributes = new Attributes({ entityType: EntityType.Alarm, id: "ID" });
-    
+    const attributes = new Attributes({});
     attributes.set({
-      created: new Date().toJSON(),
       discontinued: true,
     });
-
     expect(attributes.collective()).toMatchObject({
-      created: Then.dateMatch(),
       modified: Then.dateMatch(),
       discontinued: true,
     });
+  });
+
+  test("Attributes.set on immutable attributes fails", () => {
+
+    const attributes = new Attributes({});
+    attributes.parse({ entityType, id, created });
+
+    try {
+      attributes.set({
+        entityType: EntityType.Alarm,
+        id: "ID",
+        created: new Date().toJSON()
+      } as any);
+      throw new Error("Expect Attributes.set operation to fail");
+    } catch (error: any) {
+      expect(error.message).toBe("Attempting to mutate immutable attribute entityType");
+    }
 
   });
 
-  test("Attributes.set is ineffective on entityType and id", () => {
-      
-    const attributes = new Attributes({ entityType: EntityType.User, id: "ID" });
-    
-    attributes.set({
-      entityType: EntityType.Alarm,
-      id: "Id"
-    } as any);
-
-    expect(attributes.collective()).toMatchObject({
-      entityType: EntityType.User,
-      id: "ID"
-    });
-    
-  });
-
-  test("Attributes.putable", () => {
-    const attributes = new Attributes({ entityType: EntityType.User });
+  test("Attributes.putable true", () => {
+    const attributes = new Attributes<{ attribute: string }>({ attribute: { initial: null, required: true }});
+    attributes.parse({ entityType, id, attribute });
     expect(attributes.putable()).toBe(true);
+  });
+
+  test("Attributes.putable false", () => {
+    const attributes = new Attributes<{ attribute: string }>({ attribute: { initial: null, required: true }});
+    attributes.parse({ entityType, id });
+    expect(attributes.putable()).toBe(false);
   });
 
 });

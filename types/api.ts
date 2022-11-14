@@ -34,7 +34,7 @@ export type QueryGetAlarmArgs = {
   id: Scalars['ID'];
 };
 
-export type Alarm = ICommom & ICreatable & {
+export type Alarm = ICommon & ICreatable & {
   __typename?: 'Alarm';
   created: Scalars['AWSDateTime'];
   creator: Scalars['ID'];
@@ -50,7 +50,7 @@ export type Alarm = ICommom & ICreatable & {
   time: AlarmRingTime;
 };
 
-export type ICommom = {
+export type ICommon = {
   created: Scalars['AWSDateTime'];
   discontinued: Scalars['Boolean'];
   entityType: EntityType;
@@ -79,7 +79,7 @@ export type AlarmRingTime = {
   minute: Scalars['Int'];
 };
 
-export type User = ICommom & {
+export type User = ICommon & {
   __typename?: 'User';
   alarms?: Maybe<Scalars['Int']>;
   created: Scalars['AWSDateTime'];
@@ -205,7 +205,7 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Alarm: ResolverTypeWrapper<Alarm>;
-  ICommom: ResolversTypes['Alarm'] | ResolversTypes['User'];
+  ICommon: ResolversTypes['Alarm'] | ResolversTypes['User'];
   AWSDateTime: ResolverTypeWrapper<Scalars['AWSDateTime']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   EntityType: EntityType;
@@ -235,7 +235,7 @@ export type ResolversParentTypes = {
   Query: {};
   ID: Scalars['ID'];
   Alarm: Alarm;
-  ICommom: ResolversParentTypes['Alarm'] | ResolversParentTypes['User'];
+  ICommon: ResolversParentTypes['Alarm'] | ResolversParentTypes['User'];
   AWSDateTime: Scalars['AWSDateTime'];
   Boolean: Scalars['Boolean'];
   ICreatable: ResolversParentTypes['Alarm'];
@@ -280,7 +280,7 @@ export type AlarmResolvers<ContextType = any, ParentType extends ResolversParent
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ICommomResolvers<ContextType = any, ParentType extends ResolversParentTypes['ICommom'] = ResolversParentTypes['ICommom']> = {
+export type ICommonResolvers<ContextType = any, ParentType extends ResolversParentTypes['ICommon'] = ResolversParentTypes['ICommon']> = {
   __resolveType: TypeResolveFn<'Alarm' | 'User', ParentType, ContextType>;
   created?: Resolver<ResolversTypes['AWSDateTime'], ParentType, ContextType>;
   discontinued?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -363,7 +363,7 @@ export interface AwsurlScalarConfig extends GraphQLScalarTypeConfig<ResolversTyp
 export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Alarm?: AlarmResolvers<ContextType>;
-  ICommom?: ICommomResolvers<ContextType>;
+  ICommon?: ICommonResolvers<ContextType>;
   AWSDateTime?: GraphQLScalarType;
   ICreatable?: ICreatableResolvers<ContextType>;
   AlarmSnoozeSettings?: AlarmSnoozeSettingsResolvers<ContextType>;

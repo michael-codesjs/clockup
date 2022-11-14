@@ -15,6 +15,15 @@ export type AttributesParams = {
   discontinued?: boolean
 };
 
+export type AttributeParams<T,I> = {
+  required?: boolean,
+  validate?: (value: T) => boolean,
+  value: T,
+  immutable?: I
+};
+
+export type ImmutableAttributes = "entityType" | "id" | "created";
+
 export enum EntityErrorTypes {
   CREATABLE_TERMINATE_MISSING_CREATOR = "Cannot terminate creatable entity without specifying it's creator"
 }

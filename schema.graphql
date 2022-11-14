@@ -3,7 +3,7 @@ schema {
   mutation: Mutation
 }
 
-interface ICommom {
+interface ICommon {
   id: ID!
   entityType: EntityType!
   created: AWSDateTime!
@@ -20,7 +20,7 @@ enum EntityType {
   ALARM
 }
 
-type User implements ICommom {
+type User implements ICommon {
   id: ID!
   entityType: EntityType!
   created: AWSDateTime!
@@ -41,7 +41,7 @@ type AlarmSnoozeSettings {
   interval: Int!
 }
 
-type Alarm implements ICommom & ICreatable {
+type Alarm implements ICommon & ICreatable {
   id: ID!
   entityType: EntityType!
   created: AWSDateTime!

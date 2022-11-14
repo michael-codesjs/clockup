@@ -1,8 +1,8 @@
 import { chance } from "@utilities/constants";
 import { Given } from "@utilities/testing";
 import { EntityErrorTypes } from "../../types";
-import { UserEntityFactory } from "../../user";
-import { AlarmEntityFactory } from "../alarm";
+import { UserEntityFactory } from "../../user/index.tsp";
+import { AlarmEntityFactory } from "../alarm.tsp";
 
 
 describe("AlarmEntityGroup Functionality Tests", () => {

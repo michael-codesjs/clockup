@@ -1,7 +1,7 @@
 
 import { Given } from "@utilities/testing";
 import Chance from "chance";
-import { UserEntityFactory } from "..";
+import { UserEntityFactory } from "../index.tsp";
 
 const chance = new Chance();
 

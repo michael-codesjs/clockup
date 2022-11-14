@@ -1,1 +1,1 @@
-export { AlarmEntityFactory } from "./alarm";
+// export { AlarmEntityFactory } from "./alarm.tsp";

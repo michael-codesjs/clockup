@@ -1,13 +1,18 @@
-import { EntityType } from "@local-types/api";
+import { EntityType, ICommon } from "@local-types/api";
+import { AttributesParams } from "framework/entities/types";
 import {
   Entity as AbstractEntity,
-  Attributes as AbstractAttributes,
-  Keys as AbstractKeys
+  Attributes,
+  Keys as AbstractKeys,
+  Attribute
 } from "../.."
 
 // INSTANTIABLE VERSIONS OF ABSTRACT CLASSES TO BE USED FOR TESTING
 
-export class Attributes extends AbstractAttributes { }
+type InstatiableAttributes = ICommon & {
+  attribute1: string,
+  attribute2: string
+};
 
 export class Keys extends AbstractKeys {
   configure(): void {
@@ -21,13 +26,13 @@ export class Entity extends AbstractEntity {
   NullTypeOfSelf: typeof Entity;
   AbsoluteTypeOfSelf: typeof Entity | (typeof Entity)[];
 
-  attributes: Attributes;
+  attributes: Attributes<ICommon> = new Attributes();;
   keys: Keys;
 
   constructor(params?: { id?: string, entityType?: string }) {
     super(null);
     const { id, entityType } = params || {};
-    this.attributes = new Attributes({ entityType: (entityType || "Entity") as EntityType, id });
+    this.keys = new Keys(this);
   }
 
   async sync() {

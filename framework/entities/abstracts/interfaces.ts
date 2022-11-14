@@ -1,4 +1,4 @@
-import { Alarm, ICommom, User } from "@local-types/api";
+import { Alarm, ICommon, User } from "@local-types/api";
 import { AbsoluteUser, NullUser } from "@local-types/index";
 
 export interface IEntity {

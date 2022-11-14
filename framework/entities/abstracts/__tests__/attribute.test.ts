@@ -5,7 +5,7 @@ describe("Attribute", () => {
   let attribute: Attribute;
 
   beforeEach(() => {
-    attribute = new Attribute({ required: true, name: "attribute", value: "value" });
+    attribute = new Attribute({ required: true, value: "value" });
   });
 
   test("set value", () => {
@@ -21,7 +21,7 @@ describe("Required Attribute", () => {
   let attribute: Attribute;
 
   beforeEach(() => {
-    attribute = new Attribute({ required: true, name: "attribute", value: "value" });
+    attribute = new Attribute({ required: true, value: "value" });
   });
 
   test("putable", () => {
@@ -36,7 +36,7 @@ describe("Required Attributes With Validators", () => {
 
   beforeEach(() => {
     const validate = (value: string) => (value.length) > 3 && /a/.test(value);
-    attribute = new Attribute({ required: true, name: "attribute", value: "value", validate });
+    attribute = new Attribute({ required: true, value: "value", validate });
   });
 
   test("truthy putable", () => {
