@@ -23,10 +23,10 @@ describe("Get User", () => {
 		const { event, context } = HandlerArguments.user.get("Some Non Existent User Id XD");
 		const lambdaResponse = await handler(event, context, () => {});
 		expect(lambdaResponse).toMatchObject({
-      __typename: 'ErrorResponse',
-      type: ErrorTypes.NotFound,
-      message: EntityErrorMessages.USER_NOT_FOUND,
-    });
+			__typename: "ErrorResponse",
+			type: ErrorTypes.NotFound,
+			message: EntityErrorMessages.USER_NOT_FOUND,
+		});
 	});
 
 });

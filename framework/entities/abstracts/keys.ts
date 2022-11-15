@@ -42,14 +42,14 @@ export class Keys implements ISubscriber {
 		const id = this.Entity.attributes.get("id");
 		const created = this.Entity.attributes.get("created");
 		
-		let key = Keys.constructKey({
+		const key = Keys.constructKey({
 			descriptors: [entityType],
 			values: [id]
 		});
 
-		let creator: (Entity & ICreatable) | null;
+		const creator: (Entity & ICreatable) | null = "creator" in this.Entity ? this.Entity.creator as any : null;
 
-		if (creator = "creator" in this.Entity ? this.Entity.creator as any : null) {
+		if (creator) {
 
 			const creatorId = creator.attributes.get("id");
 			const creatorType = creator.attributes.get("entityType");
@@ -163,23 +163,23 @@ export class Keys implements ISubscriber {
 			prefixes = [],
 		} = params;
 
-		let key = '';
+		let key = "";
 
 		for (const i in descriptors) {
 			let value = values[i];
-			if (typeof value === 'string') {
-				value = value.toLowerCase().replace(/ /g, '_');
+			if (typeof value === "string") {
+				value = value.toLowerCase().replace(/ /g, "_");
 			}
-			const descriptor = descriptors[i].toUpperCase().replace(/ /g, '_');
-			key += (key.length > 0 ? '#' : '') + descriptor + (value ? '#' + value : "");
+			const descriptor = descriptors[i].toUpperCase().replace(/ /g, "_");
+			key += (key.length > 0 ? "#" : "") + descriptor + (value ? "#" + value : "");
 		}
 
 		for (const i in suffixes) {
-			key = key + '#' + suffixes[i];
+			key = key + "#" + suffixes[i];
 		}
 
 		for (let i = prefixes.length - 1; i >= 0; i--) {
-			key = prefixes[i] + '#' + key;
+			key = prefixes[i] + "#" + key;
 		}
 
 		return key;

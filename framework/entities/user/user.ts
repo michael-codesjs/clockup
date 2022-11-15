@@ -69,7 +69,7 @@ namespace UserEntityGroup {
 			return {
 				__typename: "User",
 				...this.attributes.collective()
-			}
+			};
 		}
 
 

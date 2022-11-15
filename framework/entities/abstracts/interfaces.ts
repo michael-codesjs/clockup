@@ -1,9 +1,9 @@
-import { Alarm, ICommon, User } from "@local-types/api";
-import { AbsoluteUser, NullUser } from "@local-types/index";
+import { Alarm, User } from "@local-types/api";
+import { AbsoluteUser } from "@local-types/index";
 import { Attributes } from "./attributes";
 
 export interface IEntity {
-
+  composable(): boolean
 }
 
 
@@ -32,7 +32,7 @@ export interface IPublisher {
   subscribe(subscriber: ISubscriber): void
   unsubscribe(subscriber: ISubscriber): void
   publish(): void
-};
+}
 
 export interface ISubscriber {
   update(): void;

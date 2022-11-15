@@ -34,7 +34,7 @@ describe("Update User", () => {
 
 		const lambdaResponse = await handler(event, context, () => { });
 		expect(lambdaResponse).toMatchObject({
-			__typename: 'ErrorResponse',
+			__typename: "ErrorResponse",
 			type: ErrorTypes.NotFound,
 		});
 

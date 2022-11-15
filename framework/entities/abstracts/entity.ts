@@ -1,6 +1,6 @@
 import * as types from "@local-types/api";
 import { Attributes } from "./attributes";
-import { IEntity, IGraphQlEntity } from "./interfaces";
+import { IGraphQlEntity } from "./interfaces";
 import { Keys } from "./keys";
 import { Model } from "./model";
 
@@ -12,7 +12,7 @@ import { Model } from "./model";
  * @param {types.EntityType} entityType type of entity.
  */
 
-export abstract class Entity implements IEntity, IGraphQlEntity {
+export abstract class Entity implements IGraphQlEntity {
 
 	/** Entity DynamoDB keys for the table and all its Global Secondary Indexes */
 	public abstract keys: Keys;
@@ -25,7 +25,8 @@ export abstract class Entity implements IEntity, IGraphQlEntity {
 
 	protected model: Model = new Model(this);
 
-	constructor({ }: {} = {}) { } // {}: {} = {} is for constructor signature purposes
+	constructor({ }: {} = {}) { } // {}: {} = {} is for constructor signature purposes only
+	/*eslint no-empty-pattern: "off"*/
 
 	/**
 	 * @returns {Object extends types.ICommon} GraphQL representation of an entity defined the schema
@@ -33,7 +34,7 @@ export abstract class Entity implements IEntity, IGraphQlEntity {
 	 */
 
 	graphQlEntity(): null | Record<string, any> {
-		return null
+		return null;
 	}
 
 	/**

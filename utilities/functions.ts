@@ -66,13 +66,13 @@ export function constructKey(descriptor: string, value: string) {
 
 export const capitalizeFirstLetter = (str: string) => {
 	return str[0].toUpperCase()+str.slice(1);
-}
+};
 
-export const getErrorResponse = (error: ZodError | Error, type: ErrorTypes, code: number = 0, ): ErrorResponse => {
-  return {
-    __typename: "ErrorResponse",
+export const getErrorResponse = (error: ZodError | Error, type: ErrorTypes, code = 0, ): ErrorResponse => {
+	return {
+		__typename: "ErrorResponse",
 		type,
 		message: error.message,
 		code
-  }
-}
+	};
+};
