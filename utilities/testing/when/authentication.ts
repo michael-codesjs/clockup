@@ -28,6 +28,7 @@ class AuthenticationUtility {
 		return {
 			name, id: userSub, email,
 			entityType: EntityType.User,
+			discontinued: false,
 			cognitoUser: user
 		};
 

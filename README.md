@@ -1,10 +1,10 @@
-# clock-up
-> Serverless backend for the clock up front-end. The app is split into several separate services that are all dependent on a root infrastructure & framework.
+# **clock-up**
+Serverless backend for the clock up front-end. The app is split into several separate services that are all dependent on a root infrastructure & framework.
 
-## Installation
+## **Installation**
 Running `npm install` in the root project directory should set you up with all the project dependencies.
 
-## Deploying
+## **Deploying**
 
 Make sure you have your AWS credentials set, to do so follow [these](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html) instructions.
 
@@ -12,24 +12,24 @@ To deploy a service, run `npx sls deploy` in the service directory. This will by
 
 To deploy all services at once, run `npx sls deploy` in the root project directory and let **serverless compose** deploy our services for us.
 
-## Testing
+## **Testing**
 
-You'll first need to set the **AWS_REGION** enviroment variable to whatever region you deployed the services to. For example:
-```sh
-export AWS_REGION=eu-central-1 
-```
+You'll first have to:
+- Set the **AWS_REGION** enviroment variable to whatever region you deployed the services to. For example: `export AWS_REGION=eu-central-1`.
+- Generate enviroment variables, you can do so by running the **setup-dev.js** file in the root directory
 
-Refer to the `package.json` for service specific tests. Otherwise, run:
+
+Refer to the `package.json` for specific tests. Otherwise, run:
 ```sh
 npm test
 ```
 to run every test in existence.
 
-## Meta
+## **Meta**
 
-Michael – [@michael_wcjs](https://twitter.com/michael_wcjs) – michael.codesjs@gmail.com
+Michael Phiri – [@michael_wcjs](https://twitter.com/michael_wcjs) – michael.codesjs@gmail.com
 
-## Contributing
+## **Contributing**
 
 1. Fork it (<https://github.com/michael-codesjs/clock-up-backend/fork>)
 2. Create your feature branch (`git checkout -b feature/fooBar`)

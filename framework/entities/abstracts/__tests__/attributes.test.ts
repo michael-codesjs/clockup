@@ -94,24 +94,6 @@ describe("Attributes", () => {
     });
   });
 
-  test("Attributes.set on immutable attributes fails", () => {
-
-    const attributes = new Attributes({});
-    attributes.parse({ entityType, id, created });
-
-    try {
-      attributes.set({
-        entityType: EntityType.Alarm,
-        id: "ID",
-        created: new Date().toJSON()
-      } as any);
-      throw new Error("Expect Attributes.set operation to fail");
-    } catch (error: any) {
-      expect(error.message).toBe("Attempting to mutate immutable attribute entityType");
-    }
-
-  });
-
   test("Attributes.putable true", () => {
     const attributes = new Attributes<{ attribute: string }>({ attribute: { initial: null, required: true }});
     attributes.parse({ entityType, id, attribute });

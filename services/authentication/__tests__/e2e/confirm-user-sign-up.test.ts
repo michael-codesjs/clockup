@@ -11,7 +11,6 @@ describe("Confirm User Sign", () => {
 		const user = await When.auth.signUp({ name, email, password }); // sign up user e2e
 
 		const dbRecord = await Given.user.byId(user.id); // get user record from the table
-
 		Then.user_VS_user(dbRecord,user); // test attributes from cognito against record in our table
 
 	});

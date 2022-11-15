@@ -1,6 +1,6 @@
 import { ulid } from "ulid";
 import Entities from "@entities";
-import { EntityType } from "@local-types/api";
+import { EntityType, User as TUser } from "@local-types/api";
 import { chance } from "@utilities/constants";
 import { AbsoluteUserAttributes } from "framework/entities/types";
 import { Authentication } from "../when/authentication";
@@ -14,15 +14,18 @@ class GivenUserAttributes {
 
 	private constructor() { }
 	static readonly instance = new GivenUserAttributes;
-
-	attributes() {
+	
+	attributes(): TUser {
 
 		const entityType = EntityType.User;
 		const id = ulid();
 		const name = chance.name();
 		const email = chance.email();
+		const discontinued = false;
+		const created = chance.date().toJSON();
+		const alarms = chance.integer({ min: 0, max: 20 });
 
-		return { entityType, id, name, email };
+		return { entityType, id, name, email, created, discontinued, alarms };
 
 	}
 
