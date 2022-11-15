@@ -11,6 +11,20 @@ interface ICommon {
   discontinued: Boolean!
 }
 
+enum ErrorTypes {
+  NOT_FOUND
+  MALFOMED_INPUT
+  INTERNAL_ERROR
+  CREATE_FAILED
+  UPDATE_FAILED
+}
+
+type ErrorResponse {
+  type: ErrorTypes!
+  message: String
+  code: Int
+}
+
 interface ICreatable {
   creator: ID!
 }
@@ -18,6 +32,12 @@ interface ICreatable {
 enum EntityType {
   USER
   ALARM
+}
+
+
+type OperationResponse {
+  success: Boolean!
+  message: String
 }
 
 type User implements ICommon {
@@ -29,16 +49,6 @@ type User implements ICommon {
   email: AWSEmail!
   name: String!
   alarms: Int!
-}
-
-type AlarmRingTime {
-  hour: Int!
-  minute: Int!
-}
-
-type AlarmSnoozeSettings {
-  duration: Int!
-  interval: Int!
 }
 
 type Alarm implements ICommon & ICreatable {
@@ -54,6 +64,21 @@ type Alarm implements ICommon & ICreatable {
   time: AlarmRingTime!,
   snooze: AlarmSnoozeSettings!,
   onceOff: Boolean
+}
+
+type AlarmResponse {
+  alarm: Alarm!
+  creator: User!
+}
+
+type AlarmRingTime {
+  hour: Int!
+  minute: Int!
+}
+
+type AlarmSnoozeSettings {
+  duration: Int!
+  interval: Int!
 }
 
 input UpdateUserInput {
@@ -83,17 +108,19 @@ input UpsertAlarmInput {
   onceOff: Boolean
 }
 
-# END: "Alarm Inputs"
+union OperationOutput = OperationResponse | ErrorResponse 
+union UserOutput = User | ErrorResponse
+union AlarmOutput = Alarm | ErrorResponse
 
 type Query {
-
-  getProfile: User @aws_cognito_user_pools 
+  getProfile: UserOutput @aws_cognito_user_pools 
   getAlarm(id: ID!): Alarm @aws_cognito_user_pools
-
 }
 
 type Mutation {
-  updateUser(input:UpdateUserInput): User @aws_cognito_user_pools
+  
+  updateUser(input:UpdateUserInput): UserOutput @aws_cognito_user_pools
   deleteUser: Boolean @aws_cognito_user_pools
+
   upsertAlarm(input:UpsertAlarmInput!): Alarm @aws_cognito_user_pools
 }

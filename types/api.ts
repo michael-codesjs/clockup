@@ -26,7 +26,7 @@ export type Scalars = {
 export type Query = {
   __typename?: 'Query';
   getAlarm?: Maybe<Alarm>;
-  getProfile?: Maybe<User>;
+  getProfile?: Maybe<UserOutput>;
 };
 
 
@@ -79,6 +79,23 @@ export type AlarmRingTime = {
   minute: Scalars['Int'];
 };
 
+export type UserOutput = ErrorResponse | User;
+
+export type ErrorResponse = {
+  __typename?: 'ErrorResponse';
+  code?: Maybe<Scalars['Int']>;
+  message?: Maybe<Scalars['String']>;
+  type: ErrorTypes;
+};
+
+export enum ErrorTypes {
+  CreateFailed = 'CREATE_FAILED',
+  InternalError = 'INTERNAL_ERROR',
+  MalfomedInput = 'MALFOMED_INPUT',
+  NotFound = 'NOT_FOUND',
+  UpdateFailed = 'UPDATE_FAILED'
+}
+
 export type User = ICommon & {
   __typename?: 'User';
   alarms: Scalars['Int'];
@@ -94,7 +111,7 @@ export type User = ICommon & {
 export type Mutation = {
   __typename?: 'Mutation';
   deleteUser?: Maybe<Scalars['Boolean']>;
-  updateUser?: Maybe<User>;
+  updateUser?: Maybe<UserOutput>;
   upsertAlarm?: Maybe<Alarm>;
 };
 
@@ -131,6 +148,22 @@ export type AlarmSnoozeSettingsInput = {
 export type AlarmRingTimeInput = {
   hour: Scalars['Int'];
   minute: Scalars['Int'];
+};
+
+export type AlarmOutput = Alarm | ErrorResponse;
+
+export type AlarmResponse = {
+  __typename?: 'AlarmResponse';
+  alarm: Alarm;
+  creator: User;
+};
+
+export type OperationOutput = ErrorResponse | OperationResponse;
+
+export type OperationResponse = {
+  __typename?: 'OperationResponse';
+  message?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
 };
 
 
@@ -214,6 +247,9 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']>;
   AlarmSnoozeSettings: ResolverTypeWrapper<AlarmSnoozeSettings>;
   AlarmRingTime: ResolverTypeWrapper<AlarmRingTime>;
+  UserOutput: ResolversTypes['ErrorResponse'] | ResolversTypes['User'];
+  ErrorResponse: ResolverTypeWrapper<ErrorResponse>;
+  ErrorTypes: ErrorTypes;
   User: ResolverTypeWrapper<User>;
   AWSEmail: ResolverTypeWrapper<Scalars['AWSEmail']>;
   Mutation: ResolverTypeWrapper<{}>;
@@ -221,6 +257,8 @@ export type ResolversTypes = {
   UpsertAlarmInput: UpsertAlarmInput;
   AlarmSnoozeSettingsInput: AlarmSnoozeSettingsInput;
   AlarmRingTimeInput: AlarmRingTimeInput;
+  AlarmOutput: ResolversTypes['Alarm'] | ResolversTypes['ErrorResponse'];
+  AlarmResponse: ResolverTypeWrapper<AlarmResponse>;
   AWSDate: ResolverTypeWrapper<Scalars['AWSDate']>;
   AWSIPAddress: ResolverTypeWrapper<Scalars['AWSIPAddress']>;
   AWSJSON: ResolverTypeWrapper<Scalars['AWSJSON']>;
@@ -228,6 +266,8 @@ export type ResolversTypes = {
   AWSTime: ResolverTypeWrapper<Scalars['AWSTime']>;
   AWSTimestamp: ResolverTypeWrapper<Scalars['AWSTimestamp']>;
   AWSURL: ResolverTypeWrapper<Scalars['AWSURL']>;
+  OperationOutput: ResolversTypes['ErrorResponse'] | ResolversTypes['OperationResponse'];
+  OperationResponse: ResolverTypeWrapper<OperationResponse>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -243,6 +283,8 @@ export type ResolversParentTypes = {
   String: Scalars['String'];
   AlarmSnoozeSettings: AlarmSnoozeSettings;
   AlarmRingTime: AlarmRingTime;
+  UserOutput: ResolversParentTypes['ErrorResponse'] | ResolversParentTypes['User'];
+  ErrorResponse: ErrorResponse;
   User: User;
   AWSEmail: Scalars['AWSEmail'];
   Mutation: {};
@@ -250,6 +292,8 @@ export type ResolversParentTypes = {
   UpsertAlarmInput: UpsertAlarmInput;
   AlarmSnoozeSettingsInput: AlarmSnoozeSettingsInput;
   AlarmRingTimeInput: AlarmRingTimeInput;
+  AlarmOutput: ResolversParentTypes['Alarm'] | ResolversParentTypes['ErrorResponse'];
+  AlarmResponse: AlarmResponse;
   AWSDate: Scalars['AWSDate'];
   AWSIPAddress: Scalars['AWSIPAddress'];
   AWSJSON: Scalars['AWSJSON'];
@@ -257,11 +301,13 @@ export type ResolversParentTypes = {
   AWSTime: Scalars['AWSTime'];
   AWSTimestamp: Scalars['AWSTimestamp'];
   AWSURL: Scalars['AWSURL'];
+  OperationOutput: ResolversParentTypes['ErrorResponse'] | ResolversParentTypes['OperationResponse'];
+  OperationResponse: OperationResponse;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   getAlarm?: Resolver<Maybe<ResolversTypes['Alarm']>, ParentType, ContextType, RequireFields<QueryGetAlarmArgs, 'id'>>;
-  getProfile?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  getProfile?: Resolver<Maybe<ResolversTypes['UserOutput']>, ParentType, ContextType>;
 };
 
 export type AlarmResolvers<ContextType = any, ParentType extends ResolversParentTypes['Alarm'] = ResolversParentTypes['Alarm']> = {
@@ -310,6 +356,17 @@ export type AlarmRingTimeResolvers<ContextType = any, ParentType extends Resolve
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserOutput'] = ResolversParentTypes['UserOutput']> = {
+  __resolveType: TypeResolveFn<'ErrorResponse' | 'User', ParentType, ContextType>;
+};
+
+export type ErrorResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ErrorResponse'] = ResolversParentTypes['ErrorResponse']> = {
+  code?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['ErrorTypes'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   alarms?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   created?: Resolver<ResolversTypes['AWSDateTime'], ParentType, ContextType>;
@@ -328,8 +385,18 @@ export interface AwsEmailScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   deleteUser?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  updateUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<MutationUpdateUserArgs>>;
+  updateUser?: Resolver<Maybe<ResolversTypes['UserOutput']>, ParentType, ContextType, Partial<MutationUpdateUserArgs>>;
   upsertAlarm?: Resolver<Maybe<ResolversTypes['Alarm']>, ParentType, ContextType, RequireFields<MutationUpsertAlarmArgs, 'input'>>;
+};
+
+export type AlarmOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['AlarmOutput'] = ResolversParentTypes['AlarmOutput']> = {
+  __resolveType: TypeResolveFn<'Alarm' | 'ErrorResponse', ParentType, ContextType>;
+};
+
+export type AlarmResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AlarmResponse'] = ResolversParentTypes['AlarmResponse']> = {
+  alarm?: Resolver<ResolversTypes['Alarm'], ParentType, ContextType>;
+  creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export interface AwsDateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['AWSDate'], any> {
@@ -360,6 +427,16 @@ export interface AwsurlScalarConfig extends GraphQLScalarTypeConfig<ResolversTyp
   name: 'AWSURL';
 }
 
+export type OperationOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['OperationOutput'] = ResolversParentTypes['OperationOutput']> = {
+  __resolveType: TypeResolveFn<'ErrorResponse' | 'OperationResponse', ParentType, ContextType>;
+};
+
+export type OperationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['OperationResponse'] = ResolversParentTypes['OperationResponse']> = {
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Alarm?: AlarmResolvers<ContextType>;
@@ -368,9 +445,13 @@ export type Resolvers<ContextType = any> = {
   ICreatable?: ICreatableResolvers<ContextType>;
   AlarmSnoozeSettings?: AlarmSnoozeSettingsResolvers<ContextType>;
   AlarmRingTime?: AlarmRingTimeResolvers<ContextType>;
+  UserOutput?: UserOutputResolvers<ContextType>;
+  ErrorResponse?: ErrorResponseResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   AWSEmail?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
+  AlarmOutput?: AlarmOutputResolvers<ContextType>;
+  AlarmResponse?: AlarmResponseResolvers<ContextType>;
   AWSDate?: GraphQLScalarType;
   AWSIPAddress?: GraphQLScalarType;
   AWSJSON?: GraphQLScalarType;
@@ -378,5 +459,7 @@ export type Resolvers<ContextType = any> = {
   AWSTime?: GraphQLScalarType;
   AWSTimestamp?: GraphQLScalarType;
   AWSURL?: GraphQLScalarType;
+  OperationOutput?: OperationOutputResolvers<ContextType>;
+  OperationResponse?: OperationResponseResolvers<ContextType>;
 };
 

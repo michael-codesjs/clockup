@@ -16,7 +16,7 @@ To deploy all services at once, run `npx sls deploy` in the root project directo
 
 You'll first have to:
 - Set the **AWS_REGION** enviroment variable to whatever region you deployed the services to. For example: `export AWS_REGION=eu-central-1`.
-- Generate enviroment variables, you can do so by running the **setup-dev.js** file in the root directory
+- Generate enviroment variables. You can do so by running the **setup-dev.js** file in the root directory.
 
 
 Refer to the `package.json` for specific tests. Otherwise, run:
