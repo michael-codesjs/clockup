@@ -13,7 +13,7 @@
   },
   "include": [
     "**/*.ts",
-    "**/*.js",
+    "**/*.js", "middleware",
   ],
   "exclude": [
     "node_modules/**/*",
