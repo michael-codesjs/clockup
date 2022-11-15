@@ -1,7 +1,5 @@
-import { AlarmRingTime, AlarmSnoozeSettings, UpsertAlarmInput, EntityType } from "@local-types/api";
-import { AbsoluteUser, NullUser } from "@local-types/index";
-
-
+import { AlarmRingTime, AlarmSnoozeSettings, EntityType, UpsertAlarmInput } from "@local-types/api";
+import { AbsoluteUser } from "@local-types/index";
 
 export type SyncOptions = {
   exists: boolean
@@ -15,7 +13,7 @@ export type AttributesParams = {
   discontinued?: boolean
 };
 
-export type AttributeParams<T,I> = {
+export type AttributeParams<T, I> = {
   required?: boolean,
   validate?: (value: T) => boolean,
   value: T,
@@ -26,12 +24,14 @@ export type ImmutableAttributes = "entityType" | "id" | "created";
 
 export enum EntityErrorMessages {
   CREATABLE_TERMINATE_MISSING_CREATOR = "Cannot terminate creatable entity without specifying it's creator",
+  CREATABLE_BY_CREATOR_NOT_FOUND = "Creatable by user was not found",
   USER_VARIANT_NOT_FOUND = "Could not instanciate variant of from entity group *User*",
   USER_NOT_FOUND = "User not found. Failed to sync NullUser to User",
+  ALARM_VARIANT_NOT_FOUND = "Could not instanciate variant of from entity group *Alarm*",
 }
 
 export type NullEntityAttributes = { id: string };
-export type CreatableEntityAttributes = { creator: NullUser | AbsoluteUser };
+export type CreatableEntityAttributes = { creator: AbsoluteUser };
 export type NullCreatableEntityAttributes = NullEntityAttributes & Partial<CreatableEntityAttributes>;
 
 export type AbsoluteUserAttributes = { email?: string, name?: string };
@@ -44,4 +44,4 @@ export type NullAlarmAttributes = NullCreatableEntityAttributes;
 export type AlarmAttributes<T = SnoozeSettingsMinusRingTime | RingTimeMinusSnoozeSettings> = (
   Partial<UpsertAlarmInput> & CreatableEntityAttributes &
   (T extends SnoozeSettingsMinusRingTime ? SnoozeSettingsMinusRingTime : RingTimeMinusSnoozeSettings)
-)
+) & { creator: AbsoluteUser };

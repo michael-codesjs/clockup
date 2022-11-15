@@ -20,7 +20,7 @@ export interface IUser extends IEntity {
 }
 
 export interface IAlarm extends IEntity, ICreatable {
-  attributes(): Alarm
+  attributes: Attributes<Alarm>
 }
 
 export interface IPutable {

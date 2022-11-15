@@ -50,6 +50,7 @@ export class Model {
 
 	/** gets an entities record from the table using it's Partition and Sort key values */
 	async get(): Promise<GetItemOutput> {
+		console.log("Keys:", this.entity.keys.primary());
 		return await dynamoDbOperations.get({
 			TableName: DYNAMO_DB_TABLE_NAME!,
 			Key: this.entity.keys.primary() as any,

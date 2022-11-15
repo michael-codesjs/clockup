@@ -38,7 +38,7 @@ class GivenAlarmUtility {
 	}
 
 	async new(attributes: AlarmAttributes) {
-		const instance = await Entities.Alarm(attributes).put();
+		const instance = await Entities.Alarm(attributes).sync();
 		return instance.graphQlEntity();
 	}
 

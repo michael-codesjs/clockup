@@ -47,7 +47,7 @@ export class Keys implements ISubscriber {
 			values: [id]
 		});
 
-		const creator: (Entity & ICreatable) | null = "creator" in this.Entity ? this.Entity.creator as any : null;
+		const creator: Entity | null = "creator" in this.Entity ? this.Entity.creator : null;
 
 		if (creator) {
 

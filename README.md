@@ -1,6 +1,8 @@
 # **clock-up**
 Serverless backend for the clock up front-end. The app is split into several separate services that are all dependent on a root infrastructure & framework.
 
+* [DynamoDB Schema](https://docs.google.com/spreadsheets/d/1EYoTWwzbV6BqmQ7m5NTOcZJNXM3eSF4EHg3DeTIVX9k/edit?usp=sharing)
+
 ## **Installation**
 Running `npm install` in the root project directory should set you up with all the project dependencies.
 
