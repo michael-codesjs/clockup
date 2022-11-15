@@ -1,5 +1,5 @@
-import { EntityType, Alarm } from "@local-types/api";
-import { RefinedToAttributeParams, ToAttributeParams } from "@local-types/utility";
+import { Alarm, EntityType } from "@local-types/api";
+import { RefinedToAttributeParams } from "@local-types/utility";
 import { Attributes } from "../abstracts";
 
 export class AlarmAttributes extends Attributes<Alarm> {
