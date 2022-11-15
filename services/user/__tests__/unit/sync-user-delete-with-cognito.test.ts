@@ -1,8 +1,6 @@
 import { Given, HandlerArguments } from "@utilities/testing";
 import { handler } from "../../functions/sync-user-delete-with-cognito";
 
-
-
 describe("Sync User Delete With Cognito", () => {
 
 	it("Deletes a user from cognito", async () => {
@@ -19,12 +17,10 @@ describe("Sync User Delete With Cognito", () => {
 			// getting a user that's not in the pool throws an error, so our test will pass in the catch block
 			await Given.user.fromPool(id);
 			// if fromPool did not throw an error, fail the test
-			expect(true).toBe(false);
+			throw new Error("Expect operation Given.user.fromPool to fail");
 
-		} catch {
-
-			expect(true).toBe(true);
-    
+		} catch(error:any) {
+			expect(error.message).toBe("User does not exist.");
 		}
 
 	});

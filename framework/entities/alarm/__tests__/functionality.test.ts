@@ -2,7 +2,7 @@ import { chance } from "@utilities/constants";
 import { Given } from "@utilities/testing";
 import { EntityErrorTypes } from "../../types";
 import { UserEntityFactory } from "../../user/index.ts";
-import { AlarmEntityFactory } from "../alarm.tsp";
+import { AlarmEntityFactory } from "../alarm.tspp";
 
 
 describe("AlarmEntityGroup Functionality Tests", () => {

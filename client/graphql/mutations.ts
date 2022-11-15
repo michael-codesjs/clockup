@@ -5,20 +5,37 @@
 export const updateUser = /* GraphQL */ `
   mutation UpdateUser($input: UpdateUserInput) {
     updateUser(input: $input) {
-      id
-      entityType
-      created
-      modified
-      discontinued
-      email
-      name
-      alarms
+      ... on User {
+        id
+        entityType
+        created
+        modified
+        discontinued
+        email
+        name
+        alarms
+      }
+      ... on ErrorResponse {
+        type
+        message
+        code
+      }
     }
   }
 `;
 export const deleteUser = /* GraphQL */ `
   mutation DeleteUser {
-    deleteUser
+    deleteUser {
+      ... on OperationResponse {
+        success
+        message
+      }
+      ... on ErrorResponse {
+        type
+        message
+        code
+      }
+    }
   }
 `;
 export const upsertAlarm = /* GraphQL */ `

@@ -1,11 +1,10 @@
 import Entities from "@entities";
 import type { User } from "@local-types/api";
-import { configureEnviromentVariables } from "@utilities/functions";
 import { AppSyncIdentityCognito, AppSyncResolverHandler } from "aws-lambda";
+import { withResolverStandard } from "@hofs/with-resolver-standard";
+import { EntityErrorMessages } from "../../../framework/entities/types";
 
-configureEnviromentVariables();
-
-export const handler: AppSyncResolverHandler<null,User> = async (event) => {
+const main: AppSyncResolverHandler<null,User> = async (event) => {
 
 	const { sub } = event.identity as AppSyncIdentityCognito;
 
@@ -13,6 +12,10 @@ export const handler: AppSyncResolverHandler<null,User> = async (event) => {
 		.User({ id: sub })
 		.sync();
 
+	if(!user.composable()) throw new Error(EntityErrorMessages.USER_NOT_FOUND); // user is discontinued
+
 	return user.graphQlEntity();
 
 };
+
+export const handler = withResolverStandard(main);

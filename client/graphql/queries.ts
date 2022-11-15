@@ -5,14 +5,21 @@
 export const getProfile = /* GraphQL */ `
   query GetProfile {
     getProfile {
-      id
-      entityType
-      created
-      modified
-      discontinued
-      email
-      name
-      alarms
+      ... on User {
+        id
+        entityType
+        created
+        modified
+        discontinued
+        email
+        name
+        alarms
+      }
+      ... on ErrorResponse {
+        type
+        message
+        code
+      }
     }
   }
 `;

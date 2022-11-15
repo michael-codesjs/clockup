@@ -1,7 +1,6 @@
 import { Given, HandlerArguments } from "@utilities/testing";
 import { handler } from "../../functions/delete-user";
 
-
 describe("Delete User", () => {
 
 	it("Deletes a user", async () => {

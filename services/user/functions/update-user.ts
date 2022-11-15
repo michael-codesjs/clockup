@@ -1,20 +1,20 @@
 
-import { AppSyncIdentityCognito, AppSyncResolverHandler } from "aws-lambda";
 import Entities from "@entities";
 import { MutationUpdateUserArgs, User } from "@local-types/api";
-import { configureEnviromentVariables } from "@utilities/functions";
+import { AppSyncIdentityCognito, AppSyncResolverHandler } from "aws-lambda";
+import { withResolverStandard } from "@hofs/with-resolver-standard";
 
-configureEnviromentVariables();
-
-export const handler: AppSyncResolverHandler<MutationUpdateUserArgs, User> = async (event) => {
+const main: AppSyncResolverHandler<MutationUpdateUserArgs, User> = async (event) => {
 
 	const { sub } = event.identity as AppSyncIdentityCognito;
 	const { email, name } = event.arguments.input;
 
-	const user = await Entities
-		.User({ id: sub, email, name })
-		.sync();
+	let user = Entities.User({ id: sub, email, name });
+	await user.syncCognito(); // update cognito first
+	user = await user.sync();
 
 	return user.graphQlEntity();
 
 };
+
+export const handler = withResolverStandard(main);

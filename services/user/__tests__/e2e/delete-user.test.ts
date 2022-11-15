@@ -1,3 +1,4 @@
+import { OperationResponse } from "@local-types/api";
 import { Given, When } from "@utilities/testing";
 
 describe("Delete User", () => {
@@ -11,7 +12,7 @@ describe("Delete User", () => {
 
 		const deleteResult = await When.user.delete(); // delete user e2e
 
-		expect(deleteResult).toBe(true);
+		expect((deleteResult as OperationResponse).success).toBe(true);
 
 		const postDeleteDbRecord = await Given.user.byId(user.id); // get user record from the table(should not exist tho)
 		expect(postDeleteDbRecord).toBe(null);

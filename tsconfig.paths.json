@@ -8,6 +8,8 @@
       "@lib/*": ["lib/*"],
       "@plugin-configs/*": ["plugin-configs/*"],
       "@utilities/*": ["utilities/*"],
+      "@hofs/*": ["hofs/*"],
+      "@middleware/*": ["middleware/*"],
       "@local-types/*": ["types/*"]
     }
   }

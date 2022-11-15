@@ -7,6 +7,9 @@ export type UpdateUserInput = {
   name?: string | null,
 };
 
+export type UserOutput = User | ErrorResponse
+
+
 export type User = {
   __typename: "User",
   id: string,
@@ -16,7 +19,7 @@ export type User = {
   discontinued: boolean,
   email: string,
   name: string,
-  alarms?: number | null,
+  alarms: number,
 };
 
 export type ICommon = {
@@ -67,6 +70,31 @@ export type AlarmSnoozeSettings = {
   interval: number,
 };
 
+export type ErrorResponse = {
+  __typename: "ErrorResponse",
+  type: ErrorTypes,
+  message?: string | null,
+  code?: number | null,
+};
+
+export enum ErrorTypes {
+  NOT_FOUND = "NOT_FOUND",
+  MALFOMED_INPUT = "MALFOMED_INPUT",
+  INTERNAL_ERROR = "INTERNAL_ERROR",
+  CREATE_FAILED = "CREATE_FAILED",
+  UPDATE_FAILED = "UPDATE_FAILED",
+}
+
+
+export type OperationOutput = OperationResponse | ErrorResponse
+
+
+export type OperationResponse = {
+  __typename: "OperationResponse",
+  success: boolean,
+  message?: string | null,
+};
+
 export type UpsertAlarmInput = {
   id?: string | null,
   name?: string | null,
@@ -92,21 +120,37 @@ export type UpdateUserMutationVariables = {
 };
 
 export type UpdateUserMutation = {
-  updateUser?:  {
-    __typename: "User",
-    id: string,
-    entityType: EntityType,
-    created: string,
-    modified?: string | null,
-    discontinued: boolean,
-    email: string,
-    name: string,
-    alarms?: number | null,
-  } | null,
+  updateUser: ( {
+      __typename: "User",
+      id: string,
+      entityType: EntityType,
+      created: string,
+      modified?: string | null,
+      discontinued: boolean,
+      email: string,
+      name: string,
+      alarms: number,
+    } | {
+      __typename: "ErrorResponse",
+      type: ErrorTypes,
+      message?: string | null,
+      code?: number | null,
+    }
+  ) | null,
 };
 
 export type DeleteUserMutation = {
-  deleteUser?: boolean | null,
+  deleteUser: ( {
+      __typename: "OperationResponse",
+      success: boolean,
+      message?: string | null,
+    } | {
+      __typename: "ErrorResponse",
+      type: ErrorTypes,
+      message?: string | null,
+      code?: number | null,
+    }
+  ) | null,
 };
 
 export type UpsertAlarmMutationVariables = {
@@ -140,17 +184,23 @@ export type UpsertAlarmMutation = {
 };
 
 export type GetProfileQuery = {
-  getProfile?:  {
-    __typename: "User",
-    id: string,
-    entityType: EntityType,
-    created: string,
-    modified?: string | null,
-    discontinued: boolean,
-    email: string,
-    name: string,
-    alarms?: number | null,
-  } | null,
+  getProfile: ( {
+      __typename: "User",
+      id: string,
+      entityType: EntityType,
+      created: string,
+      modified?: string | null,
+      discontinued: boolean,
+      email: string,
+      name: string,
+      alarms: number,
+    } | {
+      __typename: "ErrorResponse",
+      type: ErrorTypes,
+      message?: string | null,
+      code?: number | null,
+    }
+  ) | null,
 };
 
 export type GetAlarmQueryVariables = {

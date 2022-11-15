@@ -1,17 +1,22 @@
-import { AppSyncIdentityCognito, AppSyncResolverHandler } from "aws-lambda";
 import Entities from "@entities";
-import { configureEnviromentVariables } from "@utilities/functions";
+import { withResolverStandard } from "@hofs/with-resolver-standard";
+import { OperationResponse } from "@local-types/api";
+import { AppSyncIdentityCognito, AppSyncResolverHandler } from "aws-lambda";
 
-configureEnviromentVariables();
-
-export const handler:AppSyncResolverHandler<null,any> = async (event) => {
+const main: AppSyncResolverHandler<null, OperationResponse> = async (event) => {
 
 	const { sub } = event.identity as AppSyncIdentityCognito;
 
-	const user = await Entities
+	await Entities
 		.User({ id: sub })
 		.terminate(); // delete user
 
-	return user.graphQlEntity() === null;
+	return {
+		__typename: "OperationResponse",
+		success: true,
+		message: "User deleted successfully."
+	};
 
 };
+
+export const handler = withResolverStandard(main);

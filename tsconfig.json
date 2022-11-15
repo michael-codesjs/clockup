@@ -13,7 +13,7 @@
   },
   "include": [
     "**/*.ts",
-    "**/*.js", "middleware",
+    "**/*.js", "framework/entities/alarm/alarm.tsp",
   ],
   "exclude": [
     "node_modules/**/*",

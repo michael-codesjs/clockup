@@ -1,6 +1,7 @@
 import Entities from "@entities";
-import { User } from "@local-types/api";
+import { ErrorTypes, User } from "@local-types/api";
 import { Given, HandlerArguments, Then } from "@utilities/testing";
+import { EntityErrorMessages } from "../../../../framework/entities/types";
 import { handler } from "../../functions/get-profile";
 
 describe("Get User", () => {
@@ -16,6 +17,16 @@ describe("Get User", () => {
 
 		Then.user_VS_user(lambdaResponse as User,instance.graphQlEntity());
 
+	});
+
+	it("Fails with user not found error when trying to get a user that does not exist", async () => {
+		const { event, context } = HandlerArguments.user.get("Some Non Existent User Id XD");
+		const lambdaResponse = await handler(event, context, () => {});
+		expect(lambdaResponse).toMatchObject({
+      __typename: 'ErrorResponse',
+      type: ErrorTypes.NotFound,
+      message: EntityErrorMessages.USER_NOT_FOUND,
+    });
 	});
 
 });
