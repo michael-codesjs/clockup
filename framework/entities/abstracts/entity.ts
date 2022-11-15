@@ -19,7 +19,7 @@ export abstract class Entity implements IEntity, IGraphQlEntity {
 	/** Entity DynamoDB keys for the table and all its Global Secondary Indexes */
 	public abstract keys: Keys;
 	/** Entity attributes */
-	public abstract attributes: Attributes;
+	public abstract attributes: Attributes<types.ICommon>;
 
 	abstract readonly TypeOfSelf: typeof Entity;
 	abstract readonly NullTypeOfSelf: typeof Entity;
@@ -41,7 +41,7 @@ export abstract class Entity implements IEntity, IGraphQlEntity {
 	 * @abstract
 	 */
 
-	graphQlEntity(): (types.ICommom & { [k: string]: any }) | null {
+	graphQlEntity(): (types.ICommon & { [k: string]: any }) | null {
 		return this.attributes.collective();
 	}
 

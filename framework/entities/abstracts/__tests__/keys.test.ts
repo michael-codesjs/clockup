@@ -1,3 +1,4 @@
+import { EntityType } from "@local-types/api";
 import { Entity, Keys } from "./utilities/instantiable-abstracts";
 
 describe("Keys", () => {
@@ -6,7 +7,8 @@ describe("Keys", () => {
   let entity: Entity;
 
   beforeEach(() => {
-    entity = new Entity({ id: "ID" });
+    entity = new Entity();
+    entity.attributes.parse({ id: "ID", entityType: EntityType.User });
     keys = new Keys(entity);
   });
 
@@ -15,8 +17,8 @@ describe("Keys", () => {
     // primary && entityIndex
 
     const key = Keys.constructKey({
-      descriptors: ["Entity"],
-      values: ["ID"]
+      descriptors: [entity.attributes.get("entityType")],
+      values: [entity.attributes.get("id")]
     });
     
     expect(keys.primary()).toMatchObject({
@@ -24,7 +26,7 @@ describe("Keys", () => {
     });
 
     expect(keys.entityIndex()).toMatchObject({
-      EntityIndexPK: "Entity"
+      EntityIndexPK: entity.attributes.get("entityType")
       // REVIEW: not gonna test for EntityIndexSK for now
     });
 
@@ -75,7 +77,7 @@ describe("Keys", () => {
     const allOutput = {
       PK: key,
       SK: key,
-      EntityIndexPK: "Entity",
+      EntityIndexPK: entity.attributes.get("entityType"),
       ...GSI_output
     }
 

@@ -101,14 +101,8 @@ export class Attributes<T extends Record<string, any>> extends Publisher impleme
   }
 
   putable(): boolean {
-    const notPutable = Object.values(this.Attributes).some(attribute => {
-      if(attribute.value === null) {
-        console.log("Putable Attr:",attribute.putable());
-      }
-      return attribute.putable() === false;
-    });
-    console.log("Not:",notPutable);
-    return notPutable ? false : true;
+    const notPutable = Object.values(this.Attributes).some(attribute => attribute.putable() === false);
+    return !notPutable;
   }
 
 }

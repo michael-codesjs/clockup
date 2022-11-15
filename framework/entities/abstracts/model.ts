@@ -30,40 +30,22 @@ export class Model {
 	/** DynamoDb item input for upsert operations on the table for the entity */
 	private input() {
 		const input = {
-			...this.entity.keys.all(),
+			...this.entity.keys.entityIndex(),
+			...this.entity.keys.GSIs(),
 			...this.entity.attributes.collective(),
 		};
 		return this.getNonNullAttributes(input) as typeof input;
 	}
 
 	private upsertParams() {
-
-		let attributes = this.input();
-		let params: any;
-
-		if (!this.entity.attributes.putable()) { // we don't have enough attributes to write the entity to the database so we assume we are trying to update the entity
-			delete attributes.created; // never should we override created
-			console.log("updating");
-			params = dynamoDbExpression({
-				Update: attributes,
-				Key: this.entity.keys.primary(),
-				ReturnValues: "ALL_NEW",
-				Condition: {
-					id: "attribute_exists"
-				},
-			});
-		} else {
-			delete attributes.PK;
-			delete attributes.SK;
-			params = dynamoDbExpression({
-				Key: this.entity.keys.primary(),
-				ReturnValues: "ALL_NEW",
-				Update: attributes
-			});
-		}
-
-		return params;
-
+		const attributes = this.input();
+		const params: any = {
+			Update: attributes,
+			Key: this.entity.keys.primary(),
+			ReturnValues: "ALL_NEW",
+		};
+		if (!this.entity.attributes.putable()) params.Condition = { id: "attribute_exists" };
+		return dynamoDbExpression(params);
 	}
 
 	/** gets an entities record from the table using it's Partition and Sort key values */

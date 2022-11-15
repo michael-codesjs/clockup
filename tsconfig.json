@@ -13,7 +13,7 @@
   },
   "include": [
     "**/*.ts",
-    "**/*.js", "framework/entities/user/index.tsp", "framework/entities/user/attributes.tsp", "utilities/testing/given/alarm.tsp", "framework/entities/alarm/alarm.tsp", "framework/entities/abstracts/__tests__/keys.test.tsp",
+    "**/*.js",
   ],
   "exclude": [
     "node_modules/**/*",
