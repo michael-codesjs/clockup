@@ -81,7 +81,7 @@ export type AlarmRingTime = {
 
 export type User = ICommon & {
   __typename?: 'User';
-  alarms?: Maybe<Scalars['Int']>;
+  alarms: Scalars['Int'];
   created: Scalars['AWSDateTime'];
   discontinued: Scalars['Boolean'];
   email: Scalars['AWSEmail'];
@@ -311,7 +311,7 @@ export type AlarmRingTimeResolvers<ContextType = any, ParentType extends Resolve
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
-  alarms?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  alarms?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   created?: Resolver<ResolversTypes['AWSDateTime'], ParentType, ContextType>;
   discontinued?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['AWSEmail'], ParentType, ContextType>;

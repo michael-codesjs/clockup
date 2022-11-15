@@ -6,11 +6,11 @@ import { ICreatable, ISubscriber } from "./interfaces";
 type PartitionKey = {
 	partition: string,
 	sort?: string
-}
+};
 
-export abstract class Keys implements ISubscriber {
+export class Keys implements ISubscriber {
 
-	protected Entity: Entity | (Entity & ICreatable);
+	public Entity: Entity | (Entity & ICreatable);
 	private Primary: { PK: string, SK: string };
 	private EntityIndex: { EntityIndexPK: string, EntityIndexSK: string }; /* EntityIndex is a global secondary index we force every entity to have, it is infact GSI_0 */
 	/* gsi keys */
@@ -22,11 +22,15 @@ export abstract class Keys implements ISubscriber {
 	private GSI_6: { GSI6_PK: string, GSI6_SK: string };
 	private GSI_7: { GSI7_PK: string, GSI7_SK: string };
 
+	/**
+	 * Use to setup your GSI Keys.
+	 * Also called when entity attributes changed.
+	 */
+
 	constructor(entity: Entity) {
 		this.Entity = entity;
 		entity.attributes.subscribe(this);
-		this.configureDefault();
-		this.configure();
+		this.update();
 	}
 
 	/**
@@ -37,8 +41,7 @@ export abstract class Keys implements ISubscriber {
 		const entityType = this.Entity.attributes.get("entityType");
 		const id = this.Entity.attributes.get("id");
 		const created = this.Entity.attributes.get("created");
-		const discontinued = this.Entity.attributes.get("discontinued");
-
+		
 		let key = Keys.constructKey({
 			descriptors: [entityType],
 			values: [id]
@@ -67,16 +70,22 @@ export abstract class Keys implements ISubscriber {
 
 
 		this.setEntityIndex({
-			entity: entityType,
-			sort: Keys.constructKey({
+			entity: this.constructContinuityDependantKey({
 				descriptors: [entityType],
-				values: discontinued ? [created, "discontinued"] : [created]
+				values: []
+			}),
+			sort: this.constructContinuityDependantKey({
+				descriptors: [entityType],
+				values: [created]
 			})
 		});
 
 	}
 
-	abstract configure(): void;
+	/** updates an entities desired GSI keys */
+	configure() {
+
+	}
 
 	/** updates keys in response to attribute changes */
 	update(): void {
@@ -100,7 +109,7 @@ export abstract class Keys implements ISubscriber {
 		return this.EntityIndex;
 	}
 
-	private setEntityIndex(params: { entity: EntityType, sort: string }) {
+	private setEntityIndex(params: { entity: EntityType | string, sort: string }) {
 		const { entity, sort } = params;
 		this.EntityIndex = {
 			EntityIndexPK: entity,
@@ -154,30 +163,35 @@ export abstract class Keys implements ISubscriber {
 			prefixes = [],
 		} = params;
 
-		let key = ''
+		let key = '';
 
 		for (const i in descriptors) {
-			let value = values[i]
-
+			let value = values[i];
 			if (typeof value === 'string') {
-				value = value.toLowerCase().replace(/ /g, '_')
+				value = value.toLowerCase().replace(/ /g, '_');
 			}
-
-			const descriptor = descriptors[i].toUpperCase().replace(/ /g, '_')
-
-			key += (key.length > 0 ? '#' : '') + descriptor + '#' + value
+			const descriptor = descriptors[i].toUpperCase().replace(/ /g, '_');
+			key += (key.length > 0 ? '#' : '') + descriptor + (value ? '#' + value : "");
 		}
 
 		for (const i in suffixes) {
-			key = key + '#' + suffixes[i]
+			key = key + '#' + suffixes[i];
 		}
 
 		for (let i = prefixes.length - 1; i >= 0; i--) {
-			key = prefixes[i] + '#' + key
+			key = prefixes[i] + '#' + key;
 		}
 
 		return key;
 
+	}
+
+	constructContinuityDependantKey(params: CompositeKey) {
+		const discontinued = this.Entity.attributes.get("discontinued");
+		if (discontinued) {
+			params.suffixes = (params.suffixes || []).concat(["discontinued"]);
+		}
+		return Keys.constructKey(params);
 	}
 
 }

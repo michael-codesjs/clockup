@@ -1,13 +1,13 @@
-
 // import { AlarmEntityFactory } from "./alarm";
-// import { UserEntityFactory } from "./user/index.tsp";
+
+import { UserFactory } from "./user";
 
 class EntitiesFactoryCollection {
 
 	private constructor() {}
 	static readonly instance = new EntitiesFactoryCollection();
 
-	// readonly User = UserEntityFactory.createEntity; /* User Entity Group Factory Method */
+	readonly User = UserFactory.createEntity; /* User Entity Group Factory Method */
 	// readonly Alarm = AlarmEntityFactory.createEntity;
 	
 }

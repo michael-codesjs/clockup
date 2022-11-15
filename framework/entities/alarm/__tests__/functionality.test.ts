@@ -1,7 +1,7 @@
 import { chance } from "@utilities/constants";
 import { Given } from "@utilities/testing";
 import { EntityErrorTypes } from "../../types";
-import { UserEntityFactory } from "../../user/index.tsp";
+import { UserEntityFactory } from "../../user/index.ts";
 import { AlarmEntityFactory } from "../alarm.tsp";
 
 

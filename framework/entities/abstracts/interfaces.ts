@@ -1,5 +1,6 @@
 import { Alarm, ICommon, User } from "@local-types/api";
 import { AbsoluteUser, NullUser } from "@local-types/index";
+import { Attributes } from "./attributes";
 
 export interface IEntity {
 
@@ -15,7 +16,7 @@ export interface ICreatable {
 }
 
 export interface IUser extends IEntity {
-  attributes(): User
+  attributes: Attributes<User>
 }
 
 export interface IAlarm extends IEntity, ICreatable {

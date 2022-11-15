@@ -12,8 +12,6 @@ import { Model } from "./model";
  * @param {types.EntityType} entityType type of entity.
  */
 
-type EntityParams = { id?: string, created?: string, modified?: string, discontinued?: boolean } | null
-
 export abstract class Entity implements IEntity, IGraphQlEntity {
 
 	/** Entity DynamoDB keys for the table and all its Global Secondary Indexes */
@@ -27,22 +25,15 @@ export abstract class Entity implements IEntity, IGraphQlEntity {
 
 	protected model: Model = new Model(this);
 
-	protected constructor(params:any) {
-		
-	}
+	constructor({ }: {} = {}) { } // {}: {} = {} is for constructor signature purposes
 
 	/**
-	 * sets the tables partition and entity index gsi keys.
-	 * These are the only keys that should not be handled by the derived entity classes.
-	 */
-
-	/**
-	 * @returns {Object} GraphQL representation of an entity defined the schema
+	 * @returns {Object extends types.ICommon} GraphQL representation of an entity defined the schema
 	 * @abstract
 	 */
 
-	graphQlEntity(): (types.ICommon & { [k: string]: any }) | null {
-		return this.attributes.collective();
+	graphQlEntity(): null | Record<string, any> {
+		return null
 	}
 
 	/**

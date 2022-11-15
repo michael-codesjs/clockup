@@ -1,1 +1,0 @@
-export { UserEntityFactory } from "./user";

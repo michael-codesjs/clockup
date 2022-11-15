@@ -1,17 +1,7 @@
 import { EntityType, ICommon } from "@local-types/api";
-import {
-  Attributes, Entity as AbstractEntity, Keys as AbstractKeys
-} from "../..";
+import { Attributes, Entity as AbstractEntity, Keys } from "../..";
 
 // INSTANTIABLE VERSIONS OF ABSTRACT CLASSES TO BE USED FOR TESTING
-
-
-export class Keys extends AbstractKeys {
-  configure(): void {
-
-  }
-}
-
 type InstatiableEntity = ICommon & {
   attribute1: string,
   attribute2: string,
@@ -36,12 +26,22 @@ export class Entity extends AbstractEntity {
   keys: Keys;
 
   constructor(params?: { id?: string }) {
-    super(null);
+    const attributes: Attributes<InstatiableEntity> = new Attributes<InstatiableEntity>({
+      attribute1: { initial: null },
+      attribute2: { initial: null },
+      attribute3: {
+        initial: 1,
+        validate: value => value > 2
+      }
+    });
+
+    super();
     this.attributes.parse({
       ...params,
       entityType: EntityType.User
     });
     this.keys = new Keys(this);
+    this.attributes.subscribe(this.keys);
   }
 
   async sync() {

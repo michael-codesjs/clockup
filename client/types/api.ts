@@ -19,8 +19,8 @@ export type User = {
   alarms?: number | null,
 };
 
-export type ICommom = {
-  __typename: "ICommom",
+export type ICommon = {
+  __typename: "ICommon",
   id: string,
   entityType: EntityType,
   created: string,

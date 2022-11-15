@@ -28,7 +28,7 @@ type User implements ICommon {
   discontinued: Boolean!
   email: AWSEmail!
   name: String!
-  alarms: Int
+  alarms: Int!
 }
 
 type AlarmRingTime {

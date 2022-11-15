@@ -24,8 +24,10 @@ export type AttributeParams<T,I> = {
 
 export type ImmutableAttributes = "entityType" | "id" | "created";
 
-export enum EntityErrorTypes {
-  CREATABLE_TERMINATE_MISSING_CREATOR = "Cannot terminate creatable entity without specifying it's creator"
+export enum EntityErrorMessages {
+  CREATABLE_TERMINATE_MISSING_CREATOR = "Cannot terminate creatable entity without specifying it's creator",
+  USER_VARIANT_NOT_FOUND = "Could not instanciate variant of from entity group *User*",
+  USER_NOT_FOUND = "User not found. Failed to sync NullUser to User",
 }
 
 export type NullEntityAttributes = { id: string };

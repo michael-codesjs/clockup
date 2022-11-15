@@ -1,5 +1,6 @@
 import { EntityType } from "@local-types/api";
-import { Entity, Keys } from "./utilities/instantiable-abstracts";
+import { Entity } from "./utilities/instantiable-abstracts";
+import { Keys } from "../keys";
 
 describe("Keys", () => {
 
@@ -83,6 +84,15 @@ describe("Keys", () => {
 
     expect(keys.all()).toMatchObject(allOutput);
 
+  });
+
+  test("Keys.constructContinuityDependantKey", () => {
+    entity.attributes.set({ discontinued: true });
+    const entityIndex = entity.keys.entityIndex();
+    expect(entityIndex).toMatchObject({
+      EntityIndexPK: entity.attributes.get("entityType")+"#"+"discontinued",
+      EntityIndexSK: entity.attributes.get("entityType")+"#"+entity.attributes.get("created").toLowerCase()+"#"+"discontinued"
+    });
   });
 
 });

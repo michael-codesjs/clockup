@@ -17,13 +17,13 @@ class ThenUtility {
 
 	readonly dateMatch = () => expect.stringMatching(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?Z?/g);
 
+	/** tests one object against the other for user attributes */
 	user_VS_user(object:User, object1:User) {
-		/* tests one object against the other for user attributes */
 		const { id, name, email } = object1;
 		expect(object).toMatchObject({
 			id, name, email,
 			entityType: types.EntityType.User,
-			created: this.dateMatch()
+			created: this.dateMatch(),
 		});
 	}
 

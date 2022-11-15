@@ -13,9 +13,9 @@ export class Publisher implements IPublisher {
   }
 
   publish() {
-    this.subscribers.forEach(subscriber => {
+    for(const subscriber of this.subscribers) {
       subscriber.update();
-    });
+    };
   }
   
 }

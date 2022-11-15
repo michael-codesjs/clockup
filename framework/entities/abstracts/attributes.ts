@@ -1,4 +1,5 @@
 import { ICommon, EntityType } from "@local-types/api";
+import { RefinedToAttributeParams, ToAttributeParams } from "@local-types/utility";
 import { ulid } from "ulid";
 import { AttributeParams, AttributesParams, ImmutableAttributes } from "../types";
 import { Attribute } from "./attribute";
@@ -11,17 +12,11 @@ type ToAttributeRecord<T extends Record<string, any>> = {
   [Key in keyof T]: Attribute<T[Key], boolean>
 };
 
-type ToAttributeParams<T extends Record<string, any>> = {
-  [Key in keyof T]: Pick<AttributeParams<T[Key], boolean>, "required" | "validate" | "immutable"> & {
-    initial?: T[Key] | null
-  }
-};
-
 export class Attributes<T extends Record<string, any>> extends Publisher implements IPutable {
 
   private Attributes: ToAttributeRecord<T> & ToAttributeRecord<ICommon> = {} as ToAttributeRecord<T> & ToAttributeRecord<ICommon>;
 
-  constructor(params: ToAttributeParams<Omit<T, keyof ICommon>>) {
+  constructor(params: RefinedToAttributeParams<T>) {
 
     super();
 
@@ -29,7 +24,7 @@ export class Attributes<T extends Record<string, any>> extends Publisher impleme
 
       entityType: new Attribute<EntityType, true>({
         required: true,
-        value: null,
+        value: "Entity" as EntityType, // safe to cast, validator will stop you from writing it to the table
         validate: entityType => Object.values(EntityType).includes(entityType),
         immutable: true
       }),
@@ -52,16 +47,20 @@ export class Attributes<T extends Record<string, any>> extends Publisher impleme
 
   parse(attributes: Partial<T> & AttributesParams) {
 
-    const { discontinued, created, id, ...rest } = attributes;
+    const { entityType, discontinued, created, id, ...rest } = attributes;
 
     // some special cases were we set things manually
+    this.Attributes.entityType.value = entityType;
     this.Attributes.discontinued.value = discontinued || false;
     this.Attributes.created.value = created || new Date().toJSON();
     this.Attributes.id.value = id || ulid();
 
     for (let key in rest) {
+      if(!this.Attributes[key]) continue;
       this.Attributes[key].value = attributes[key]
     }
+
+    this.publish();
 
   }
 
@@ -76,10 +75,11 @@ export class Attributes<T extends Record<string, any>> extends Publisher impleme
     Object.entries(attributes).forEach(([key, value]) => {
       if (!(key in this.Attributes)) return; // REVIEW: not sure at the moment but can throw an error here or console.warn
       const attribute = this.Attributes[key];
-      if (attribute.immutable) throw new Error(`Attempting to mutate immutable attribute ${key}`);
+      if (attribute.immutable) return;
       attribute.value = value;
     });
     this.Attributes.modified.value = new Date().toJSON();
+    this.publish(); // notify subscribers of changes made to the attributes
   }
 
   get<K extends keyof (ICommon & T)>(attribute: K): (ICommon & T)[K] {
