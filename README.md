@@ -5,7 +5,7 @@ At the moment, the only services completed & working are the authentication & us
 * [DynamoDB Schema](https://docs.google.com/spreadsheets/d/1EYoTWwzbV6BqmQ7m5NTOcZJNXM3eSF4EHg3DeTIVX9k/edit?usp=sharing)
 
 ## **Installation**
-Running `npm install` in the root project directory should set you up with all the project dependencies.
+Running `yarn install` in the root project directory should set you up with all the project dependencies.
 
 ## **Deploying**
 
