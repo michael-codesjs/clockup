@@ -5,11 +5,6 @@ import { Attributes } from "../attributes";
 
 describe("Attributes", () => {
 
-	const getRandomEntityType = () => {
-		const entityTypes = Object.values(EntityType);
-		return entityTypes[chance.integer({ min: 0, max: entityTypes.length - 1 })];
-	};
-
 	let entityType: EntityType;
 	let id: string;
 	let created: string;

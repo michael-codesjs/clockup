@@ -8,6 +8,7 @@
     "setup-dev": "node setup-dev.js",
     "codegen": "graphql-codegen --config codegen.yml",
     "documentation": "npx jsdoc -c jsdoc.json",
+    "coverage": "npx jest --coverage",
     "test": "jest --verbose",
     "middleware-tests": "jest --verbose middleware/__tests__",
     "entity-tests:abstract": "jest --verbose framework/entities/abstracts/__tests__",

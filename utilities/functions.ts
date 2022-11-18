@@ -2,7 +2,7 @@
 import { config, stacks } from "./constants";
 import { config as dotenvConfig } from "dotenv";
 import { ZodError } from "zod";
-import { ErrorResponse, ErrorTypes } from "@local-types/api";
+import { EntityType, ErrorResponse, ErrorTypes } from "@local-types/api";
 
 export function configureEnviromentVariables() {
 	dotenvConfig();
@@ -76,3 +76,15 @@ export const getErrorResponse = (error: ZodError | Error, type: ErrorTypes, code
 		code
 	};
 };
+
+export const getEntityTypes = () => Object.values(EntityType);
+
+export const getRandomEntityType = () => {
+	const entityTypes = getEntityTypes();
+	return entityTypes[Math.round(Math.random()*entityTypes.length-1)];
+};
+
+export const getRandomCreatableEntityType = () => {
+	const entityTypes = getEntityTypes().filter(entityType => entityType !== EntityType.User);
+	return entityTypes[Math.round(Math.random()*entityTypes.length-1)];
+}

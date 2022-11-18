@@ -1,6 +1,7 @@
 import { EntityType } from "@local-types/api";
-import { Entity } from "./utilities/instantiable-abstracts";
+import { CreatableEntity, Entity } from "./utilities/instantiable-abstracts";
 import { Keys } from "../keys";
+import { getRandomCreatableEntityType, getRandomEntityType } from "@utilities/functions";
 
 describe("Keys", () => {
 
@@ -13,6 +14,7 @@ describe("Keys", () => {
 		keys = new Keys(entity);
 	});
 
+	/*
 	test("Keys.primary && Keys.entityIndex && Keys.setGSI && Keys.batchSetGSIs && Keys.GSIs && Keys.all", () => {
 
 		// primary && entityIndex
@@ -93,6 +95,18 @@ describe("Keys", () => {
 			EntityIndexPK: entity.attributes.get("entityType")+"#"+"discontinued",
 			EntityIndexSK: entity.attributes.get("entityType")+"#"+entity.attributes.get("created").toLowerCase()+"#"+"discontinued"
 		});
+	});
+	
+	*/
+
+	test("ICreatable Keys.primary", () => {
+
+		const id = "ID";
+		const entityType = EntityType.Alarm;
+
+		const entity = new CreatableEntity({ id, entityType });
+		console.log(entity.keys.primary());
+
 	});
 
 });

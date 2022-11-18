@@ -1,5 +1,7 @@
 import { EntityType, ICommon } from "@local-types/api";
+import { AbsoluteUser } from "@local-types/index";
 import { Attributes, Entity as AbstractEntity, Keys } from "../..";
+import { ICreatable } from "../../interfaces";
 
 // INSTANTIABLE VERSIONS OF ABSTRACT CLASSES TO BE USED FOR TESTING
 type InstatiableEntity = ICommon & {
@@ -25,16 +27,22 @@ export class Entity extends AbstractEntity {
 
 	keys: Keys = new Keys(this);
 
-	constructor(params?: { id?: string }) {
+	constructor(params?: { id?: string, entityType?: EntityType }) {
 		super();
+		const { id, entityType } = params || {};
 		this.attributes.parse({
-			...params,
-			entityType: EntityType.User
+			id, entityType: entityType || EntityType.User
 		});
 	}
 
 	async sync() {
 		return this;
 	}
+
+}
+
+export class CreatableEntity extends Entity implements ICreatable {
+	
+	creator: AbsoluteUser = new Entity() as any as AbsoluteUser;
 
 }

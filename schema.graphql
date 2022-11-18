@@ -121,6 +121,6 @@ type Mutation {
   
   updateUser(input:UpdateUserInput): UserOutput @aws_cognito_user_pools
   deleteUser: OperationOutput @aws_cognito_user_pools
-
   upsertAlarm(input:UpsertAlarmInput!): Alarm @aws_cognito_user_pools
+
 }

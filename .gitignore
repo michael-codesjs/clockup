@@ -4,6 +4,7 @@ jspm_packages
 
 # Docs
 documentation
+coverage
 
 # Serverless directories
 .serverless

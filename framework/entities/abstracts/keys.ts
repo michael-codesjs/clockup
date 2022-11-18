@@ -49,6 +49,8 @@ export class Keys implements ISubscriber {
 
 		const creator: Entity | null = "creator" in this.Entity ? this.Entity.creator : null;
 
+		console.log("Creator:", creator);
+
 		if (creator) {
 
 			const creatorId = creator.attributes.get("id");
@@ -61,6 +63,8 @@ export class Keys implements ISubscriber {
 				}),
 				sort: key
 			});
+
+			console.log("Primary:", this.Primary);
 
 		} else {
 			this.setPrimary({

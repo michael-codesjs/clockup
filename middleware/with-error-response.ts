@@ -8,12 +8,15 @@ import { EntityErrorMessages } from "../framework/entities/types";
 export const withErrorResponse = <A, R>(): middy.MiddlewareObj<AppSyncResolverEvent<A>, R> => {
 
 	const onError: middy.MiddlewareFn<AppSyncResolverEvent<A>, R | ErrorResponse> = async request => {
+
 		const error = request.error;
+
 		request.response = (
 			error.name === "ZodError" || error.message === "The conditional request failed" ? getErrorResponse(error, ErrorTypes.MalfomedInput) :
 				error.message === EntityErrorMessages.USER_NOT_FOUND || error.message === "User does not exist." ? getErrorResponse(error, ErrorTypes.NotFound) :
 					getErrorResponse(error, ErrorTypes.InternalError)
 		);
+
 	};
 
 	return {

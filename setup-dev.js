@@ -14,8 +14,8 @@ const services = [
 console.log("\n\n  -- Generating Enviroment Variables --\n");
 
 for (let service of services) {
-  execSync(`cd services/${service} && sls export-env`);
+  execSync(`cd services/${service} && npx sls export-env`);
 }
-execSync("cd services/test && sls export-env --filename ../../.env");
+execSync("cd services/test && npx sls export-env --filename ../../.env");
 
 console.log("\n  -- Generated Successfully --");

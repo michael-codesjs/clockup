@@ -8,7 +8,7 @@ generates:
       - '@graphql-codegen/typescript'
       - typescript-operations
       - typescript-resolvers
-      # - typescript-validation-schema
+      - typescript-validation-schema
     config:
       schema: zod
       notAllowEmptyString: true
