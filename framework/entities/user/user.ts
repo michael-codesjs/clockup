@@ -45,6 +45,16 @@ namespace UserEntityGroup {
 			return new User(Item as AbsoluteUserAttributes);
 		}
 
+		async terminateCognito() {
+
+			await cognitoProvider()
+				.adminDeleteUser({
+					Username: this.attributes.get("id"),
+					UserPoolId: COGNITO_USER_POOL_ID!
+				})
+				.promise();
+		}
+
 	}
 
 	export class User extends Entity implements IUser {

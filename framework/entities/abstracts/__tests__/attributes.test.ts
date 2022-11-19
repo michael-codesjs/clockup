@@ -25,7 +25,7 @@ describe("Attributes", () => {
 		attribute1 = 1,
 		attribute2 = true;
 	});
-  
+
 	test("Base attributes", () => {
 		const attributes = new Attributes({});
 		attributes.parse({ entityType, id });

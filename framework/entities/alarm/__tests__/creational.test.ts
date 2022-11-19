@@ -1,6 +1,6 @@
 
 import { Given } from "@utilities/testing";
-import { AlarmFactory } from "..";
+import { AlarmFactory } from "../index.tsp";
 
 describe("AlarmEntityGroup Creational Tests", () => {
 

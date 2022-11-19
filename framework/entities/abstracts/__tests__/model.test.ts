@@ -2,7 +2,7 @@ import { dynamoDbOperations } from "@lib/dynamoDb";
 import { chance } from "@utilities/constants";
 import { configureEnviromentVariables } from "@utilities/functions";
 import { Model } from "../model";
-import { Entity } from "./utilities/instantiable-abstracts";
+import { Entity } from "@utilities/testing/instantiable-abstracts";
 
 const { DYNAMO_DB_TABLE_NAME } = configureEnviromentVariables();
 
@@ -17,13 +17,21 @@ describe("Model", () => {
 	});
 
 	test("Model.mutate to insert record into the table", async () => {
-		entity.attributes.set({ attribute3: 10 });
+		entity.attributes.set({ attribute1: "string value", attribute2: "string value 2",  attribute3: 10 });
 		const result = await model.mutate();
 		const record = await dynamoDbOperations.get({
 			TableName: DYNAMO_DB_TABLE_NAME,
 			Key: entity.keys.primary() as any
 		});
 		expect(result.Attributes).toMatchObject(record.Item);
+	});
+
+	test("Model.get to get a record from the table", async () => {
+		const { Item } = await model.get();
+		expect(Item).toMatchObject({
+			...entity.attributes.collective(),
+			...entity.keys.all()
+		})
 	});
 
 	test("Model.mutate to update a record in the table", async () => {

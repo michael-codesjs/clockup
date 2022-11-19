@@ -1,4 +1,3 @@
-import { AlarmFactory } from "./alarm";
 
 import { UserFactory } from "./user";
 
@@ -8,7 +7,7 @@ class EntitiesFactoryCollection {
 	static readonly instance = new EntitiesFactoryCollection();
 
 	readonly User = UserFactory.createEntity; /* User Entity Group Factory Method */
-	readonly Alarm = AlarmFactory.createEntity;
+	// readonly Alarm = AlarmFactory.createEntity;
 	
 }
 

@@ -17,7 +17,7 @@ namespace AlarmEntityGroup {
 		readonly AbsoluteTypeOfSelf: typeof Alarm = Alarm;
 
 		creator: AbsoluteUser;
-		attributes = new NullAttributes<ICommon>({});
+		attributes = new NullAttributes<Alarm>({});
 		keys = new NullKeys(this)
 
 		constructor(params: NullAlarmAttributes) {
