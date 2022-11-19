@@ -95,8 +95,7 @@ export type OperationResponse = {
   message?: string | null,
 };
 
-export type UpsertAlarmInput = {
-  id?: string | null,
+export type CreateAlarmInput = {
   name?: string | null,
   enabled?: boolean | null,
   days?: Array< number > | null,
@@ -106,17 +105,27 @@ export type UpsertAlarmInput = {
 };
 
 export type AlarmRingTimeInput = {
-  hour: number,
-  minute: number,
+  hour?: number | null,
+  minute?: number | null,
 };
 
 export type AlarmSnoozeSettingsInput = {
-  duration: number,
-  interval: number,
+  duration?: number | null,
+  interval?: number | null,
+};
+
+export type UpdateAlarmInput = {
+  id: string,
+  name?: string | null,
+  enabled?: boolean | null,
+  days?: Array< number > | null,
+  time?: AlarmRingTimeInput | null,
+  snooze?: AlarmSnoozeSettingsInput | null,
+  onceOff?: boolean | null,
 };
 
 export type UpdateUserMutationVariables = {
-  input?: UpdateUserInput | null,
+  input: UpdateUserInput,
 };
 
 export type UpdateUserMutation = {
@@ -153,12 +162,42 @@ export type DeleteUserMutation = {
   ) | null,
 };
 
-export type UpsertAlarmMutationVariables = {
-  input: UpsertAlarmInput,
+export type CreateAlarmMutationVariables = {
+  input: CreateAlarmInput,
 };
 
-export type UpsertAlarmMutation = {
-  upsertAlarm?:  {
+export type CreateAlarmMutation = {
+  createAlarm?:  {
+    __typename: "Alarm",
+    id: string,
+    entityType: EntityType,
+    created: string,
+    modified?: string | null,
+    discontinued: boolean,
+    creator: string,
+    name?: string | null,
+    enabled?: boolean | null,
+    days?: Array< number > | null,
+    time:  {
+      __typename: "AlarmRingTime",
+      hour: number,
+      minute: number,
+    },
+    snooze:  {
+      __typename: "AlarmSnoozeSettings",
+      duration: number,
+      interval: number,
+    },
+    onceOff?: boolean | null,
+  } | null,
+};
+
+export type UpdateAlarmMutationVariables = {
+  input: UpdateAlarmInput,
+};
+
+export type UpdateAlarmMutation = {
+  updateAlarm?:  {
     __typename: "Alarm",
     id: string,
     entityType: EntityType,

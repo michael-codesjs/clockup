@@ -3,7 +3,7 @@
 // this is an auto generated file. This will be overwritten
 
 export const updateUser = /* GraphQL */ `
-  mutation UpdateUser($input: UpdateUserInput) {
+  mutation UpdateUser($input: UpdateUserInput!) {
     updateUser(input: $input) {
       ... on User {
         id
@@ -38,9 +38,33 @@ export const deleteUser = /* GraphQL */ `
     }
   }
 `;
-export const upsertAlarm = /* GraphQL */ `
-  mutation UpsertAlarm($input: UpsertAlarmInput!) {
-    upsertAlarm(input: $input) {
+export const createAlarm = /* GraphQL */ `
+  mutation CreateAlarm($input: CreateAlarmInput!) {
+    createAlarm(input: $input) {
+      id
+      entityType
+      created
+      modified
+      discontinued
+      creator
+      name
+      enabled
+      days
+      time {
+        hour
+        minute
+      }
+      snooze {
+        duration
+        interval
+      }
+      onceOff
+    }
+  }
+`;
+export const updateAlarm = /* GraphQL */ `
+  mutation UpdateAlarm($input: UpdateAlarmInput!) {
+    updateAlarm(input: $input) {
       id
       entityType
       created

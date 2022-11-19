@@ -20,6 +20,7 @@
     "authentication-tests:e2e": "jest --verbose services/authentication/__tests__/e2e",
     "user-tests": "jest --verbose services/user/__tests__",
     "user-tests:unit": "jest --verbose services/user/__tests__/unit",
+    "user-tests:integration": "jest --verbose services/user/__tests__/integration",
     "user-tests:e2e": "jest --verbose services/user/__tests__/e2e"
   },
   "engines": {

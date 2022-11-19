@@ -9,7 +9,7 @@ export function configureEnviromentVariables() {
 	return process.env;
 }
 
-export function generateServicePath(serviceName:string) {
+export function generateServicePath(serviceName: string) {
 	return `services/${serviceName}`;
 }
 
@@ -65,10 +65,10 @@ export function constructKey(descriptor: string, value: string) {
 }
 
 export const capitalizeFirstLetter = (str: string) => {
-	return str[0].toUpperCase()+str.slice(1);
+	return str[0].toUpperCase() + str.slice(1);
 };
 
-export const getErrorResponse = (error: ZodError | Error, type: ErrorTypes, code = 0, ): ErrorResponse => {
+export const getErrorResponse = (error: ZodError | Error, type: ErrorTypes, code = 0,): ErrorResponse => {
 	return {
 		__typename: "ErrorResponse",
 		type,
@@ -81,10 +81,14 @@ export const getEntityTypes = () => Object.values(EntityType);
 
 export const getRandomEntityType = () => {
 	const entityTypes = getEntityTypes();
-	return entityTypes[Math.round(Math.random()*entityTypes.length-1)];
+	return entityTypes[Math.round(Math.random() * entityTypes.length - 1)];
 };
 
 export const getRandomCreatableEntityType = () => {
 	const entityTypes = getEntityTypes().filter(entityType => entityType !== EntityType.User);
-	return entityTypes[Math.round(Math.random()*entityTypes.length-1)];
+	return entityTypes[Math.round(Math.random() * entityTypes.length - 1)];
+}
+
+export const delay = (ms: number) => {
+	return new Promise(resolve => setTimeout(() => resolve(null), ms));
 }

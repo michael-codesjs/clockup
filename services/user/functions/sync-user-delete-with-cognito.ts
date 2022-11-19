@@ -1,7 +1,8 @@
 import Entities from "@entities";
+import { withLambdaStandard } from "@hofs/with-lambda-standard";
 import { DynamoDBStreamHandler } from "aws-lambda";
 
-export const handler: DynamoDBStreamHandler = async event => {
+const main: DynamoDBStreamHandler = async event => {
 
 	for (const record of event.Records) {
 		const id = record.dynamodb.OldImage.id.S;
@@ -10,3 +11,5 @@ export const handler: DynamoDBStreamHandler = async event => {
 	}
 
 };
+
+export const handler = withLambdaStandard(main);

@@ -14,18 +14,25 @@ class GivenUserAttributes {
 
 	private constructor() { }
 	static readonly instance = new GivenUserAttributes;
-	
+
+	input() {
+		
+		const name = chance.name();
+		const email = chance.email();
+		
+		return { name, email };
+
+	}
+
 	attributes(): TUser {
 
 		const entityType = EntityType.User;
 		const id = ulid();
-		const name = chance.name();
-		const email = chance.email();
 		const discontinued = false;
 		const created = chance.date().toJSON();
 		const alarms = chance.integer({ min: 0, max: 20 });
 
-		return { entityType, id, name, email, created, discontinued, alarms };
+		return { entityType, id, ...this.input(), created, discontinued, alarms };
 
 	}
 
@@ -46,6 +53,12 @@ class GivenUserAttributes {
 	async random() {
 		const attributes = this.attributes();
 		return await this.new(attributes);
+	}
+
+	async instance(attributes?: AbsoluteUserAttributes) {
+		attributes = attributes || this.input();
+		const instance = await Entities.User(attributes).sync();
+		return instance;
 	}
 
 	absoluteEntity(attributes = this.attributes()) {
