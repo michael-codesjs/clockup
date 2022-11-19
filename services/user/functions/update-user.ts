@@ -1,20 +1,24 @@
 
 import Entities from "@entities";
-import { MutationUpdateUserArgs, UpdateUserInputSchema, User } from "@local-types/api";
+import { MutationUpdateUserArgs, UpdateUserInputSchema as validator, User } from "@local-types/api";
 import { AppSyncIdentityCognito, AppSyncResolverHandler } from "aws-lambda";
 import { withResolverStandard } from "@hofs/with-resolver-standard";
+import { zodInputValidator } from "@middleware/zod-input-validator";
 
 const main: AppSyncResolverHandler<MutationUpdateUserArgs, User> = async (event) => {
 
 	const { sub } = event.identity as AppSyncIdentityCognito;
-	const { email, name } = UpdateUserInputSchema().parse(event.arguments.input);;
+	const { email, name } = event.arguments.input;
 
 	let user = Entities.User({ id: sub, email, name });
-	await user.syncCognito(); // update cognito first
-	user = await user.sync();
+	await user.syncCognito(); // update cognito
+	user = await user.sync(); // update dynamodb table
 
 	return user.graphQlEntity();
 
 };
 
-export const handler = withResolverStandard(main);
+export const handler = (
+	withResolverStandard(main)
+	.use(zodInputValidator(validator))
+);

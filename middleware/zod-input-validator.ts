@@ -8,7 +8,7 @@ type Properties<T> = Required<{
 }>;
 
 /** validates inputs before passing them on to lambdas */
-export const withZodInputValidator = <A extends { input: Record<string, any> }, R>(validator: () => ZodObject<Properties<A["input"]>>): middy.MiddlewareObj<AppSyncResolverEvent<A>, R> => {
+export const zodInputValidator = <A extends { input: Record<string, any> }, R>(validator: () => ZodObject<Properties<A["input"]>>): middy.MiddlewareObj<AppSyncResolverEvent<A>, R> => {
 
 	const before: middy.MiddlewareFn<AppSyncResolverEvent<A>, R | ErrorResponse> = async request => {
 		request.event.arguments.input = validator().parse(request.event.arguments.input);

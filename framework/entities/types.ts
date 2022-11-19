@@ -1,4 +1,4 @@
-import { AlarmRingTime, AlarmSnoozeSettings, EntityType, UpsertAlarmInput } from "@local-types/api";
+import { AlarmRingTime, AlarmSnoozeSettings, EntityType, CreateAlarmInput } from "@local-types/api";
 import { AbsoluteUser } from "@local-types/index";
 
 export type SyncOptions = {
@@ -42,6 +42,6 @@ type RingTimeMinusSnoozeSettings = { time: AlarmRingTime, snooze?: AlarmSnoozeSe
 
 export type NullAlarmAttributes = NullCreatableEntityAttributes;
 export type AlarmAttributes<T = SnoozeSettingsMinusRingTime | RingTimeMinusSnoozeSettings> = (
-  Partial<UpsertAlarmInput> & CreatableEntityAttributes &
+  Partial<CreateAlarmInput> & CreatableEntityAttributes &
   (T extends SnoozeSettingsMinusRingTime ? SnoozeSettingsMinusRingTime : RingTimeMinusSnoozeSettings)
 ) & { creator: AbsoluteUser };

@@ -1,9 +1,6 @@
-import { ErrorTypes, UpdateUserInputSchema } from "@local-types/api";
+import { UpdateUserInputSchema } from "@local-types/api";
+import { zodInputValidator } from "@middleware/zod-input-validator";
 import middy from "@middy/core";
-import { EntityErrorMessages } from "../../framework/entities/types";
-import { ZodError } from "zod";
-import { withErrorResponse } from "../with-error-response";
-import { withZodInputValidator } from "@middleware/with-zod-input-validator";
 import { chance } from "@utilities/constants";
 
 /*
@@ -13,7 +10,7 @@ import { chance } from "@utilities/constants";
 
 describe("With Zod Input Validator", () => {
 
-  const withMiddleware = (lambda: any, validator: Parameters<typeof withZodInputValidator>[0]) => middy(lambda).use(withZodInputValidator(validator));
+  const withMiddleware = (lambda: any, validator: Parameters<typeof zodInputValidator>[0]) => middy(lambda).use(zodInputValidator(validator));
 
   let name: string;
   let email: string;
