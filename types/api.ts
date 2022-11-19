@@ -1,4 +1,5 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
+import { z } from 'zod'
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -110,19 +111,44 @@ export type User = ICommon & {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createAlarm?: Maybe<Alarm>;
   deleteUser?: Maybe<OperationOutput>;
+  updateAlarm?: Maybe<Alarm>;
   updateUser?: Maybe<UserOutput>;
-  upsertAlarm?: Maybe<Alarm>;
+};
+
+
+export type MutationCreateAlarmArgs = {
+  input: CreateAlarmInput;
+};
+
+
+export type MutationUpdateAlarmArgs = {
+  input: UpdateAlarmInput;
 };
 
 
 export type MutationUpdateUserArgs = {
-  input?: InputMaybe<UpdateUserInput>;
+  input: UpdateUserInput;
 };
 
+export type CreateAlarmInput = {
+  days?: InputMaybe<Array<Scalars['Int']>>;
+  enabled?: InputMaybe<Scalars['Boolean']>;
+  name?: InputMaybe<Scalars['String']>;
+  onceOff?: InputMaybe<Scalars['Boolean']>;
+  snooze: AlarmSnoozeSettingsInput;
+  time: AlarmRingTimeInput;
+};
 
-export type MutationUpsertAlarmArgs = {
-  input: UpsertAlarmInput;
+export type AlarmSnoozeSettingsInput = {
+  duration?: InputMaybe<Scalars['Int']>;
+  interval?: InputMaybe<Scalars['Int']>;
+};
+
+export type AlarmRingTimeInput = {
+  hour?: InputMaybe<Scalars['Int']>;
+  minute?: InputMaybe<Scalars['Int']>;
 };
 
 export type OperationOutput = ErrorResponse | OperationResponse;
@@ -133,29 +159,19 @@ export type OperationResponse = {
   success: Scalars['Boolean'];
 };
 
+export type UpdateAlarmInput = {
+  days?: InputMaybe<Array<Scalars['Int']>>;
+  enabled?: InputMaybe<Scalars['Boolean']>;
+  id: Scalars['ID'];
+  name?: InputMaybe<Scalars['String']>;
+  onceOff?: InputMaybe<Scalars['Boolean']>;
+  snooze?: InputMaybe<AlarmSnoozeSettingsInput>;
+  time?: InputMaybe<AlarmRingTimeInput>;
+};
+
 export type UpdateUserInput = {
   email?: InputMaybe<Scalars['AWSEmail']>;
   name?: InputMaybe<Scalars['String']>;
-};
-
-export type UpsertAlarmInput = {
-  days?: InputMaybe<Array<Scalars['Int']>>;
-  enabled?: InputMaybe<Scalars['Boolean']>;
-  id?: InputMaybe<Scalars['ID']>;
-  name?: InputMaybe<Scalars['String']>;
-  onceOff?: InputMaybe<Scalars['Boolean']>;
-  snooze: AlarmSnoozeSettingsInput;
-  time: AlarmRingTimeInput;
-};
-
-export type AlarmSnoozeSettingsInput = {
-  duration: Scalars['Int'];
-  interval: Scalars['Int'];
-};
-
-export type AlarmRingTimeInput = {
-  hour: Scalars['Int'];
-  minute: Scalars['Int'];
 };
 
 export type AlarmOutput = Alarm | ErrorResponse;
@@ -253,12 +269,13 @@ export type ResolversTypes = {
   User: ResolverTypeWrapper<User>;
   AWSEmail: ResolverTypeWrapper<Scalars['AWSEmail']>;
   Mutation: ResolverTypeWrapper<{}>;
-  OperationOutput: ResolversTypes['ErrorResponse'] | ResolversTypes['OperationResponse'];
-  OperationResponse: ResolverTypeWrapper<OperationResponse>;
-  UpdateUserInput: UpdateUserInput;
-  UpsertAlarmInput: UpsertAlarmInput;
+  CreateAlarmInput: CreateAlarmInput;
   AlarmSnoozeSettingsInput: AlarmSnoozeSettingsInput;
   AlarmRingTimeInput: AlarmRingTimeInput;
+  OperationOutput: ResolversTypes['ErrorResponse'] | ResolversTypes['OperationResponse'];
+  OperationResponse: ResolverTypeWrapper<OperationResponse>;
+  UpdateAlarmInput: UpdateAlarmInput;
+  UpdateUserInput: UpdateUserInput;
   AlarmOutput: ResolversTypes['Alarm'] | ResolversTypes['ErrorResponse'];
   AlarmResponse: ResolverTypeWrapper<AlarmResponse>;
   AWSDate: ResolverTypeWrapper<Scalars['AWSDate']>;
@@ -288,12 +305,13 @@ export type ResolversParentTypes = {
   User: User;
   AWSEmail: Scalars['AWSEmail'];
   Mutation: {};
-  OperationOutput: ResolversParentTypes['ErrorResponse'] | ResolversParentTypes['OperationResponse'];
-  OperationResponse: OperationResponse;
-  UpdateUserInput: UpdateUserInput;
-  UpsertAlarmInput: UpsertAlarmInput;
+  CreateAlarmInput: CreateAlarmInput;
   AlarmSnoozeSettingsInput: AlarmSnoozeSettingsInput;
   AlarmRingTimeInput: AlarmRingTimeInput;
+  OperationOutput: ResolversParentTypes['ErrorResponse'] | ResolversParentTypes['OperationResponse'];
+  OperationResponse: OperationResponse;
+  UpdateAlarmInput: UpdateAlarmInput;
+  UpdateUserInput: UpdateUserInput;
   AlarmOutput: ResolversParentTypes['Alarm'] | ResolversParentTypes['ErrorResponse'];
   AlarmResponse: AlarmResponse;
   AWSDate: Scalars['AWSDate'];
@@ -384,9 +402,10 @@ export interface AwsEmailScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 }
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createAlarm?: Resolver<Maybe<ResolversTypes['Alarm']>, ParentType, ContextType, RequireFields<MutationCreateAlarmArgs, 'input'>>;
   deleteUser?: Resolver<Maybe<ResolversTypes['OperationOutput']>, ParentType, ContextType>;
-  updateUser?: Resolver<Maybe<ResolversTypes['UserOutput']>, ParentType, ContextType, Partial<MutationUpdateUserArgs>>;
-  upsertAlarm?: Resolver<Maybe<ResolversTypes['Alarm']>, ParentType, ContextType, RequireFields<MutationUpsertAlarmArgs, 'input'>>;
+  updateAlarm?: Resolver<Maybe<ResolversTypes['Alarm']>, ParentType, ContextType, RequireFields<MutationUpdateAlarmArgs, 'input'>>;
+  updateUser?: Resolver<Maybe<ResolversTypes['UserOutput']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'input'>>;
 };
 
 export type OperationOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['OperationOutput'] = ResolversParentTypes['OperationOutput']> = {
@@ -463,3 +482,62 @@ export type Resolvers<ContextType = any> = {
   AWSURL?: GraphQLScalarType;
 };
 
+
+
+type Properties<T> = Required<{
+  [K in keyof T]: z.ZodType<T[K], any, T[K]>;
+}>;
+
+type definedNonNullAny = {};
+
+export const isDefinedNonNullAny = (v: any): v is definedNonNullAny => v !== undefined && v !== null;
+
+export const definedNonNullAnySchema = z.any().refine((v) => isDefinedNonNullAny(v));
+
+export const EntityTypeSchema = z.nativeEnum(EntityType);
+
+export const ErrorTypesSchema = z.nativeEnum(ErrorTypes);
+
+export function CreateAlarmInputSchema(): z.ZodObject<Properties<CreateAlarmInput>> {
+  return z.object({
+    days: z.array(z.number()).nullish(),
+    enabled: z.boolean().nullish(),
+    name: z.string().nullish(),
+    onceOff: z.boolean().nullish(),
+    snooze: z.lazy(() => AlarmSnoozeSettingsInputSchema()),
+    time: z.lazy(() => AlarmRingTimeInputSchema())
+  })
+}
+
+export function AlarmSnoozeSettingsInputSchema(): z.ZodObject<Properties<AlarmSnoozeSettingsInput>> {
+  return z.object({
+    duration: z.number().nullish(),
+    interval: z.number().nullish()
+  })
+}
+
+export function AlarmRingTimeInputSchema(): z.ZodObject<Properties<AlarmRingTimeInput>> {
+  return z.object({
+    hour: z.number().nullish(),
+    minute: z.number().nullish()
+  })
+}
+
+export function UpdateAlarmInputSchema(): z.ZodObject<Properties<UpdateAlarmInput>> {
+  return z.object({
+    days: z.array(z.number()).nullish(),
+    enabled: z.boolean().nullish(),
+    id: z.string().min(1),
+    name: z.string().nullish(),
+    onceOff: z.boolean().nullish(),
+    snooze: z.lazy(() => AlarmSnoozeSettingsInputSchema().nullish()),
+    time: z.lazy(() => AlarmRingTimeInputSchema().nullish())
+  })
+}
+
+export function UpdateUserInputSchema(): z.ZodObject<Properties<UpdateUserInput>> {
+  return z.object({
+    email: definedNonNullAnySchema.nullish(),
+    name: z.string().nullish()
+  })
+}
