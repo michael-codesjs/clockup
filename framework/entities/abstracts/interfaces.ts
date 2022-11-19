@@ -12,7 +12,8 @@ export interface IGraphQlEntity {
 }
 
 export interface ICreatable {
-  creator: AbsoluteUser
+  creator: AbsoluteUser,
+  attributes: Attributes<{ creator: string}>
 }
 
 export interface IUser extends IEntity {

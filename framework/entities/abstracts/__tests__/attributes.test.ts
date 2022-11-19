@@ -1,4 +1,5 @@
 import { chance } from "@utilities/constants";
+import { getRandomEntityType } from "@utilities/functions";
 import { Then } from "@utilities/testing";
 import { EntityType } from "../../../../types/api";
 import { Attributes } from "../attributes";

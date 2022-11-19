@@ -1,7 +1,6 @@
 import { EntityType } from "@local-types/api";
-import { CreatableEntity, Entity } from "./utilities/instantiable-abstracts";
 import { Keys } from "../keys";
-import { getRandomCreatableEntityType, getRandomEntityType } from "@utilities/functions";
+import { CreatableEntity, Entity } from "../../../../utilities/testing/instantiable-abstracts";
 
 describe("Keys", () => {
 
@@ -14,7 +13,6 @@ describe("Keys", () => {
 		keys = new Keys(entity);
 	});
 
-	/*
 	test("Keys.primary && Keys.entityIndex && Keys.setGSI && Keys.batchSetGSIs && Keys.GSIs && Keys.all", () => {
 
 		// primary && entityIndex
@@ -96,16 +94,18 @@ describe("Keys", () => {
 			EntityIndexSK: entity.attributes.get("entityType")+"#"+entity.attributes.get("created").toLowerCase()+"#"+"discontinued"
 		});
 	});
-	
-	*/
 
-	test("ICreatable Keys.primary", () => {
+	test("Creatable Keys.primary", () => {
 
-		const id = "ID";
+		const id = "id";
 		const entityType = EntityType.Alarm;
 
 		const entity = new CreatableEntity({ id, entityType });
-		console.log(entity.keys.primary());
+
+		expect(entity.keys.primary()).toMatchObject({
+			PK: entity.creator.keys.primary().PK,
+			SK: `${entityType}#${id}`
+		});
 
 	});
 

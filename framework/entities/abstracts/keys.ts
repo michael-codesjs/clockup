@@ -8,9 +8,15 @@ type PartitionKey = {
 	sort?: string
 };
 
+/**
+ * Entity keys for the table and all it's global secondary index.
+ * Should be instanciated after
+ */
+
 export class Keys implements ISubscriber {
 
 	public Entity: Entity | (Entity & ICreatable);
+	/* managed keys across all entities */
 	private Primary: { PK: string, SK: string };
 	private EntityIndex: { EntityIndexPK: string, EntityIndexSK: string }; /* EntityIndex is a global secondary index we force every entity to have, it is infact GSI_0 */
 	/* gsi keys */
@@ -22,15 +28,11 @@ export class Keys implements ISubscriber {
 	private GSI_6: { GSI6_PK: string, GSI6_SK: string };
 	private GSI_7: { GSI7_PK: string, GSI7_SK: string };
 
-	/**
-	 * Use to setup your GSI Keys.
-	 * Also called when entity attributes changed.
-	 */
-
 	constructor(entity: Entity) {
 		this.Entity = entity;
+		if(!entity.attributes) throw new Error("Entity attributes do not exist: keys need to subscribe to an entity's attributes");
 		entity.attributes.subscribe(this);
-		this.update();
+		this.update(); // set keys
 	}
 
 	/**
@@ -47,31 +49,22 @@ export class Keys implements ISubscriber {
 			values: [id]
 		});
 
-		const creator: Entity | null = "creator" in this.Entity ? this.Entity.creator : null;
+		if ("creator" in this.Entity) {
 
-		console.log("Creator:", creator);
-
-		if (creator) {
-
-			const creatorId = creator.attributes.get("id");
-			const creatorType = creator.attributes.get("entityType");
-
+			const { creator } = this.Entity
+			
 			this.setPrimary({
-				partition: Keys.constructKey({
-					descriptors: [creatorType],
-					values: [creatorId]
-				}),
+				partition: creator.keys.primary().PK,
 				sort: key
 			});
 
-			console.log("Primary:", this.Primary);
-
 		} else {
+
 			this.setPrimary({
 				partition: key
 			});
-		}
 
+		}
 
 		this.setEntityIndex({
 			entity: this.constructContinuityDependantKey({
