@@ -1,11 +1,10 @@
 
+import { chance } from "@utilities/constants";
 import { Given } from "@utilities/testing";
-import { AlarmFactory } from "../index.tsp";
+import { AlarmFactory } from "../index";
 
 describe("AlarmEntityGroup Creational Tests", () => {
 
-	/** TODO: fix */
-	
 	/*
 	it("Creates AlarmEntityGroup.NullAlarm", () => {
 		const id = chance.guid();
@@ -13,7 +12,6 @@ describe("AlarmEntityGroup Creational Tests", () => {
 		expect(alarm.TypeOfSelf).toBe(alarm.NullTypeOfSelf);
 		expect(alarm.graphQlEntity()).toBe(null);
 	});
-
 
 	it("Creates AlarmEntityGroup.Alarm", () => {
 		const attributes = Given.alarm.attributes();
@@ -28,6 +26,8 @@ describe("AlarmEntityGroup Creational Tests", () => {
 			creator: creator.attributes.get("id")
 		});
 	});
+
+	*/
 
 	it("Create AlarmEntityGroup.Alarm from AlarmEntityGroup.NullAlarm", async () => {
 		const attributes = (await Given.alarm.random())!; // create random alarm

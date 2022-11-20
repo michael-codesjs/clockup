@@ -1,4 +1,4 @@
-import { Alarm, EntityType, UpsertAlarmInput } from "@local-types/api";
+import { Alarm, EntityType, UpdateAlarmInput } from "@local-types/api";
 import { RefinedToAttributeParams } from "@local-types/utility";
 import { Attributes } from "../abstracts";
 
@@ -38,7 +38,7 @@ export class AlarmAttributes extends Attributes<Alarm> {
 		});
 	}
 
-  set(attributes: Omit<UpsertAlarmInput, "id">) {
+  set(attributes: Omit<UpdateAlarmInput, "id">) {
     super.set(attributes);
   }
 

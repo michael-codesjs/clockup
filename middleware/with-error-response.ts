@@ -12,7 +12,7 @@ export const withErrorResponse = <A, R>(): middy.MiddlewareObj<AppSyncResolverEv
 		const error = request.error;
 
 		request.response = (
-			error.name === "ZodError" || error.message === "The conditional request failed" ? getErrorResponse(error, ErrorTypes.MalfomedInput) :
+			error.name === "ValidationError" || error.message === "The conditional request failed" ? getErrorResponse(error, ErrorTypes.MalfomedInput) :
 				error.message === EntityErrorMessages.USER_NOT_FOUND || error.message === "User does not exist." ? getErrorResponse(error, ErrorTypes.NotFound) :
 					getErrorResponse(error, ErrorTypes.InternalError)
 		);

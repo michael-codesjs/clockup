@@ -10,5 +10,5 @@ generates:
       - typescript-resolvers
       - typescript-validation-schema
     config:
-      schema: zod
+      schema: yup
       notAllowEmptyString: true

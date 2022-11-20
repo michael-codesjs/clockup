@@ -85,16 +85,14 @@ input UpdateUserInput {
   name: String
 }
 
-# BEGIN: "Alarm Inputs":
-
 input AlarmRingTimeInput {
-  hour: Int
-  minute: Int
+  hour: Int!
+  minute: Int!
 }
 
 input AlarmSnoozeSettingsInput {
-  duration: Int
-  interval: Int
+  duration: Int!
+  interval: Int!
 }
 
 input UpdateAlarmInput {

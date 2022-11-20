@@ -1,7 +1,7 @@
 import { ErrorTypes } from "@local-types/api";
 import middy from "@middy/core";
 import { EntityErrorMessages } from "../../framework/entities/types";
-import { ZodError } from "zod";
+import { ValidationError } from "yup";
 import { withErrorResponse } from "../with-error-response";
 
 describe("With Error Response", () => {
@@ -11,7 +11,7 @@ describe("With Error Response", () => {
 	test("Malfomred Input Error", async () => {
 
 		const lambda = withMiddleware(() => {
-			throw new ZodError([]);
+			throw new ValidationError([]);
 		});
 
 		const lambda1 = withMiddleware(() => {

@@ -14,10 +14,10 @@ import { Model } from "./model";
 
 export abstract class Entity implements IGraphQlEntity {
 
-	/** Entity DynamoDB keys for the table and all its Global Secondary Indexes */
-	public abstract keys: Keys;
 	/** Entity attributes */
 	public abstract attributes: Attributes<types.ICommon>;
+	/** Entity DynamoDB keys for the table and all its Global Secondary Indexes */
+	public abstract keys: Keys;
 
 	abstract readonly TypeOfSelf: typeof Entity;
 	abstract readonly NullTypeOfSelf: typeof Entity;

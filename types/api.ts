@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import { z } from 'zod'
+import * as yup from 'yup'
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -142,13 +142,13 @@ export type CreateAlarmInput = {
 };
 
 export type AlarmSnoozeSettingsInput = {
-  duration?: InputMaybe<Scalars['Int']>;
-  interval?: InputMaybe<Scalars['Int']>;
+  duration: Scalars['Int'];
+  interval: Scalars['Int'];
 };
 
 export type AlarmRingTimeInput = {
-  hour?: InputMaybe<Scalars['Int']>;
-  minute?: InputMaybe<Scalars['Int']>;
+  hour: Scalars['Int'];
+  minute: Scalars['Int'];
 };
 
 export type OperationOutput = ErrorResponse | OperationResponse;
@@ -484,60 +484,50 @@ export type Resolvers<ContextType = any> = {
 
 
 
-type Properties<T> = Required<{
-  [K in keyof T]: z.ZodType<T[K], any, T[K]>;
-}>;
+export const EntityTypeSchema = yup.mixed().oneOf([EntityType.Alarm, EntityType.User]);
 
-type definedNonNullAny = {};
+export const ErrorTypesSchema = yup.mixed().oneOf([ErrorTypes.CreateFailed, ErrorTypes.InternalError, ErrorTypes.MalfomedInput, ErrorTypes.NotFound, ErrorTypes.UpdateFailed]);
 
-export const isDefinedNonNullAny = (v: any): v is definedNonNullAny => v !== undefined && v !== null;
-
-export const definedNonNullAnySchema = z.any().refine((v) => isDefinedNonNullAny(v));
-
-export const EntityTypeSchema = z.nativeEnum(EntityType);
-
-export const ErrorTypesSchema = z.nativeEnum(ErrorTypes);
-
-export function CreateAlarmInputSchema(): z.ZodObject<Properties<CreateAlarmInput>> {
-  return z.object({
-    days: z.array(z.number()).nullish(),
-    enabled: z.boolean().nullish(),
-    name: z.string().nullish(),
-    onceOff: z.boolean().nullish(),
-    snooze: z.lazy(() => AlarmSnoozeSettingsInputSchema()),
-    time: z.lazy(() => AlarmRingTimeInputSchema())
+export function CreateAlarmInputSchema(): yup.SchemaOf<CreateAlarmInput> {
+  return yup.object({
+    days: yup.array().of(yup.number().defined()).optional(),
+    enabled: yup.boolean(),
+    name: yup.string(),
+    onceOff: yup.boolean(),
+    snooze: yup.lazy(() => AlarmSnoozeSettingsInputSchema().defined()) as never,
+    time: yup.lazy(() => AlarmRingTimeInputSchema().defined()) as never
   })
 }
 
-export function AlarmSnoozeSettingsInputSchema(): z.ZodObject<Properties<AlarmSnoozeSettingsInput>> {
-  return z.object({
-    duration: z.number().nullish(),
-    interval: z.number().nullish()
+export function AlarmSnoozeSettingsInputSchema(): yup.SchemaOf<AlarmSnoozeSettingsInput> {
+  return yup.object({
+    duration: yup.number().defined(),
+    interval: yup.number().defined()
   })
 }
 
-export function AlarmRingTimeInputSchema(): z.ZodObject<Properties<AlarmRingTimeInput>> {
-  return z.object({
-    hour: z.number().nullish(),
-    minute: z.number().nullish()
+export function AlarmRingTimeInputSchema(): yup.SchemaOf<AlarmRingTimeInput> {
+  return yup.object({
+    hour: yup.number().defined(),
+    minute: yup.number().defined()
   })
 }
 
-export function UpdateAlarmInputSchema(): z.ZodObject<Properties<UpdateAlarmInput>> {
-  return z.object({
-    days: z.array(z.number()).nullish(),
-    enabled: z.boolean().nullish(),
-    id: z.string().min(1),
-    name: z.string().nullish(),
-    onceOff: z.boolean().nullish(),
-    snooze: z.lazy(() => AlarmSnoozeSettingsInputSchema().nullish()),
-    time: z.lazy(() => AlarmRingTimeInputSchema().nullish())
+export function UpdateAlarmInputSchema(): yup.SchemaOf<UpdateAlarmInput> {
+  return yup.object({
+    days: yup.array().of(yup.number().defined()).optional(),
+    enabled: yup.boolean(),
+    id: yup.string().required(),
+    name: yup.string(),
+    onceOff: yup.boolean(),
+    snooze: yup.lazy(() => AlarmSnoozeSettingsInputSchema()) as never,
+    time: yup.lazy(() => AlarmRingTimeInputSchema()) as never
   })
 }
 
-export function UpdateUserInputSchema(): z.ZodObject<Properties<UpdateUserInput>> {
-  return z.object({
-    email: definedNonNullAnySchema.nullish(),
-    name: z.string().nullish()
+export function UpdateUserInputSchema(): yup.SchemaOf<UpdateUserInput> {
+  return yup.object({
+    email: yup.mixed(),
+    name: yup.string()
   })
 }

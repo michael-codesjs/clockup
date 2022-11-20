@@ -1,7 +1,7 @@
 
 import { config, stacks } from "./constants";
 import { config as dotenvConfig } from "dotenv";
-import { ZodError } from "zod";
+import { ValidationError } from "yup";
 import { EntityType, ErrorResponse, ErrorTypes } from "@local-types/api";
 
 export function configureEnviromentVariables() {
@@ -68,7 +68,7 @@ export const capitalizeFirstLetter = (str: string) => {
 	return str[0].toUpperCase() + str.slice(1);
 };
 
-export const getErrorResponse = (error: ZodError | Error, type: ErrorTypes, code = 0,): ErrorResponse => {
+export const getErrorResponse = (error: ValidationError | Error, type: ErrorTypes, code = 0,): ErrorResponse => {
 	return {
 		__typename: "ErrorResponse",
 		type,

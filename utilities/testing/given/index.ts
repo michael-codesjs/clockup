@@ -1,3 +1,4 @@
+import { Alarm } from "./alarm";
 import { User } from "./user";
 
 class GivenUtility {
@@ -6,7 +7,7 @@ class GivenUtility {
 	static readonly instance = new GivenUtility();
 	
 	readonly user = User;
-	// readonly alarm = Alarm;
+	readonly alarm = Alarm;
 
 }
 

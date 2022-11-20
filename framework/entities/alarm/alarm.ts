@@ -14,10 +14,10 @@ namespace AlarmEntityGroup {
 
 		readonly TypeOfSelf: typeof NullAlarm = NullAlarm;
 		readonly NullTypeOfSelf: typeof NullAlarm = NullAlarm;
-		readonly AbsoluteTypeOfSelf: typeof Alarm = Alarm;
+		readonly AbsoluteTypeOfSelf: any = Alarm; // typeof Alarm = Alarm;
 
 		creator: AbsoluteUser;
-		attributes = new NullAttributes<Alarm>({});
+		attributes: NullAttributes<{ creator: string } & ICommon> = new NullAttributes<{ creator: string } & ICommon>({ creator: { initial: null }});
 		keys = new NullKeys(this)
 
 		constructor(params: NullAlarmAttributes) {
@@ -31,13 +31,13 @@ namespace AlarmEntityGroup {
 			return null
 		}
 
-		async sync(): Promise<Alarm> {
+		async sync(): Promise<any> {
 			const { Item } = await this.model.get();
 			if (!Item) throw new Error(EntityErrorMessages.CREATABLE_BY_CREATOR_NOT_FOUND); // alarm does not belong to user
 			return new Alarm({
 				...Item as AlarmAttributes,
 				creator: this.creator
-			});
+			}) as any;
 		}
 
 	}
