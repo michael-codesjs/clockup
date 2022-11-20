@@ -1,8 +1,8 @@
-import { Alarm, EntityType, UpdateAlarmInput } from "@local-types/api";
+import { Alarm, EntityType, ICommon, UpdateAlarmInput } from "@local-types/api";
 import { RefinedToAttributeParams } from "@local-types/utility";
 import { Attributes } from "../abstracts";
 
-export class AlarmAttributes extends Attributes<Alarm> {
+export class AlarmAttributes extends Attributes<ICommon & Alarm> {
 
 	private static readonly config: RefinedToAttributeParams<Alarm> = {
 		name: { initial: null, required: true },

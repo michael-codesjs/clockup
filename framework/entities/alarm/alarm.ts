@@ -1,5 +1,5 @@
 import { Entity } from "../abstracts";
-import { AlarmResponse, EntityType, ICommon } from "@local-types/api";
+import { AlarmResponse, Alarm as TAlarm, EntityType, ICommon } from "@local-types/api";
 import { AbsoluteUser } from "@local-types/index";
 import { IEntityFactory } from "@local-types/interfaces";
 import { Attributes as NullAttributes, Keys as NullKeys } from "../abstracts";
@@ -49,10 +49,10 @@ namespace AlarmEntityGroup {
 		readonly AbsoluteTypeOfSelf: typeof Alarm = Alarm;
 
 		creator: AbsoluteUser;
-		attributes = new Attributes();
+		attributes: NullAttributes<TAlarm> = new Attributes();
 		keys = new Keys(this);
 
-		constructor(attributes: AlarmAttributes) {
+		constructor(attributes: Omit<AlarmAttributes,"entityType">) {
 			super();
 			const { creator, ...rest } = attributes;
 			this.creator = creator;
