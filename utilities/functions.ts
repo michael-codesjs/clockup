@@ -81,7 +81,7 @@ export const getEntityTypes = () => Object.values(EntityType);
 
 export const getRandomEntityType = () => {
 	const entityTypes = getEntityTypes();
-	return entityTypes[Math.round(Math.random() * entityTypes.length - 1)];
+	return entityTypes[Math.round(Math.random() * (entityTypes.length - 1))];
 };
 
 export const getRandomCreatableEntityType = () => {

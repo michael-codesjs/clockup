@@ -1,12 +1,11 @@
-import { Entity } from "../abstracts";
-import { AlarmResponse, Alarm as TAlarm, EntityType, ICommon } from "@local-types/api";
+import { Alarm as TAlarm, AlarmResponse, EntityType, ICommon } from "@local-types/api";
 import { AbsoluteUser } from "@local-types/index";
 import { IEntityFactory } from "@local-types/interfaces";
-import { Attributes as NullAttributes, Keys as NullKeys } from "../abstracts";
+import { Attributes, Entity, Keys } from "../abstracts";
 import { IAlarm, ICreatable } from "../abstracts/interfaces";
-import { EntityErrorMessages, NullAlarmAttributes, AlarmAttributes } from "../types";
-import { AlarmAttributes as Attributes } from "./attributes";
-import { AlarmKeys as Keys } from "./keys";
+import { AlarmAttributes as TAlarmAttributes, EntityErrorMessages, NullAlarmAttributes } from "../types";
+import { AlarmAttributes } from "./attributes";
+import { AlarmKeys } from "./keys";
 
 namespace AlarmEntityGroup {
 
@@ -17,8 +16,8 @@ namespace AlarmEntityGroup {
 		readonly AbsoluteTypeOfSelf: any = Alarm; // typeof Alarm = Alarm;
 
 		creator: AbsoluteUser;
-		attributes: NullAttributes<{ creator: string } & ICommon> = new NullAttributes<{ creator: string } & ICommon>({ creator: { initial: null }});
-		keys = new NullKeys(this)
+		attributes: Attributes<{ creator: string } & ICommon> = new Attributes<{ creator: string } & ICommon>({ creator: { initial: null }});
+		keys: Keys = new Keys(this)
 
 		constructor(params: NullAlarmAttributes) {
 			super();
@@ -35,7 +34,7 @@ namespace AlarmEntityGroup {
 			const { Item } = await this.model.get();
 			if (!Item) throw new Error(EntityErrorMessages.CREATABLE_BY_CREATOR_NOT_FOUND); // alarm does not belong to user
 			return new Alarm({
-				...Item as AlarmAttributes,
+				...Item as TAlarmAttributes,
 				creator: this.creator
 			}) as any;
 		}
@@ -49,10 +48,10 @@ namespace AlarmEntityGroup {
 		readonly AbsoluteTypeOfSelf: typeof Alarm = Alarm;
 
 		creator: AbsoluteUser;
-		attributes: NullAttributes<TAlarm> = new Attributes();
+		attributes: Attributes<TAlarm> = new AlarmAttributes();
 		keys = new Keys(this);
 
-		constructor(attributes: Omit<AlarmAttributes,"entityType">) {
+		constructor(attributes: Omit<TAlarmAttributes,"entityType">) {
 			super();
 			const { creator, ...rest } = attributes;
 			this.creator = creator;

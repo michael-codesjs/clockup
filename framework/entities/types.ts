@@ -23,6 +23,7 @@ export type AttributeParams<T, I> = {
 export type ImmutableAttributes = "entityType" | "id" | "created";
 
 export enum EntityErrorMessages {
+  ATTEMPT_TO_MUTATE_IMMUTABLE = "Attempting to mutate immutable attribute",
   CREATABLE_TERMINATE_MISSING_CREATOR = "Cannot terminate creatable entity without specifying it's creator",
   CREATABLE_BY_CREATOR_NOT_FOUND = "Creatable by user was not found",
   USER_VARIANT_NOT_FOUND = "Could not instanciate variant of from entity group *User*",

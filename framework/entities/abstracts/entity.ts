@@ -1,4 +1,4 @@
-import * as types from "@local-types/api";
+import { ICommon } from "@local-types/api";
 import { Attributes } from "./attributes";
 import { IGraphQlEntity } from "./interfaces";
 import { Keys } from "./keys";
@@ -15,7 +15,7 @@ import { Model } from "./model";
 export abstract class Entity implements IGraphQlEntity {
 
 	/** Entity attributes */
-	public abstract attributes: Attributes<types.ICommon>;
+	public abstract attributes: Attributes<ICommon>;
 	/** Entity DynamoDB keys for the table and all its Global Secondary Indexes */
 	public abstract keys: Keys;
 

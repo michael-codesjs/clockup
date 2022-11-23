@@ -2,7 +2,7 @@ import { Alarm, EntityType, ICommon, UpdateAlarmInput } from "@local-types/api";
 import { RefinedToAttributeParams } from "@local-types/utility";
 import { Attributes } from "../abstracts";
 
-export class AlarmAttributes extends Attributes<ICommon & Alarm> {
+export class AlarmAttributes extends Attributes<Alarm> {
 
 	private static readonly config: RefinedToAttributeParams<Alarm> = {
 		name: { initial: null, required: true },
@@ -31,7 +31,7 @@ export class AlarmAttributes extends Attributes<ICommon & Alarm> {
 		super(AlarmAttributes.config);
 	}
 
-	parse(attribtues: Partial<Alarm>) {
+	parse(attribtues: Partial<Omit<Alarm, "entityType">>) {
 		super.parse({
 			...attribtues,
 			entityType: EntityType.Alarm

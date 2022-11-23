@@ -1,7 +1,7 @@
 import { chance } from "@utilities/constants";
 import { getRandomEntityType } from "@utilities/functions";
 import { Then } from "@utilities/testing";
-import { EntityType } from "../../../../types/api";
+import { EntityType, ICommon } from "../../../../types/api";
 import { Attributes } from "../attributes";
 
 describe("Attributes", () => {
@@ -15,14 +15,22 @@ describe("Attributes", () => {
 	let attribute1: number;
 	let attribute2: boolean;
 
+	type A = ICommon & {
+		attribute: string,
+		attribute1: number,
+		attribute2: boolean
+	};
+
+	type PA = Omit<A, "attribute1" | "attribute2">; // partial A
+
 	beforeEach(() => {
 		entityType = getRandomEntityType();
 		id = chance.fbid();
 		created = chance.date().toJSON();
 		modified = chance.date().toJSON();
 		discontinued = chance.bool();
-		attribute = "string",
-		attribute1 = 1,
+		attribute = "string";
+		attribute1 = 1;
 		attribute2 = true;
 	});
 
@@ -40,7 +48,7 @@ describe("Attributes", () => {
 
 	test("Explicit base attributes", () => {
 
-		const attributes = new Attributes<{ attribute: string, attribute1: number, attribute2: boolean }>({
+		const attributes = new Attributes<A>({
 			attribute: { initial: null },
 			attribute1: { initial: null },
 			attribute2: { initial: null }
@@ -66,16 +74,21 @@ describe("Attributes", () => {
 
 	});
 
-	test("Attributes.get", () => {
+	test("Attributes.get && Attributes.gets", () => {
 
 		const values = { entityType, id, created, modified, discontinued, attribute };
-		const attributes = new Attributes<{ attribute: string }>({ attribute: { initial: null }});
+		const attributes = new Attributes<PA>({ attribute: { initial: null } });
 
 		attributes.parse(values);
 
-		for(const key in values) {
+		for (const key in values) {
 			expect(attributes.get(key as keyof typeof values)).toBe(values[key]);
-		}
+		};
+
+		const getResults = attributes.gets(["entityType", "id"]);
+		expect(getResults).toMatchObject({
+			entityType, id
+		});
 
 	});
 
@@ -91,13 +104,13 @@ describe("Attributes", () => {
 	});
 
 	test("Attributes.putable true", () => {
-		const attributes = new Attributes<{ attribute: string }>({ attribute: { initial: null, required: true }});
+		const attributes = new Attributes<PA>({ attribute: { initial: null, required: true } });
 		attributes.parse({ entityType, id, attribute });
 		expect(attributes.putable()).toBe(true);
 	});
 
 	test("Attributes.putable false", () => {
-		const attributes = new Attributes<{ attribute: string }>({ attribute: { initial: null, required: true }});
+		const attributes = new Attributes<PA>({ attribute: { initial: null, required: true } });
 		attributes.parse({ entityType, id });
 		expect(attributes.putable()).toBe(false);
 	});
