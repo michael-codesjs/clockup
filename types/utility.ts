@@ -1,4 +1,5 @@
 import { AttributeParams } from "framework/entities/types";
+import { AttributeSchema } from "framework/entities/types/attributes";
 import { ICommon } from "./api";
 
 export type Replace<T, From, To> = T extends (...args: any[]) => any ? T : {
@@ -9,15 +10,8 @@ export type ChangeTypeOfKeys<T extends object, Keys extends keyof T, NewType> = 
   [key in keyof T]: key extends Keys ? NewType : T[key]
 }
 
-
 export type GraphQlEntity<T> = Omit<T, "__typename">;
 
+export type OmitTypeName<T extends { __typename?: string }> = Omit<T, "__typename">;
+
 export type PutItem<T> = GraphQlEntity<T> & { PK: string, SK: string };
-
-export type ToAttributeParams<T extends Record<string, any>> = {
-  [Key in keyof T]: Pick<AttributeParams<T[Key], boolean>, "required" | "validate" | "immutable"> & {
-    initial?: T[Key] | null
-  }
-};
-
-export type RefinedToAttributeParams<T extends Record<string,any>> = Omit<ToAttributeParams<T>, keyof ICommon>

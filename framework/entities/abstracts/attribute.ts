@@ -1,7 +1,7 @@
 import { AttributeParams } from "../types";
 import { IPutable } from "./interfaces";
 
-export class Attribute<T = any, I = false> implements IPutable {
+export class Attribute<T=any, I = false> implements IPutable {
 
 	protected readonly Required: boolean;
 	protected Value: T;

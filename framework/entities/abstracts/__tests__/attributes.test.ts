@@ -1,7 +1,8 @@
 import { chance } from "@utilities/constants";
 import { getRandomEntityType } from "@utilities/functions";
 import { Then } from "@utilities/testing";
-import { EntityType, ICommon } from "../../../../types/api";
+import { EntityType } from "../../../../types/api";
+import { AttributeSchema, ICommon } from "../../types/attributes";
 import { Attributes } from "../attributes";
 
 describe("Attributes", () => {
@@ -16,9 +17,9 @@ describe("Attributes", () => {
 	let attribute2: boolean;
 
 	type A = ICommon & {
-		attribute: string,
-		attribute1: number,
-		attribute2: boolean
+		attribute: AttributeSchema<string>,
+		attribute1: AttributeSchema<number>,
+		attribute2: AttributeSchema<boolean>
 	};
 
 	type PA = Omit<A, "attribute1" | "attribute2">; // partial A
@@ -84,11 +85,6 @@ describe("Attributes", () => {
 		for (const key in values) {
 			expect(attributes.get(key as keyof typeof values)).toBe(values[key]);
 		};
-
-		const getResults = attributes.gets(["entityType", "id"]);
-		expect(getResults).toMatchObject({
-			entityType, id
-		});
 
 	});
 

@@ -1,5 +1,10 @@
-import { EntityType, User } from "@local-types/api";
+import { EntityType, User as TUser } from "@local-types/api";
+import { OmitTypeName } from "@local-types/utility";
 import { Attributes } from "../abstracts";
+import { ImmutableAttributes } from "../types";
+
+type User = OmitTypeName<TUser>;
+type ImmutableUserAttributes = ImmutableAttributes & "alarms";
 
 export class UserAttributes extends Attributes<User> {
 
@@ -13,11 +18,15 @@ export class UserAttributes extends Attributes<User> {
 		super(UserAttributes.config);
 	}
 
-	parse(attribtues: Partial<User>) {
+	parse(attributes: Partial<Omit<User, "entityType" | "__typename">>) {
 		super.parse({
-			...attribtues,
-			entityType: EntityType.User
+			...attributes,
+			entityType: EntityType.User,
 		});
+	}
+
+	set(attributes: Partial<Omit<User, ImmutableUserAttributes>>) {
+		super.set(attributes);
 	}
 
 	/** attributes also stored in cognito */
