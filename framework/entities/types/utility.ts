@@ -4,12 +4,12 @@ import { Attribute } from "../abstracts";
 import { AttributeSchema } from "./attributes";
 
 export type ToAttributeRecord<T extends Record<string, AttributeSchema<any, boolean>>> = {
-	[Key in keyof T]: Attribute<T[Key]["type"], T[Key]["immutable"]>
+  [Key in keyof T]: Attribute<T[Key]["type"], T[Key]["immutable"]>
 };
 
 export type ToAttributeParams<T extends Record<string, AttributeSchema<any, boolean>>> = {
   [Key in keyof T]: Pick<AttributeParams<T[Key]["type"], T[Key]["immutable"]>, "required" | "validate" | "immutable"> & {
-    initial?: T[Key] | null
+    initial?: T[Key]["type"] | null
   }
 };
 
@@ -26,4 +26,12 @@ export type GetMutableAttributes<T extends Record<string, AttributeSchema<any, b
 
 export type GetSetMutableAttributes<T extends Record<string, AttributeSchema<any, boolean>>> = Partial<
   Pick<EntriesFromAttributesSchema<T>, GetMutableAttributes<T>>
+>
+
+export type SetsFromAttributeSchema<T extends Record<string, AttributeSchema<any, boolean>>> = {
+  [Key in keyof T]-?: T[Key]["type"] extends (object | Array<any>) ? Key : never
+}[keyof T];
+
+export type GetSetSetsFromAttributeSchema<T extends Record<string, AttributeSchema<any, boolean>>> = Partial<
+  Pick<EntriesFromAttributesSchema<T>, SetsFromAttributeSchema<T>>
 >

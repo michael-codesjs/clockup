@@ -1,11 +1,15 @@
-import { Alarm, User } from "@local-types/api";
+import { Alarm } from "@local-types/api";
 import { AbsoluteUser } from "@local-types/index";
+import { AttributeSchema, ICommon, User } from "../types/attributes";
 import { Attributes } from "./attributes";
 
 export interface IEntity {
   composable(): boolean
-}
+};
 
+export interface IPutable {
+  putable(): boolean
+};
 
 export interface IGraphQlEntity {
   graphQlEntity(): Record<string, any> | null
@@ -13,20 +17,18 @@ export interface IGraphQlEntity {
 
 export interface ICreatable {
   creator: AbsoluteUser,
-  attributes: Attributes<{ creator: string}>
+  attributes: Attributes<ICommon & { creator: AttributeSchema<string, true> }>
 }
 
 export interface IUser extends IEntity {
   attributes: Attributes<User>
 }
 
+/*
 export interface IAlarm extends IEntity, ICreatable {
   attributes: Attributes<Alarm>
 }
-
-export interface IPutable {
-  putable(): boolean
-}
+*/
 
 export interface IPublisher {
   subscribers: Array<ISubscriber>

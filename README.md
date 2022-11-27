@@ -39,3 +39,9 @@ Michael Phiri – [@michael_wcjs](https://twitter.com/michael_wcjs) – michael.
 3. Commit your changes (`git commit -am 'Add some fooBar'`)
 4. Push to the branch (`git push origin feature/fooBar`)
 5. Create a new Pull Request
+
+Some useful resources that will help understand the codebase.
+* **[Dive Into DESIGN PATTERNS](https://refactoring.guru/design-patterns/book)**.
+* **[The DynamoDB Book](https://www.dynamodbbook.com/)**
+* **[Alex Debrie: The What, Why, and When of Single-Table Design with DynamoDB](https://www.alexdebrie.com/posts/dynamodb-single-table/)**
+* **[Fundamentals of Amazon DynamoDB Single Table Design with Rick Houlihan](https://youtu.be/KYy8X8t4MB8)**

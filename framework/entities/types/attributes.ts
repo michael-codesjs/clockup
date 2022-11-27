@@ -5,10 +5,18 @@ export type AttributeSchema<T = any, I extends boolean = false> = {
   immutable: I,
 };
 
+// ENTITY ATTRIBUTE SCHEMAS
+
 export type ICommon = {
   entityType: AttributeSchema<EntityType, true>
   id: AttributeSchema<string, true>,
   created: AttributeSchema<string, true>,
   modified: AttributeSchema<string, true>
   discontinued: AttributeSchema<boolean, true>
+};
+
+export type User = ICommon & {
+  name: AttributeSchema<string>,
+  email: AttributeSchema<string>,
+  alarms: AttributeSchema<number, true>
 };

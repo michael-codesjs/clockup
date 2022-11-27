@@ -16,7 +16,7 @@ export type AttributesParams = {
 export type AttributeParams<T, I> = {
   required?: boolean,
   validate?: (value: T) => boolean,
-  value: T,
+  value?: T,
   immutable?: I
 };
 

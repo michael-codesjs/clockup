@@ -1,13 +1,16 @@
-import { EntityType, ICommon } from "@local-types/api";
+import { EntityType } from "@local-types/api";
 import { AbsoluteUser } from "@local-types/index";
+import { AttributeSchema, ICommon } from "../../framework/entities/types/attributes";
 import { Attributes, Entity as AbstractEntity, Keys } from "../../framework/entities/abstracts";
 import { ICreatable } from "../../framework/entities/abstracts/interfaces";
+import { getRandomCreatableEntityType } from "@utilities/functions";
 
 // INSTANTIABLE VERSIONS OF ABSTRACT CLASSES TO BE USED FOR TESTING
+
 type InstatiableEntity = ICommon & {
-	attribute1: string,
-	attribute2: string,
-	attribute3: number
+	attribute1: AttributeSchema<string>,
+	attribute2: AttributeSchema<string>,
+	attribute3: AttributeSchema<number>
 };
 
 export class Entity extends AbstractEntity {
@@ -42,7 +45,7 @@ export class Entity extends AbstractEntity {
 }
 
 type TCreatable = ICommon & {
-	creator: string
+	creator: AttributeSchema<string, true>
 }
 
 export class CreatableEntity extends AbstractEntity implements ICreatable {
@@ -56,6 +59,7 @@ export class CreatableEntity extends AbstractEntity implements ICreatable {
 	attributes: Attributes<TCreatable> = new Attributes<TCreatable>({
 		creator: {
 			initial: null,
+			immutable: true,
 			required: true
 		}
 	});
@@ -72,7 +76,7 @@ export class CreatableEntity extends AbstractEntity implements ICreatable {
 
 		this.attributes.parse({
 			id,
-			entityType: entityType || EntityType.Alarm,
+			entityType: entityType || getRandomCreatableEntityType(),
 			creator:  this.creator.attributes.get("id")
 		});
 

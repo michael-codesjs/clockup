@@ -1,15 +1,22 @@
 import { EntityType } from "@local-types/api";
 import { Keys } from "../keys";
 import { CreatableEntity, Entity } from "../../../../utilities/testing/instantiable-abstracts";
+import { getRandomEntityType } from "@utilities/functions";
+import { chance } from "@utilities/constants";
 
 describe("Keys", () => {
 
 	let keys: Keys;
 	let entity: Entity;
 
+	let entityType: EntityType;
+	let id: string;
+
 	beforeEach(() => {
+		entityType = getRandomEntityType();
+		id = chance.fbid();
 		entity = new Entity();
-		entity.attributes.parse({ id: "ID", entityType: EntityType.User });
+		entity.attributes.parse({ id, entityType });
 		keys = new Keys(entity);
 	});
 
@@ -21,7 +28,7 @@ describe("Keys", () => {
 			descriptors: [entity.attributes.get("entityType")],
 			values: [entity.attributes.get("id")]
 		});
-    
+
 		expect(keys.primary()).toMatchObject({
 			PK: key, SK: key
 		});
@@ -34,44 +41,42 @@ describe("Keys", () => {
 		// setGSI
 
 		keys.setGSI({
-			gsi: 1,
-			key: {
+			1: {
 				partition: "1",
 				sort: "1"
 			}
 		});
 
-		expect(keys.GSI(1)).toMatchObject({
+		expect(keys.getGSI(1)).toMatchObject({
 			GSI1_PK: "1",
 			GSI1_SK: "1"
 		});
 
-		// batchSetGSIs && GSIs
+		// batch setGSIs && GSIs
 
-		const GSIs = Array(7).fill(null).map((...args) => {
-			const index = args[1]+1;
-			return {
-				gsi: index,
-				key: {
-					partition: index.toString(),
-					sort: index.toString()
-				}
+		const GSIs = Array(Keys.GSI_count-1).fill(null).reduce((...args) => {
+			const cummulative = args[0];
+			const index = args[2] + 1;
+			cummulative[index] = {
+				partition: index.toString(),
+				sort: index.toString()
 			};
-		});
+			return cummulative
+		}, {} as any);
 
-		keys.batchSetGSIs(GSIs);
+		keys.setGSI(GSIs);
 
 		const GSI_output = Array(7).fill(null).reduce((...args) => {
 			const cummulative = args[0];
-			const index = args[2]+1;
+			const index = args[2] + 1;
 			return {
 				...cummulative,
 				[`GSI${index}_PK`]: index.toString(),
 				[`GSI${index}_SK`]: index.toString()
 			};
 		}, {});
-    
-		expect(keys.GSIs()).toMatchObject(GSI_output);
+
+		expect(keys.getGSIs()).toMatchObject(GSI_output);
 
 		// all
 
@@ -84,14 +89,21 @@ describe("Keys", () => {
 
 		expect(keys.all()).toMatchObject(allOutput);
 
+		// nonPrimary
+
+		expect(keys.nonPrimary()).toMatchObject({
+			EntityIndexPK: entity.attributes.get("entityType"),
+			...GSI_output,
+		});
+
 	});
 
 	test("Keys.constructContinuityDependantKey", () => {
-		entity.attributes.set({ discontinued: true });
+		entity.attributes.parse({ discontinued: true, entityType });
 		const entityIndex = entity.keys.entityIndex();
 		expect(entityIndex).toMatchObject({
-			EntityIndexPK: entity.attributes.get("entityType")+"#"+"discontinued",
-			EntityIndexSK: entity.attributes.get("entityType")+"#"+entity.attributes.get("created").toLowerCase()+"#"+"discontinued"
+			EntityIndexPK: entity.attributes.get("entityType") + "#" + "discontinued",
+			EntityIndexSK: entity.attributes.get("entityType") + "#" + entity.attributes.get("created").toLowerCase() + "#" + "discontinued"
 		});
 	});
 

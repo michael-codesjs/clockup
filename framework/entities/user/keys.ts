@@ -7,7 +7,7 @@ export class UserKeys extends Keys {
 
 	/** Sets user entity's desired GSIS keys */
 	configure(): void {
-    
+
 	}
 
 }

@@ -1,4 +1,4 @@
-import { ICommon } from "@local-types/api";
+import { AttributeSchema, ICommon } from "../types/attributes";
 import { Attributes } from "./attributes";
 import { IGraphQlEntity } from "./interfaces";
 import { Keys } from "./keys";
@@ -15,7 +15,7 @@ import { Model } from "./model";
 export abstract class Entity implements IGraphQlEntity {
 
 	/** Entity attributes */
-	public abstract attributes: Attributes<ICommon>;
+	public abstract attributes: Attributes<ICommon & Record<string, AttributeSchema<any,boolean>>>;
 	/** Entity DynamoDB keys for the table and all its Global Secondary Indexes */
 	public abstract keys: Keys;
 
@@ -45,13 +45,22 @@ export abstract class Entity implements IGraphQlEntity {
 	 */
 	abstract sync(): Promise<Entity>;
 
-	/**
-	 * deletes an entites record from the database
-	 */
+	/** deletes an entites record from the database */
 	async terminate(): Promise<Entity> {
 		await this.model.delete();
 		const ConstructableNullTypeOfSelf = this.NullTypeOfSelf as new () => Entity;
 		return new ConstructableNullTypeOfSelf();
+	}
+	/** discontinues an entity */
+	async discontinue(): Promise<Entity> {
+		this.attributes.parse({
+			...this.attributes.valid(),
+			discontinued: true
+		});
+		const { Attributes } = await this.model.discontinue();
+		console.log("DB Attributes:", Attributes);
+		console.log("Local Attributes:", this.attributes.valid());
+		return this;
 	}
 
 	composable(): boolean {

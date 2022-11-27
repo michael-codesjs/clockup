@@ -86,7 +86,7 @@ export const getRandomEntityType = () => {
 
 export const getRandomCreatableEntityType = () => {
 	const entityTypes = getEntityTypes().filter(entityType => entityType !== EntityType.User);
-	return entityTypes[Math.round(Math.random() * entityTypes.length - 1)];
+	return entityTypes[Math.round(Math.random() * (entityTypes.length - 1))];
 }
 
 export const delay = (ms: number) => {

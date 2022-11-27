@@ -1,7 +1,7 @@
 import { AttributeParams } from "../types";
 import { IPutable } from "./interfaces";
 
-export class Attribute<T=any, I = false> implements IPutable {
+export class Attribute<T = any, I = false> implements IPutable {
 
 	protected readonly Required: boolean;
 	protected Value: T;
@@ -16,14 +16,28 @@ export class Attribute<T=any, I = false> implements IPutable {
 	}
 
 	get value() { return this.Value; }
+
 	set value(value: T) {
+		if (!this.validate(value)) throw new Error("Invalid value for attribute");
+		if(typeof value === "object") {
+			this.Value = {
+				...this.Value,
+				...value,
+			};
+		} else if (Array.isArray(value)) {
+			this.Value = (this.Value as Array<any>).concat(value) as T;
+			console.log("Post Set:", this.Value);
+		} else {
+			this.Value = value;
+		}
+	}
+
+	override(value: T) {
 		if (!this.validate(value)) throw new Error("Invalid value for attribute");
 		this.Value = value;
 	}
 
-	/**
-	 * Determines if an attribute can be written to the database
-	 */
+	/** Determines if an attribute can be written to the database */
 	putable(): boolean {
 		return (
 			(this.Required ? this.value !== undefined && this.value !== null : true) && this.validate(this.Value)

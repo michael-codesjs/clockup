@@ -19,8 +19,16 @@ describe("Attributes", () => {
 	type A = ICommon & {
 		attribute: AttributeSchema<string>,
 		attribute1: AttributeSchema<number>,
-		attribute2: AttributeSchema<boolean>
+		attribute2: AttributeSchema<boolean>,
 	};
+
+	type S = ICommon & {
+		set: AttributeSchema<Record<string, any>>
+	};
+
+	type SA = ICommon & {
+		array: AttributeSchema<Array<any>>
+	}
 
 	type PA = Omit<A, "attribute1" | "attribute2">; // partial A
 
@@ -75,10 +83,10 @@ describe("Attributes", () => {
 
 	});
 
-	test("Attributes.get && Attributes.gets", () => {
+	test("Attributes.get", () => {
 
 		const values = { entityType, id, created, modified, discontinued, attribute };
-		const attributes = new Attributes<PA>({ attribute: { initial: null } });
+		const attributes = new Attributes<PA>({ attribute: { initial: null, required: true } });
 
 		attributes.parse(values);
 
@@ -89,13 +97,11 @@ describe("Attributes", () => {
 	});
 
 	test("Attributes.set", () => {
-		const attributes = new Attributes({});
-		attributes.set({
-			discontinued: true,
-		});
+		const attributes = new Attributes<PA>({ attribute: { initial: null } });
+		attributes.set({ attribute });
 		expect(attributes.collective()).toMatchObject({
 			modified: Then.dateMatch(),
-			discontinued: true,
+			attribute
 		});
 	});
 
@@ -109,6 +115,46 @@ describe("Attributes", () => {
 		const attributes = new Attributes<PA>({ attribute: { initial: null, required: true } });
 		attributes.parse({ entityType, id });
 		expect(attributes.putable()).toBe(false);
+	});
+
+	test("Attributes.valid", () => {
+
+		const attributes = new Attributes<PA>({ attribute: { initial: null, required: true } });
+		attributes.parse({ entityType, id });
+		
+		const collectiveNonNullAttributes = attributes.valid();
+		const nullAttributes: Array<keyof ReturnType<typeof attributes.collective>> = ["attribute"];
+
+		nullAttributes.forEach(attribute => expect(attribute in collectiveNonNullAttributes).toBe(false));
+
+	});
+
+	test("Attribute.(set & override) sets(object)", () => {
+
+		const attributes = new Attributes<S>({ set: { initial: {}, required: true }});
+
+		attributes.set({
+			set: {
+				attribute
+			}
+		});
+
+		expect(attributes.get("set")).toMatchObject({ attribute });
+
+		attributes.set({
+			set: {
+				attribute1, attribute2
+			}
+		});
+
+		expect(attributes.get("set")).toMatchObject({ attribute, attribute1, attribute2 });
+
+		attributes.override({
+			set: {}
+		});
+
+		expect(attributes.get("set")).toMatchObject({});
+
 	});
 
 });

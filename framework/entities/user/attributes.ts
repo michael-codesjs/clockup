@@ -1,14 +1,10 @@
-import { EntityType, User as TUser } from "@local-types/api";
-import { OmitTypeName } from "@local-types/utility";
 import { Attributes } from "../abstracts";
-import { ImmutableAttributes } from "../types";
-
-type User = OmitTypeName<TUser>;
-type ImmutableUserAttributes = ImmutableAttributes & "alarms";
+import { ICommon, User } from "../types/attributes";
+import { ToAttributeParams } from "../types/utility";
 
 export class UserAttributes extends Attributes<User> {
 
-	private static readonly config = {
+	private static readonly config: ToAttributeParams<Omit<User, keyof ICommon>> = {
 		name: { initial: null, required: true },
 		email: { initial: null, required: true },
 		alarms: { initial: null, required: false }
@@ -16,17 +12,6 @@ export class UserAttributes extends Attributes<User> {
 
 	constructor() {
 		super(UserAttributes.config);
-	}
-
-	parse(attributes: Partial<Omit<User, "entityType" | "__typename">>) {
-		super.parse({
-			...attributes,
-			entityType: EntityType.User,
-		});
-	}
-
-	set(attributes: Partial<Omit<User, ImmutableUserAttributes>>) {
-		super.set(attributes);
 	}
 
 	/** attributes also stored in cognito */

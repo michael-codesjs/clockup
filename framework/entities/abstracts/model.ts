@@ -1,5 +1,5 @@
 import dynamoDbExpression from "@tuplo/dynoexpr";
-import type { DeleteItemOutput, ExecuteTransactionOutput, GetItemOutput, UpdateItemOutput } from "aws-sdk/clients/dynamodb";
+import type { DeleteItemOutput, ExecuteTransactionOutput, GetItemOutput, PutItemOutput, UpdateItemOutput } from "aws-sdk/clients/dynamodb";
 import { Entity } from ".";
 import { dynamoDbOperations } from "../../../lib/dynamoDb";
 import { configureEnviromentVariables } from "../../../utilities/functions";
@@ -16,55 +16,95 @@ export class Model {
 		this.entity = entity;
 	}
 
-	/** Returns non null attributes that can be upserted to a table */
-	private getNonNullAttributes(attributes: Record<string, any>): Record<string, any> {
-		return Object.entries(attributes)
-			.reduce((cumulative, current) => {
-				const [key, value] = current;
-				if (value === null || value === undefined) return cumulative;
-				cumulative[key] = value;
-				return cumulative;
-			}, {});
-	}
-
-	/** DynamoDb item input for upsert operations on the table for the entity */
-	private input() {
-		const input = {
-			...this.entity.keys.entityIndex(),
-			...this.entity.keys.GSIs(),
-			...this.entity.attributes.collective(),
+	/** DynamoDb item input for put operations on the table for the entity */
+	private putParams() {
+		const item = {
+			...this.entity.keys.all(),
+			...this.entity.attributes.valid(),
 		};
-		return this.getNonNullAttributes(input) as typeof input;
+		const params = dynamoDbExpression({
+			Condition: {
+				id: "attribute_not_exists"
+			}
+		});
+		return { item, params }
 	}
 
-	private upsertParams() {
-		const attributes = this.input();
-		const params: any = {
+	/** Dynamodb params for update operations on the table for the entity */
+	private updateParams() {
+		
+		const attributes = {
+			...this.entity.keys.nonPrimary(),
+			...this.entity.attributes.valid()
+		};
+
+		delete attributes.created;
+		delete attributes.discontinued;
+
+		return dynamoDbExpression({
 			Update: attributes,
 			Key: this.entity.keys.primary(),
 			ReturnValues: "ALL_NEW",
-		};
-		if (!this.entity.attributes.putable()) params.Condition = { id: "attribute_exists" };
-		return dynamoDbExpression(params);
+			Condition: {
+				id: "attribute_exists",
+				discontinued: false
+			}
+		});
+
+	}
+
+	private discontinueParams() {
+
+		const attributes = {
+			...this.entity.keys.nonPrimary(),
+			discontinued: true
+		}
+
+		return dynamoDbExpression({
+			Update: attributes,
+			Key: this.entity.keys.primary(),
+			ReturnValues: "ALL_NEW",
+			Condition: {
+				id: "attribute_exists",
+				discontinued: false
+			}
+		});
+
+	}
+
+	/** inserts an entities record into the table */
+	async put(): Promise<PutItemOutput> {
+		const { item, params } = this.putParams();
+		return await dynamoDbOperations.put({
+			TableName: DYNAMO_DB_TABLE_NAME,
+			Item: item as any,
+			...params
+		});
 	}
 
 	/** gets an entities record from the table using it's Partition and Sort key values */
 	async get(): Promise<GetItemOutput> {
-		console.log("Keys:", this.entity.keys.primary());
 		return await dynamoDbOperations.get({
 			TableName: DYNAMO_DB_TABLE_NAME!,
 			Key: this.entity.keys.primary() as any,
 		});
 	}
 
-	/** upserts an entities record in the table */
-	async mutate(): Promise<UpdateItemOutput> {
-		const params = this.upsertParams();
+	/** updates an entities record in the table */
+	async update(): Promise<UpdateItemOutput> {
+		const params = this.updateParams();
 		return await dynamoDbOperations.update({
 			TableName: DYNAMO_DB_TABLE_NAME!,
 			...params as any
 		});
+	}
 
+	async discontinue(): Promise<UpdateItemOutput> {
+		const params = this.discontinueParams();
+		return await dynamoDbOperations.update({
+			TableName: DYNAMO_DB_TABLE_NAME,
+			...params as any
+		});
 	}
 
 	/** deletes an entities record from the table */
