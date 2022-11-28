@@ -1,14 +1,15 @@
 import { cognitoProvider } from "@lib/cognito";
 import * as types from "@local-types/api";
 import type { IEntityFactory } from "@local-types/interfaces";
-import { User as UserAttributesSchema, ICommon } from "../types/attributes";
 import { configureEnviromentVariables } from "@utilities/functions";
 import { Attributes, Entity, Keys } from "../abstracts";
 import { IUser } from "../abstracts/interfaces";
 import { UserNotFoundError } from "../error/user-not-found";
-import { AbsoluteUserAttributes, EntityErrorMessages, NullUserAttributes } from "../types";
+import { EntityErrorMessages } from "../types";
+import { NullUserConstructorParams, UserConstructorParams } from "../types/constructor-params";
 import { UserAttributes } from "./attributes";
 import { UserKeys } from "./keys";
+import { UserModel } from "./model";
 
 const { COGNITO_USER_POOL_ID } = configureEnviromentVariables();
 
@@ -28,11 +29,11 @@ namespace UserEntityGroup {
 		readonly TypeOfSelf: typeof NullUser = NullUser;
 		readonly NullTypeOfSelf: typeof NullUser = NullUser;
 		readonly AbsoluteTypeOfSelf: typeof User = User;
-
+		;
 		public readonly attributes = new Attributes();
 		public readonly keys = new Keys(this);
 
-		constructor(properties: NullUserAttributes) {
+		constructor(properties: NullUserConstructorParams) {
 			super();
 			this.attributes.parse({ ...properties, entityType: types.EntityType.User });
 		}
@@ -42,9 +43,9 @@ namespace UserEntityGroup {
 		}
 
 		async sync(): Promise<User | never> {
-			const { Item } = await this.model.get(); // get user record from db;
+			const { Item } = await this.model.get(); // get user record from db
 			if (!Item) throw new UserNotFoundError(this.attributes.get("id"));
-			return new User(Item as AbsoluteUserAttributes);
+			return new User(Item as UserConstructorParams);
 		}
 
 		async terminateCognito() {
@@ -65,10 +66,11 @@ namespace UserEntityGroup {
 		readonly NullTypeOfSelf: typeof NullUser = NullUser;
 		readonly AbsoluteTypeOfSelf: typeof User = User;
 
-		public attributes: any = new UserAttributes() as Attributes<ICommon>;
+		protected readonly model: UserModel = new UserModel(this);
+		public attributes: UserAttributes = new UserAttributes();
 		public keys = new UserKeys(this);
 
-		constructor(attributes: AbsoluteUserAttributes & { created?: string }) {
+		constructor(attributes: UserConstructorParams) {
 			super();
 			this.attributes.parse(attributes);
 		}
@@ -84,10 +86,9 @@ namespace UserEntityGroup {
 			};
 		}
 
-
 		async sync(): Promise<User> {
 			const { Attributes } = await this.model.update();
-			this.attributes.set(Attributes);
+			this.attributes.parse(Attributes);
 			return this;
 		}
 
@@ -96,7 +97,7 @@ namespace UserEntityGroup {
 
 			const attributes = [];
 
-			/** populate attributes to contain non null values */
+			// populate attributes to contain non null values
 			Object.entries(this.attributes.cognito)
 				.forEach(([key, value]) => {
 					value !== null && value !== undefined && attributes.push({
@@ -114,19 +115,19 @@ namespace UserEntityGroup {
 			await cognitoProvider()
 				.adminUpdateUserAttributes(cognitoAdminUpdateParams) // update user attributes in the cognito user pool
 				.promise();
+
 		}
 
 	}
 
 }
 
-
 /* USER FACTORY */
 
-type UserFactoryParams = AbsoluteUserAttributes | NullUserAttributes;
+type UserFactoryParams = UserConstructorParams | NullUserConstructorParams;
 type UserVariant<T> = (
-	T extends AbsoluteUserAttributes ? UserEntityGroup.User :
-	T extends NullUserAttributes ? UserEntityGroup.NullUser : never
+	T extends UserConstructorParams ? UserEntityGroup.User :
+	T extends NullUserConstructorParams ? UserEntityGroup.NullUser : never
 );
 
 /**

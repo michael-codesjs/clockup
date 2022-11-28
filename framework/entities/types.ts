@@ -35,9 +35,6 @@ export type NullEntityAttributes = { id: string };
 export type CreatableEntityAttributes = { creator: AbsoluteUser };
 export type NullCreatableEntityAttributes = NullEntityAttributes & Partial<CreatableEntityAttributes>;
 
-export type AbsoluteUserAttributes = { email?: string, name?: string };
-export type NullUserAttributes = { id: string };
-
 type SnoozeSettingsMinusRingTime = { time?: AlarmRingTime, snooze: AlarmSnoozeSettings };
 type RingTimeMinusSnoozeSettings = { time: AlarmRingTime, snooze?: AlarmSnoozeSettings };
 

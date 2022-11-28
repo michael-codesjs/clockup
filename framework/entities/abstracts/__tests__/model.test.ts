@@ -92,28 +92,22 @@ describe("Model", () => {
 
 		try {
 			await model.update();
-			throw new Error("Model.update operation was supposed to fail"); // fail test when mutate through successfully
+			throw new Error("Model.update operation was supposed to fail"); // fail test when update goes through successfully
 		} catch (error: any) {
 			expect(error.message).toBe("The conditional request failed");
 		}
 
 	});
 
+	test("Model.discontinue to discontinue an entity", async () => {
+
+		await model.discontinue();
+		const { Item } = await model.get();
+		expect(Item.discontinued).toBe(true);
+
+	});
+
 	test("Model.update to update a discontinued entity fails", async () => {
-
-		const discontinueParams = dynamoDbExpression({
-			Update: { discontinued: true },
-			Key: entity.keys.primary(),
-		});
-
-		await dynamoDbOperations.update({
-			TableName: DYNAMO_DB_TABLE_NAME,
-			...discontinueParams as any
-		});
-
-		entity.attributes.set({
-			attribute1: "value post discontinue"
-		});
 
 		try {
 			await model.update();

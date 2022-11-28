@@ -1,6 +1,5 @@
 import { logicalResourceNames } from "../utilities/constants";
 
-
 export const webCognitoClientResource = {
 	[logicalResourceNames.userPoolWebClient]: {
 		Type: "AWS::Cognito::UserPoolClient",

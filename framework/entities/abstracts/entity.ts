@@ -15,7 +15,7 @@ import { Model } from "./model";
 export abstract class Entity implements IGraphQlEntity {
 
 	/** Entity attributes */
-	public abstract attributes: Attributes<ICommon & Record<string, AttributeSchema<any,boolean>>>;
+	public abstract attributes: Attributes<ICommon>;
 	/** Entity DynamoDB keys for the table and all its Global Secondary Indexes */
 	public abstract keys: Keys;
 
@@ -23,7 +23,7 @@ export abstract class Entity implements IGraphQlEntity {
 	abstract readonly NullTypeOfSelf: typeof Entity;
 	abstract readonly AbsoluteTypeOfSelf: typeof Entity | Array<typeof Entity>;
 
-	protected model: Model = new Model(this);
+	protected readonly model: Model = new Model(this);
 
 	constructor({ }: {} = {}) { } // {}: {} = {} is for constructor signature purposes only
 	/*eslint no-empty-pattern: "off"*/
@@ -45,21 +45,28 @@ export abstract class Entity implements IGraphQlEntity {
 	 */
 	abstract sync(): Promise<Entity>;
 
+	/** inserts an entities record into the table */
+
+	async put(): Promise<Entity> {
+		await this.model.put();
+		return this;
+	}
+
 	/** deletes an entites record from the database */
 	async terminate(): Promise<Entity> {
 		await this.model.delete();
 		const ConstructableNullTypeOfSelf = this.NullTypeOfSelf as new () => Entity;
 		return new ConstructableNullTypeOfSelf();
 	}
+
 	/** discontinues an entity */
 	async discontinue(): Promise<Entity> {
+		if(this.TypeOfSelf === this.NullTypeOfSelf) throw new Error("Null variant of entity can not be used to discontinue an entity");
 		this.attributes.parse({
 			...this.attributes.valid(),
 			discontinued: true
 		});
-		const { Attributes } = await this.model.discontinue();
-		console.log("DB Attributes:", Attributes);
-		console.log("Local Attributes:", this.attributes.valid());
+		await this.model.discontinue();
 		return this;
 	}
 

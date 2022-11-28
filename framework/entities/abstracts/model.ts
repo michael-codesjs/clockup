@@ -3,6 +3,7 @@ import type { DeleteItemOutput, ExecuteTransactionOutput, GetItemOutput, PutItem
 import { Entity } from ".";
 import { dynamoDbOperations } from "../../../lib/dynamoDb";
 import { configureEnviromentVariables } from "../../../utilities/functions";
+import { ICreatable } from "./interfaces";
 
 const { DYNAMO_DB_TABLE_NAME } = configureEnviromentVariables();
 
@@ -10,7 +11,7 @@ const { DYNAMO_DB_TABLE_NAME } = configureEnviromentVariables();
 
 export class Model {
 
-	readonly entity: Entity;
+	readonly entity: Entity | (Entity & ICreatable);
 
 	constructor(entity: Entity) {
 		this.entity = entity;
@@ -30,8 +31,8 @@ export class Model {
 		return { item, params }
 	}
 
-	/** Dynamodb params for update operations on the table for the entity */
-	private updateParams() {
+	/** updatable attributes */
+	protected updateAttributes() {
 		
 		const attributes = {
 			...this.entity.keys.nonPrimary(),
@@ -40,6 +41,15 @@ export class Model {
 
 		delete attributes.created;
 		delete attributes.discontinued;
+		
+		return attributes;
+
+	}
+
+	/** Dynamodb params for update operations on the table for the entity */
+	private updateParams() {
+
+		const attributes = this.updateAttributes();
 
 		return dynamoDbExpression({
 			Update: attributes,

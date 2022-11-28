@@ -3,14 +3,6 @@ schema {
   mutation: Mutation
 }
 
-interface ICommon {
-  id: ID!
-  entityType: EntityType!
-  created: AWSDateTime!
-  modified: AWSDateTime
-  discontinued: Boolean!
-}
-
 enum ErrorTypes {
   NOT_FOUND
   MALFOMED_INPUT
@@ -37,6 +29,14 @@ enum EntityType {
 type OperationResponse {
   success: Boolean!
   message: String
+}
+
+interface ICommon {
+  id: ID!
+  entityType: EntityType!
+  created: AWSDateTime!
+  modified: AWSDateTime
+  discontinued: Boolean!
 }
 
 type User implements ICommon {

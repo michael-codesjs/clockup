@@ -74,22 +74,16 @@ export class Attributes<T extends (ICommon & Record<string, AttributeSchema<any,
 
 	private forEachOnMutate(
 		attributes: Partial<EntriesFromAttributesSchema<T>>,
-		setter?: (
-			attribute: (typeof this.Attributes)[keyof EntriesFromAttributesSchema<T>],
-			value: EntriesFromAttributesSchema<T>[keyof EntriesFromAttributesSchema<T>],
-			key: string
-		) => void
+		setter?: (value: any, key: string) => void // REVIEW: properly type this
 	) {
 
 		for (let key in attributes) {
 			if (!(key in this.Attributes)) continue;
 			const value = attributes[key];
-			const attribute = this.Attributes[key];
-			setter(attribute, value, key);
+			setter(value, key);
 		}
 
 		this.Attributes.modified.value = new Date().toJSON();
-
 		this.publish(); // notify subscribers of value changes
 
 	}
@@ -97,7 +91,8 @@ export class Attributes<T extends (ICommon & Record<string, AttributeSchema<any,
 	/** set mutable attributes */
 	set(attributes: GetSetMutableAttributes<T>) {
 
-		this.forEachOnMutate(attributes as EntriesFromAttributesSchema<T>, (attribute, value, key) => {
+		this.forEachOnMutate(attributes as EntriesFromAttributesSchema<T>, (value, key) => {
+			const attribute = this.Attributes[key];
 			if (attribute.immutable) throw new MutateImmutable(key); // can not mutate immutable attribute via set
 			attribute.value = value;
 		});
@@ -107,8 +102,8 @@ export class Attributes<T extends (ICommon & Record<string, AttributeSchema<any,
 	/** overrides sets */
 	override(sets: GetSetSetsFromAttributeSchema<T>) {
 
-		this.forEachOnMutate(sets as EntriesFromAttributesSchema<T>, (attribute, value) => {
-			attribute.override(value);
+		this.forEachOnMutate(sets as EntriesFromAttributesSchema<T>, (value, key) => {
+			this.Attributes[key].override(value);
 		});
 
 		this.publish(); // notify subscribers of value changes

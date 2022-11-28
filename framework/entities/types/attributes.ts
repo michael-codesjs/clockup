@@ -15,6 +15,10 @@ export type ICommon = {
   discontinued: AttributeSchema<boolean, true>
 };
 
+export type Creatable = ICommon & {
+  creator: AttributeSchema<string,true>
+};
+
 export type User = ICommon & {
   name: AttributeSchema<string>,
   email: AttributeSchema<string>,

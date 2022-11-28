@@ -2,11 +2,11 @@ import { ulid } from "ulid";
 import Entities from "@entities";
 import { EntityType, User as TUser } from "@local-types/api";
 import { chance } from "@utilities/constants";
-import { AbsoluteUserAttributes } from "framework/entities/types";
 import { Authentication } from "../when/authentication";
 import { cognitoProvider } from "@lib/cognito";
 import { configureEnviromentVariables } from "@utilities/functions";
 import { CognitoIdentityServiceProvider } from "aws-sdk";
+import { UserConstructorParams } from "framework/entities/types/constructor-params";
 
 const { COGNITO_USER_POOL_ID } = configureEnviromentVariables();
 
@@ -45,17 +45,17 @@ class GivenUserAttributes {
 		}
 	}
 
-	async new(attributes: AbsoluteUserAttributes) {
-		const instance = await Entities.User(attributes).sync();
+	async new(attributes: UserConstructorParams) {
+		const instance = await Entities.User(attributes).put();
 		return instance.graphQlEntity();
 	}
 
 	async random() {
-		const attributes = this.attributes();
+		const attributes = this.input();
 		return await this.new(attributes);
 	}
 
-	async instance(attributes?: AbsoluteUserAttributes) {
+	async instance(attributes?: UserConstructorParams) {
 		attributes = attributes || this.input();
 		const instance = await Entities.User(attributes).sync();
 		return instance;

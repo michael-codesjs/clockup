@@ -26,7 +26,6 @@ describe("Sync User Delete", () => {
 
     const user = await Given.user.authenticated();
     expect(await userDoesNotExist(user.id)).toBe(false);
-
     
     const instance = Entities.User(user);
     await instance.terminate(); // delete user in dynamodb

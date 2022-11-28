@@ -3,7 +3,7 @@ import { AbsoluteUser } from "@local-types/index";
 import { AttributeSchema, ICommon } from "../../framework/entities/types/attributes";
 import { Attributes, Entity as AbstractEntity, Keys } from "../../framework/entities/abstracts";
 import { ICreatable } from "../../framework/entities/abstracts/interfaces";
-import { getRandomCreatableEntityType } from "@utilities/functions";
+import { getRandomCreatableEntityType, getRandomEntityType } from "@utilities/functions";
 
 // INSTANTIABLE VERSIONS OF ABSTRACT CLASSES TO BE USED FOR TESTING
 
@@ -15,9 +15,9 @@ type InstatiableEntity = ICommon & {
 
 export class Entity extends AbstractEntity {
 
-	TypeOfSelf: typeof Entity;
+	TypeOfSelf: typeof Entity = Entity;
 	NullTypeOfSelf: typeof Entity;
-	AbsoluteTypeOfSelf: typeof Entity | (typeof Entity)[];
+	AbsoluteTypeOfSelf: typeof Entity | (typeof Entity)[] = Entity;
 
 	attributes: Attributes<InstatiableEntity> = new Attributes<InstatiableEntity>({
 		attribute1: { initial: null },
@@ -34,7 +34,7 @@ export class Entity extends AbstractEntity {
 		super();
 		const { id, entityType } = params || {};
 		this.attributes.parse({
-			id, entityType: entityType || EntityType.User
+			id, entityType: entityType || getRandomEntityType()
 		});
 	}
 
@@ -50,9 +50,9 @@ type TCreatable = ICommon & {
 
 export class CreatableEntity extends AbstractEntity implements ICreatable {
 
-	TypeOfSelf: typeof CreatableEntity;
+	TypeOfSelf: typeof CreatableEntity = CreatableEntity;
 	NullTypeOfSelf: typeof CreatableEntity;
-	AbsoluteTypeOfSelf: typeof CreatableEntity | (typeof CreatableEntity)[];
+	AbsoluteTypeOfSelf: typeof CreatableEntity | (typeof CreatableEntity)[] = CreatableEntity;
 	
 	creator: AbsoluteUser;
 
