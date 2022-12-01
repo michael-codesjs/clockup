@@ -7,8 +7,6 @@ import { ICreatable } from "./interfaces";
 
 const { DYNAMO_DB_TABLE_NAME } = configureEnviromentVariables();
 
-/* Base Model for interacting with entity model */
-
 export class Model {
 
 	readonly entity: Entity | (Entity & ICreatable);
@@ -17,31 +15,39 @@ export class Model {
 		this.entity = entity;
 	}
 
-	/** DynamoDb item input for put operations on the table for the entity */
-	private putParams() {
-		const item = {
+	/** put attributes  */
+	protected putAttributes() {
+		return {
 			...this.entity.keys.all(),
 			...this.entity.attributes.valid(),
 		};
+	}
+
+	/** put params */
+	protected putParams() {
+
 		const params = dynamoDbExpression({
 			Condition: {
-				id: "attribute_not_exists"
-			}
+				PK: "attribute_not_exists",
+				SK: "attribute_not_exists"
+			},
+			ConditionLogicalOperator: "AND"
 		});
-		return { item, params }
+		return { item: this.putAttributes(), params }
 	}
 
 	/** updatable attributes */
 	protected updateAttributes() {
-		
+
 		const attributes = {
 			...this.entity.keys.nonPrimary(),
-			...this.entity.attributes.valid()
+			...this.entity.attributes.valid(),
+			modified: new Date().toJSON()
 		};
 
 		delete attributes.created;
 		delete attributes.discontinued;
-		
+
 		return attributes;
 
 	}
@@ -56,34 +62,42 @@ export class Model {
 			Key: this.entity.keys.primary(),
 			ReturnValues: "ALL_NEW",
 			Condition: {
-				id: "attribute_exists",
+				PK: "attribute_exists",
+				SK: "attribute_exists",
 				discontinued: false
-			}
+			},
+			ConditionLogicalOperator: "AND"
 		});
 
 	}
 
-	private discontinueParams() {
-
-		const attributes = {
+	/** attributes to be updated when discontinuing an entity */
+	protected discontinueAttributes() {
+		return {
 			...this.entity.keys.nonPrimary(),
 			discontinued: true
 		}
+	}
+
+	/** discontinue an entity */
+	protected discontinueParams() {
 
 		return dynamoDbExpression({
-			Update: attributes,
+			Update: this.discontinueAttributes(),
 			Key: this.entity.keys.primary(),
 			ReturnValues: "ALL_NEW",
 			Condition: {
-				id: "attribute_exists",
+				PK: "attribute_exists",
+				SK: "attribute_exists",
 				discontinued: false
-			}
+			},
+			ConditionLogicalOperator: "AND"
 		});
 
 	}
 
 	/** inserts an entities record into the table */
-	async put(): Promise<PutItemOutput> {
+	async put(): Promise<PutItemOutput | ExecuteTransactionOutput> {
 		const { item, params } = this.putParams();
 		return await dynamoDbOperations.put({
 			TableName: DYNAMO_DB_TABLE_NAME,
@@ -109,7 +123,7 @@ export class Model {
 		});
 	}
 
-	async discontinue(): Promise<UpdateItemOutput> {
+	async discontinue(): Promise<UpdateItemOutput | ExecuteTransactionOutput> {
 		const params = this.discontinueParams();
 		return await dynamoDbOperations.update({
 			TableName: DYNAMO_DB_TABLE_NAME,

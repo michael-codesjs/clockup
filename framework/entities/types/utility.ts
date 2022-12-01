@@ -13,16 +13,16 @@ export type ToAttributeParams<T extends Record<string, AttributeSchema<any, bool
   }
 };
 
-/** removes keys of ICommon to  */
+/** removes keys of ICommon from T*/
 export type RefinedToAttributeParams<T extends Record<string, any>> = Omit<ToAttributeParams<T>, keyof ICommon>;
 
 export type EntriesFromAttributesSchema<T extends Record<string, AttributeSchema<any, boolean>>> = {
   [Key in keyof T]: T[Key]["type"]
 };
 
-export type GetMutableAttributes<T extends Record<string, AttributeSchema<any, boolean>>> = Partial<{
+export type GetMutableAttributes<T extends Record<string, AttributeSchema<any, boolean>>> = {
   [Key in keyof T]-?: T[Key]["immutable"] extends false ? Key : never
-}>[keyof T];
+}[keyof T];
 
 export type GetSetMutableAttributes<T extends Record<string, AttributeSchema<any, boolean>>> = Partial<
   Pick<EntriesFromAttributesSchema<T>, GetMutableAttributes<T>>

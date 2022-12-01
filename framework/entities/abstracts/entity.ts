@@ -1,3 +1,5 @@
+import { ICreatable } from "@local-types/api";
+import { EntityErrorMessages } from "../types";
 import { AttributeSchema, ICommon } from "../types/attributes";
 import { Attributes } from "./attributes";
 import { IGraphQlEntity } from "./interfaces";
@@ -48,12 +50,15 @@ export abstract class Entity implements IGraphQlEntity {
 	/** inserts an entities record into the table */
 
 	async put(): Promise<Entity> {
+		if(this.TypeOfSelf === this.NullTypeOfSelf) throw new Error("Can not insert record of null entity into the table");
+		if(!this.attributes.putable()) throw new Error(EntityErrorMessages.INSUFFICIENT_ATTRIBUTES_TO_PUT);
 		await this.model.put();
 		return this;
 	}
 
-	/** deletes an entites record from the database */
+	/** deletes an entites record from the database(legacy) */
 	async terminate(): Promise<Entity> {
+		if(this.TypeOfSelf === this.NullTypeOfSelf) throw new Error("Null variant of entity can not be used to terminate an entity");
 		await this.model.delete();
 		const ConstructableNullTypeOfSelf = this.NullTypeOfSelf as new () => Entity;
 		return new ConstructableNullTypeOfSelf();
@@ -61,7 +66,7 @@ export abstract class Entity implements IGraphQlEntity {
 
 	/** discontinues an entity */
 	async discontinue(): Promise<Entity> {
-		if(this.TypeOfSelf === this.NullTypeOfSelf) throw new Error("Null variant of entity can not be used to discontinue an entity");
+		if(this.TypeOfSelf === this.NullTypeOfSelf) throw new Error(EntityErrorMessages.NULL_VARIANT_RESTRICTION);
 		this.attributes.parse({
 			...this.attributes.valid(),
 			discontinued: true

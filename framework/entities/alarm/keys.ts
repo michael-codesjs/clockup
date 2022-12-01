@@ -5,7 +5,7 @@ export class AlarmKeys extends Keys {
 
 	public Entity: Entity & IAlarm;
 
-	/** Sets Alarm entities GSI keys */
+	/** sets alarm entities GSI keys */
 	configure(): void {
     
 	}

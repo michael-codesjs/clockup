@@ -19,14 +19,13 @@ export class Attribute<T = any, I = false> implements IPutable {
 
 	set value(value: T) {
 		if (!this.validate(value)) throw new Error("Invalid value for attribute");
-		if(typeof value === "object") {
+		if (Array.isArray(value)) {
+			this.Value = (this.Value as Array<any> || []).concat(value) as T;
+		} else if (typeof value === "object") {
 			this.Value = {
 				...this.Value,
 				...value,
 			};
-		} else if (Array.isArray(value)) {
-			this.Value = (this.Value as Array<any>).concat(value) as T;
-			console.log("Post Set:", this.Value);
 		} else {
 			this.Value = value;
 		}

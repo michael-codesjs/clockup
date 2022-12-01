@@ -1,11 +1,13 @@
-import { Alarm as TAlarm, AlarmResponse, EntityType, ICommon } from "@local-types/api";
+import { AlarmResponse, EntityType } from "@local-types/api";
 import { AbsoluteUser } from "@local-types/index";
 import { IEntityFactory } from "@local-types/interfaces";
 import { Attributes, Entity, Keys } from "../abstracts";
 import { IAlarm, ICreatable } from "../abstracts/interfaces";
-import { AlarmAttributes as TAlarmAttributes, EntityErrorMessages, NullAlarmAttributes } from "../types";
+import { EntityErrorMessages } from "../types";
+import { Creatable } from "../types/attributes";
+import { AlarmConstructorParams, NullCreatableEntityConstructorParams, UserConstructorParams } from "../types/constructor-params";
 import { AlarmAttributes } from "./attributes";
-import { AlarmKeys } from "./keys";
+import { AlarmModel } from "./model";
 
 namespace AlarmEntityGroup {
 
@@ -13,28 +15,28 @@ namespace AlarmEntityGroup {
 
 		readonly TypeOfSelf: typeof NullAlarm = NullAlarm;
 		readonly NullTypeOfSelf: typeof NullAlarm = NullAlarm;
-		readonly AbsoluteTypeOfSelf: any = Alarm; // typeof Alarm = Alarm;
+		readonly AbsoluteTypeOfSelf: typeof Alarm = Alarm; // typeof Alarm = Alarm;
 
-		creator: AbsoluteUser;
-		attributes: Attributes<{ creator: string } & ICommon> = new Attributes<{ creator: string } & ICommon>({ creator: { initial: null }});
-		keys: Keys = new Keys(this)
+		readonly creator: AbsoluteUser;
+		readonly attributes: Attributes<Creatable> = new Attributes<Creatable>({ creator: { initial: null }});
+		readonly keys: Keys = new Keys(this)
 
-		constructor(params: NullAlarmAttributes) {
+		constructor(params: NullCreatableEntityConstructorParams) {
 			super();
 			const { creator, id } = params;
 			this.creator = creator;
-			this.attributes.parse({ id, entityType: EntityType.Alarm });
+			this.attributes.parse({ id, entityType: EntityType.Alarm, creator: creator.attributes.get("id") });
 		}
 
 		graphQlEntity(): null {
 			return null
 		}
 
-		async sync(): Promise<any> {
+		async sync(): Promise<Alarm> {
 			const { Item } = await this.model.get();
-			if (!Item) throw new Error(EntityErrorMessages.CREATABLE_BY_CREATOR_NOT_FOUND); // alarm does not belong to user
+			if (!Item) throw new Error(EntityErrorMessages.CREATABLE_BY_CREATOR_NOT_FOUND);
 			return new Alarm({
-				...Item as TAlarmAttributes,
+				...Item as AlarmConstructorParams,
 				creator: this.creator
 			}) as any;
 		}
@@ -47,11 +49,13 @@ namespace AlarmEntityGroup {
 		readonly NullTypeOfSelf: typeof NullAlarm = NullAlarm;
 		readonly AbsoluteTypeOfSelf: typeof Alarm = Alarm;
 
-		creator: AbsoluteUser;
-		attributes: Attributes<TAlarm> = new AlarmAttributes();
+		model: AlarmModel = new AlarmModel(this);
+		attributes: AlarmAttributes = new AlarmAttributes();
 		keys = new Keys(this);
 
-		constructor(attributes: Omit<TAlarmAttributes,"entityType">) {
+		creator: AbsoluteUser;
+
+		constructor(attributes: AlarmConstructorParams) {
 			super();
 			const { creator, ...rest } = attributes;
 			this.creator = creator;
@@ -67,8 +71,8 @@ namespace AlarmEntityGroup {
 		}
 
 		async sync(): Promise<Alarm> {
-			const { Attributes } = await this.model.mutate();
-			this.attributes.set(Attributes);
+			const { Attributes } = await this.model.update();
+			this.attributes.parse(Attributes);
 			return this;
 		}
 
@@ -78,10 +82,10 @@ namespace AlarmEntityGroup {
 
 /* AlarmEntiyGroup Factory */
 
-type IAttributes = NullAlarmAttributes | AlarmAttributes;
+type AlarmFactoryParams = NullCreatableEntityConstructorParams | AlarmConstructorParams;
 type AlarmVariant<T> =
-	T extends IAttributes ? AlarmEntityGroup.Alarm :
-	T extends NullAlarmAttributes ? AlarmEntityGroup.NullAlarm : never;
+	T extends UserConstructorParams ? AlarmEntityGroup.Alarm :
+	T extends NullCreatableEntityConstructorParams ? AlarmEntityGroup.NullAlarm : never;
 
 /**
  * Factory used to obtain variants from the AlarmEntityGroup.
@@ -93,12 +97,16 @@ class AlarmFactoryBlueprint implements IEntityFactory {
 	private constructor() { }
 	static readonly instance = new AlarmFactoryBlueprint();
 
-	createEntity<T extends IAttributes>(params: T): AlarmVariant<T> | never {
+	createEntity<T extends AlarmFactoryParams>(params: T): AlarmVariant<T> {
 
-		if (params && "creator" in params && ("snooze" in params || "time" in params)) {
-			return new AlarmEntityGroup.Alarm(params) as AlarmVariant<T>;
-		} else if (params && "id" in params) {
-			return new AlarmEntityGroup.NullAlarm(params as any) as AlarmVariant<T>;
+		const isPartialAlarmParams = (params:T) => {
+			return Object.keys(params).some((key) => ["name", "days", "time", "snooze", "onceOff"].includes(key));
+		}
+
+		if (isPartialAlarmParams(params) && "creator" in params) {
+			return new AlarmEntityGroup.Alarm(params as AlarmConstructorParams) as AlarmVariant<T>;
+		} else if (params && "id" in params && "creator" in params) {
+			return new AlarmEntityGroup.NullAlarm(params as NullCreatableEntityConstructorParams) as AlarmVariant<T>;
 		} else {
 			throw new Error(EntityErrorMessages.ALARM_VARIANT_NOT_FOUND);
 		}

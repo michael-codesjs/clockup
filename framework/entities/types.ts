@@ -24,7 +24,9 @@ export type ImmutableAttributes = "entityType" | "id" | "created";
 
 export enum EntityErrorMessages {
   ATTEMPT_TO_MUTATE_IMMUTABLE = "Attempting to mutate immutable attribute",
-  CREATABLE_TERMINATE_MISSING_CREATOR = "Cannot terminate creatable entity without specifying it's creator",
+  INSUFFICIENT_ATTRIBUTES_TO_PUT = "Insufficient attributes to put to table",
+  CREATABLE_DISCONTINUE_MISSING_CREATOR = "Cannot terminate creatable entity without specifying it's creator",
+  NULL_VARIANT_RESTRICTION = "Null variant of entity can not be used to perform operation",
   CREATABLE_BY_CREATOR_NOT_FOUND = "Creatable by user was not found",
   USER_VARIANT_NOT_FOUND = "Could not instanciate variant of from entity group *User*",
   USER_NOT_FOUND = "User not found. Failed to sync NullUser to User",

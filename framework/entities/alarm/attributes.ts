@@ -1,29 +1,34 @@
-import { Alarm, EntityType, ICommon, UpdateAlarmInput } from "@local-types/api";
-import { RefinedToAttributeParams } from "@local-types/utility";
+import { EntityType } from "@local-types/api";
 import { Attributes } from "../abstracts";
+import { Alarm, SnoozeableDuration, SnoozeableInterval } from "../types/attributes";
+import { EntriesFromAttributesSchema, RefinedToAttributeParams } from "../types/utility";
 
 export class AlarmAttributes extends Attributes<Alarm> {
 
+  static readonly SnoozeableIntervals: Array<SnoozeableInterval> = [3, 5];
+  static readonly SnoozeableDurations: Array<SnoozeableDuration> = [3, 5, 10];
+
 	private static readonly config: RefinedToAttributeParams<Alarm> = {
-		name: { initial: null, required: true },
+		name: { initial: null, required: false },
     creator: { initial: null, required: true },
-    days: { initial: [], required: true },
+    days: { initial: null, required: true },
     time: {
       initial: {
         hour: null,
         minute: null
       },
-      validate: ({ hour, minute }) => (hour > -1 && hour < 24) && (minute > -1 && minute < 59)
+      validate: ({ hour, minute }) => (hour > -1 && hour < 24) && (minute > -1 && minute <= 59),
+      required: true,
     },
-    enabled: { initial: true, required: true },
-    onceOff: { initial: false, required: true },
+    enabled: { initial: null, required: true },
+    onceOff: { initial: null, required: true },
     snooze: {
       initial: {
         duration: null,
         interval: null,
       },
       required: true,
-      validate: value => value.duration > -1 && value.interval > -1,
+      validate: value => this.SnoozeableIntervals.includes(value.interval) && this.SnoozeableDurations.includes(value.duration),
     },
 	};
 
@@ -31,15 +36,11 @@ export class AlarmAttributes extends Attributes<Alarm> {
 		super(AlarmAttributes.config);
 	}
 
-	parse(attribtues: Partial<Omit<Alarm, "entityType">>) {
+	parse(attributes: Partial<EntriesFromAttributesSchema<Alarm>>): void {
 		super.parse({
-			...attribtues,
+			...attributes,
 			entityType: EntityType.Alarm
 		});
 	}
-
-  set(attributes: Omit<UpdateAlarmInput, "id">) {
-    super.set(attributes);
-  }
 
 }

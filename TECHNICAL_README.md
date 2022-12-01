@@ -1,8 +1,3 @@
-
-## **Re-occuring stuff in here that can not be put in the comments can be found in here.**
-***
-***
-***
 ## **Singletons**
 
 You'll see something like this everywhere in the code:(Entity Factories, Testing

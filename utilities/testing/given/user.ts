@@ -57,12 +57,13 @@ class GivenUserAttributes {
 
 	async instance(attributes?: UserConstructorParams) {
 		attributes = attributes || this.input();
-		const instance = await Entities.User(attributes).sync();
+		const instance = Entities.User(attributes)
+		await instance.put();
 		return instance;
 	}
 
-	absoluteEntity(attributes = this.attributes()) {
-		return Entities.User(attributes);
+	absoluteEntity(input = this.input()) {
+		return Entities.User(input);
 	}
 
 	async authenticated() {

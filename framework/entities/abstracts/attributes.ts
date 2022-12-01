@@ -74,7 +74,7 @@ export class Attributes<T extends (ICommon & Record<string, AttributeSchema<any,
 
 	private forEachOnMutate(
 		attributes: Partial<EntriesFromAttributesSchema<T>>,
-		setter?: (value: any, key: string) => void // REVIEW: properly type this
+		setter: (value: any, key: string) => void // REVIEW: properly type this
 	) {
 
 		for (let key in attributes) {
@@ -129,7 +129,7 @@ export class Attributes<T extends (ICommon & Record<string, AttributeSchema<any,
 	valid(): Partial<EntriesFromAttributesSchema<T>> {
 		return Object.entries(this.Attributes)
 			.reduce((collective, [key, value]) => {
-				if (value.value !== null && value.value !== undefined) {
+				if (value.value !== null && value.value !== undefined && value.putable()) {
 					collective[key as keyof typeof collective] = value.value;
 				}
 				return collective;
@@ -139,6 +139,11 @@ export class Attributes<T extends (ICommon & Record<string, AttributeSchema<any,
 	putable(): boolean {
 		const notPutable = Object.values(this.Attributes).some(attribute => !attribute.putable()); // find at least one attribute that is not putable
 		return !notPutable;
+	}
+
+	/** list of all attributes */
+	keys<R extends T = T>(): Array<keyof R> {
+		return Object.keys(this.Attributes);
 	}
 
 }

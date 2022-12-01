@@ -10,7 +10,7 @@ export const handler = async function (event: PostConfirmationTriggerEvent) {
 
 		await Entities
 			.User({ id, email, name, alarms: 0 }) // instanciate a new UserEntityGroup.User
-			.sync(); // insert user record into the table
+			.put(); // insert user record into the table
 
 		return event;
 
