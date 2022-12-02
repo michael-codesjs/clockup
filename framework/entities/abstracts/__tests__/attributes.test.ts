@@ -92,7 +92,7 @@ describe("Attributes", () => {
 
 		for (const key in values) {
 			expect(attributes.get(key as keyof typeof values)).toBe(values[key]);
-		};
+		}
 
 	});
 

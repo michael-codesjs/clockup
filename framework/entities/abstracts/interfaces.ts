@@ -4,11 +4,11 @@ import { Attributes } from "./attributes";
 
 export interface IEntity {
   composable(): boolean
-};
+}
 
 export interface IPutable {
   putable(): boolean
-};
+}
 
 export interface IGraphQlEntity {
   graphQlEntity(): Record<string, any> | null

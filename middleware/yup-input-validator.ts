@@ -14,4 +14,4 @@ export const yupInputValidator = <A extends { input: Record<string, any> }, R>(v
 		before
 	};
 
-}
+};

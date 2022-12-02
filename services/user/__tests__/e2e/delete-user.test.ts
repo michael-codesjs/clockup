@@ -15,7 +15,7 @@ describe("Delete User", () => {
 		expect((deleteResult as OperationResponse).success).toBe(true);
 
 		const postDeleteDbRecord = await Given.user.byId(user.id); // get user record from the table(should not exist tho)
-		expect(postDeleteDbRecord).toBe(null);
+		expect(postDeleteDbRecord.discontinued).toBe(true);
 
 	});
 });

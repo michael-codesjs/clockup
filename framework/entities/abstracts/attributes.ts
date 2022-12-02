@@ -77,7 +77,7 @@ export class Attributes<T extends (ICommon & Record<string, AttributeSchema<any,
 		setter: (value: any, key: string) => void // REVIEW: properly type this
 	) {
 
-		for (let key in attributes) {
+		for (const key in attributes) {
 			if (!(key in this.Attributes)) continue;
 			const value = attributes[key];
 			setter(value, key);

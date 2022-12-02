@@ -9,7 +9,7 @@ const main: AppSyncResolverHandler<null, OperationResponse> = async (event) => {
 
 	await Entities
 		.User({ id: sub })
-		.terminate(); // delete user
+		.discontinue(); // discontinue user
 
 	return {
 		__typename: "OperationResponse",

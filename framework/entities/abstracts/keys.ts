@@ -46,7 +46,7 @@ export class Keys implements ISubscriber {
 
 		if ("creator" in this.Entity) {
 
-			const { creator } = this.Entity
+			const { creator } = this.Entity;
 
 			this.setPrimary({
 				partition: creator.keys.primary().PK,
@@ -115,7 +115,7 @@ export class Keys implements ISubscriber {
 
 	/** get GSI key */
 	getGSI<N extends keyof typeof this.GSIs>(gsi: N): { [K in keyof Record<"PK" | "SK", any> as `GSI${N}_${K}`]: string | null } {
-		gsi
+		gsi;
 		if(!this.GSI_exists(gsi)) throw new Error("GSI does not exist");
 		return  {
 			[`GSI${gsi}_PK`]: this.GSIs[gsi]?.partition || null,
@@ -132,7 +132,7 @@ export class Keys implements ISubscriber {
 			cumulative = {
 				...cumulative,
 				...this.getGSI(gsi as unknown as keyof typeof this.GSIs)
-			}
+			};
 		}
 
 		return cumulative;
@@ -145,13 +145,13 @@ export class Keys implements ISubscriber {
 			if(!this.GSI_exists(gsi)) throw new Error("Can not set GSI that does not exist");
 			this.GSIs[gsi] = key;
 		});
-	};
+	}
 
 	nonPrimary() {
 		return {
 			...this.entityIndex(),
 			...this.getGSIs(),
-		}
+		};
 	}
 
 	all() {

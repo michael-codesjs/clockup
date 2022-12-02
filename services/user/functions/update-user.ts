@@ -20,5 +20,5 @@ const main: AppSyncResolverHandler<MutationUpdateUserArgs, User> = async (event)
 
 export const handler = (
 	withResolverStandard(main)
-	.use(yupInputValidator(validator))
+		.use(yupInputValidator(validator))
 );

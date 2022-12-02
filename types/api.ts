@@ -1,5 +1,5 @@
-import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import * as yup from 'yup'
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from "graphql";
+import * as yup from "yup";
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -25,92 +25,92 @@ export type Scalars = {
 };
 
 export type Query = {
-  __typename?: 'Query';
+  __typename?: "Query";
   getAlarm?: Maybe<Alarm>;
   getProfile?: Maybe<UserOutput>;
 };
 
 
 export type QueryGetAlarmArgs = {
-  id: Scalars['ID'];
+  id: Scalars["ID"];
 };
 
 export type Alarm = ICommon & ICreatable & {
-  __typename?: 'Alarm';
-  created: Scalars['AWSDateTime'];
-  creator: Scalars['ID'];
-  days?: Maybe<Array<Scalars['Int']>>;
-  discontinued: Scalars['Boolean'];
-  enabled?: Maybe<Scalars['Boolean']>;
+  __typename?: "Alarm";
+  created: Scalars["AWSDateTime"];
+  creator: Scalars["ID"];
+  days?: Maybe<Array<Scalars["Int"]>>;
+  discontinued: Scalars["Boolean"];
+  enabled?: Maybe<Scalars["Boolean"]>;
   entityType: EntityType;
-  id: Scalars['ID'];
-  modified?: Maybe<Scalars['AWSDateTime']>;
-  name?: Maybe<Scalars['String']>;
-  onceOff?: Maybe<Scalars['Boolean']>;
+  id: Scalars["ID"];
+  modified?: Maybe<Scalars["AWSDateTime"]>;
+  name?: Maybe<Scalars["String"]>;
+  onceOff?: Maybe<Scalars["Boolean"]>;
   snooze: AlarmSnoozeSettings;
   time: AlarmRingTime;
 };
 
 export type ICommon = {
-  created: Scalars['AWSDateTime'];
-  discontinued: Scalars['Boolean'];
+  created: Scalars["AWSDateTime"];
+  discontinued: Scalars["Boolean"];
   entityType: EntityType;
-  id: Scalars['ID'];
-  modified?: Maybe<Scalars['AWSDateTime']>;
+  id: Scalars["ID"];
+  modified?: Maybe<Scalars["AWSDateTime"]>;
 };
 
 export enum EntityType {
-  Alarm = 'ALARM',
-  User = 'USER'
+  Alarm = "ALARM",
+  User = "USER"
 }
 
 export type ICreatable = {
-  creator: Scalars['ID'];
+  creator: Scalars["ID"];
 };
 
 export type AlarmSnoozeSettings = {
-  __typename?: 'AlarmSnoozeSettings';
-  duration: Scalars['Int'];
-  interval: Scalars['Int'];
+  __typename?: "AlarmSnoozeSettings";
+  duration: Scalars["Int"];
+  interval: Scalars["Int"];
 };
 
 export type AlarmRingTime = {
-  __typename?: 'AlarmRingTime';
-  hour: Scalars['Int'];
-  minute: Scalars['Int'];
+  __typename?: "AlarmRingTime";
+  hour: Scalars["Int"];
+  minute: Scalars["Int"];
 };
 
 export type UserOutput = ErrorResponse | User;
 
 export type ErrorResponse = {
-  __typename?: 'ErrorResponse';
-  code?: Maybe<Scalars['Int']>;
-  message?: Maybe<Scalars['String']>;
+  __typename?: "ErrorResponse";
+  code?: Maybe<Scalars["Int"]>;
+  message?: Maybe<Scalars["String"]>;
   type: ErrorTypes;
 };
 
 export enum ErrorTypes {
-  CreateFailed = 'CREATE_FAILED',
-  InternalError = 'INTERNAL_ERROR',
-  MalfomedInput = 'MALFOMED_INPUT',
-  NotFound = 'NOT_FOUND',
-  UpdateFailed = 'UPDATE_FAILED'
+  CreateFailed = "CREATE_FAILED",
+  InternalError = "INTERNAL_ERROR",
+  MalfomedInput = "MALFOMED_INPUT",
+  NotFound = "NOT_FOUND",
+  UpdateFailed = "UPDATE_FAILED"
 }
 
 export type User = ICommon & {
-  __typename?: 'User';
-  alarms: Scalars['Int'];
-  created: Scalars['AWSDateTime'];
-  discontinued: Scalars['Boolean'];
-  email: Scalars['AWSEmail'];
+  __typename?: "User";
+  alarms: Scalars["Int"];
+  created: Scalars["AWSDateTime"];
+  discontinued: Scalars["Boolean"];
+  email: Scalars["AWSEmail"];
   entityType: EntityType;
-  id: Scalars['ID'];
-  modified?: Maybe<Scalars['AWSDateTime']>;
-  name: Scalars['String'];
+  id: Scalars["ID"];
+  modified?: Maybe<Scalars["AWSDateTime"]>;
+  name: Scalars["String"];
 };
 
 export type Mutation = {
-  __typename?: 'Mutation';
+  __typename?: "Mutation";
   createAlarm?: Maybe<Alarm>;
   deleteUser?: Maybe<OperationOutput>;
   updateAlarm?: Maybe<Alarm>;
@@ -133,51 +133,51 @@ export type MutationUpdateUserArgs = {
 };
 
 export type CreateAlarmInput = {
-  days?: InputMaybe<Array<Scalars['Int']>>;
-  enabled?: InputMaybe<Scalars['Boolean']>;
-  name?: InputMaybe<Scalars['String']>;
-  onceOff?: InputMaybe<Scalars['Boolean']>;
+  days?: InputMaybe<Array<Scalars["Int"]>>;
+  enabled?: InputMaybe<Scalars["Boolean"]>;
+  name?: InputMaybe<Scalars["String"]>;
+  onceOff?: InputMaybe<Scalars["Boolean"]>;
   snooze: AlarmSnoozeSettingsInput;
   time: AlarmRingTimeInput;
 };
 
 export type AlarmSnoozeSettingsInput = {
-  duration: Scalars['Int'];
-  interval: Scalars['Int'];
+  duration: Scalars["Int"];
+  interval: Scalars["Int"];
 };
 
 export type AlarmRingTimeInput = {
-  hour: Scalars['Int'];
-  minute: Scalars['Int'];
+  hour: Scalars["Int"];
+  minute: Scalars["Int"];
 };
 
 export type OperationOutput = ErrorResponse | OperationResponse;
 
 export type OperationResponse = {
-  __typename?: 'OperationResponse';
-  message?: Maybe<Scalars['String']>;
-  success: Scalars['Boolean'];
+  __typename?: "OperationResponse";
+  message?: Maybe<Scalars["String"]>;
+  success: Scalars["Boolean"];
 };
 
 export type UpdateAlarmInput = {
-  days?: InputMaybe<Array<Scalars['Int']>>;
-  enabled?: InputMaybe<Scalars['Boolean']>;
-  id: Scalars['ID'];
-  name?: InputMaybe<Scalars['String']>;
-  onceOff?: InputMaybe<Scalars['Boolean']>;
+  days?: InputMaybe<Array<Scalars["Int"]>>;
+  enabled?: InputMaybe<Scalars["Boolean"]>;
+  id: Scalars["ID"];
+  name?: InputMaybe<Scalars["String"]>;
+  onceOff?: InputMaybe<Scalars["Boolean"]>;
   snooze?: InputMaybe<AlarmSnoozeSettingsInput>;
   time?: InputMaybe<AlarmRingTimeInput>;
 };
 
 export type UpdateUserInput = {
-  email?: InputMaybe<Scalars['AWSEmail']>;
-  name?: InputMaybe<Scalars['String']>;
+  email?: InputMaybe<Scalars["AWSEmail"]>;
+  name?: InputMaybe<Scalars["String"]>;
 };
 
 export type AlarmOutput = Alarm | ErrorResponse;
 
 export type AlarmResponse = {
-  __typename?: 'AlarmResponse';
+  __typename?: "AlarmResponse";
   alarm: Alarm;
   creator: User;
 };
@@ -252,208 +252,208 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
-  ID: ResolverTypeWrapper<Scalars['ID']>;
+  ID: ResolverTypeWrapper<Scalars["ID"]>;
   Alarm: ResolverTypeWrapper<Alarm>;
-  ICommon: ResolversTypes['Alarm'] | ResolversTypes['User'];
-  AWSDateTime: ResolverTypeWrapper<Scalars['AWSDateTime']>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  ICommon: ResolversTypes["Alarm"] | ResolversTypes["User"];
+  AWSDateTime: ResolverTypeWrapper<Scalars["AWSDateTime"]>;
+  Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
   EntityType: EntityType;
-  ICreatable: ResolversTypes['Alarm'];
-  Int: ResolverTypeWrapper<Scalars['Int']>;
-  String: ResolverTypeWrapper<Scalars['String']>;
+  ICreatable: ResolversTypes["Alarm"];
+  Int: ResolverTypeWrapper<Scalars["Int"]>;
+  String: ResolverTypeWrapper<Scalars["String"]>;
   AlarmSnoozeSettings: ResolverTypeWrapper<AlarmSnoozeSettings>;
   AlarmRingTime: ResolverTypeWrapper<AlarmRingTime>;
-  UserOutput: ResolversTypes['ErrorResponse'] | ResolversTypes['User'];
+  UserOutput: ResolversTypes["ErrorResponse"] | ResolversTypes["User"];
   ErrorResponse: ResolverTypeWrapper<ErrorResponse>;
   ErrorTypes: ErrorTypes;
   User: ResolverTypeWrapper<User>;
-  AWSEmail: ResolverTypeWrapper<Scalars['AWSEmail']>;
+  AWSEmail: ResolverTypeWrapper<Scalars["AWSEmail"]>;
   Mutation: ResolverTypeWrapper<{}>;
   CreateAlarmInput: CreateAlarmInput;
   AlarmSnoozeSettingsInput: AlarmSnoozeSettingsInput;
   AlarmRingTimeInput: AlarmRingTimeInput;
-  OperationOutput: ResolversTypes['ErrorResponse'] | ResolversTypes['OperationResponse'];
+  OperationOutput: ResolversTypes["ErrorResponse"] | ResolversTypes["OperationResponse"];
   OperationResponse: ResolverTypeWrapper<OperationResponse>;
   UpdateAlarmInput: UpdateAlarmInput;
   UpdateUserInput: UpdateUserInput;
-  AlarmOutput: ResolversTypes['Alarm'] | ResolversTypes['ErrorResponse'];
+  AlarmOutput: ResolversTypes["Alarm"] | ResolversTypes["ErrorResponse"];
   AlarmResponse: ResolverTypeWrapper<AlarmResponse>;
-  AWSDate: ResolverTypeWrapper<Scalars['AWSDate']>;
-  AWSIPAddress: ResolverTypeWrapper<Scalars['AWSIPAddress']>;
-  AWSJSON: ResolverTypeWrapper<Scalars['AWSJSON']>;
-  AWSPhone: ResolverTypeWrapper<Scalars['AWSPhone']>;
-  AWSTime: ResolverTypeWrapper<Scalars['AWSTime']>;
-  AWSTimestamp: ResolverTypeWrapper<Scalars['AWSTimestamp']>;
-  AWSURL: ResolverTypeWrapper<Scalars['AWSURL']>;
+  AWSDate: ResolverTypeWrapper<Scalars["AWSDate"]>;
+  AWSIPAddress: ResolverTypeWrapper<Scalars["AWSIPAddress"]>;
+  AWSJSON: ResolverTypeWrapper<Scalars["AWSJSON"]>;
+  AWSPhone: ResolverTypeWrapper<Scalars["AWSPhone"]>;
+  AWSTime: ResolverTypeWrapper<Scalars["AWSTime"]>;
+  AWSTimestamp: ResolverTypeWrapper<Scalars["AWSTimestamp"]>;
+  AWSURL: ResolverTypeWrapper<Scalars["AWSURL"]>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Query: {};
-  ID: Scalars['ID'];
+  ID: Scalars["ID"];
   Alarm: Alarm;
-  ICommon: ResolversParentTypes['Alarm'] | ResolversParentTypes['User'];
-  AWSDateTime: Scalars['AWSDateTime'];
-  Boolean: Scalars['Boolean'];
-  ICreatable: ResolversParentTypes['Alarm'];
-  Int: Scalars['Int'];
-  String: Scalars['String'];
+  ICommon: ResolversParentTypes["Alarm"] | ResolversParentTypes["User"];
+  AWSDateTime: Scalars["AWSDateTime"];
+  Boolean: Scalars["Boolean"];
+  ICreatable: ResolversParentTypes["Alarm"];
+  Int: Scalars["Int"];
+  String: Scalars["String"];
   AlarmSnoozeSettings: AlarmSnoozeSettings;
   AlarmRingTime: AlarmRingTime;
-  UserOutput: ResolversParentTypes['ErrorResponse'] | ResolversParentTypes['User'];
+  UserOutput: ResolversParentTypes["ErrorResponse"] | ResolversParentTypes["User"];
   ErrorResponse: ErrorResponse;
   User: User;
-  AWSEmail: Scalars['AWSEmail'];
+  AWSEmail: Scalars["AWSEmail"];
   Mutation: {};
   CreateAlarmInput: CreateAlarmInput;
   AlarmSnoozeSettingsInput: AlarmSnoozeSettingsInput;
   AlarmRingTimeInput: AlarmRingTimeInput;
-  OperationOutput: ResolversParentTypes['ErrorResponse'] | ResolversParentTypes['OperationResponse'];
+  OperationOutput: ResolversParentTypes["ErrorResponse"] | ResolversParentTypes["OperationResponse"];
   OperationResponse: OperationResponse;
   UpdateAlarmInput: UpdateAlarmInput;
   UpdateUserInput: UpdateUserInput;
-  AlarmOutput: ResolversParentTypes['Alarm'] | ResolversParentTypes['ErrorResponse'];
+  AlarmOutput: ResolversParentTypes["Alarm"] | ResolversParentTypes["ErrorResponse"];
   AlarmResponse: AlarmResponse;
-  AWSDate: Scalars['AWSDate'];
-  AWSIPAddress: Scalars['AWSIPAddress'];
-  AWSJSON: Scalars['AWSJSON'];
-  AWSPhone: Scalars['AWSPhone'];
-  AWSTime: Scalars['AWSTime'];
-  AWSTimestamp: Scalars['AWSTimestamp'];
-  AWSURL: Scalars['AWSURL'];
+  AWSDate: Scalars["AWSDate"];
+  AWSIPAddress: Scalars["AWSIPAddress"];
+  AWSJSON: Scalars["AWSJSON"];
+  AWSPhone: Scalars["AWSPhone"];
+  AWSTime: Scalars["AWSTime"];
+  AWSTimestamp: Scalars["AWSTimestamp"];
+  AWSURL: Scalars["AWSURL"];
 };
 
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  getAlarm?: Resolver<Maybe<ResolversTypes['Alarm']>, ParentType, ContextType, RequireFields<QueryGetAlarmArgs, 'id'>>;
-  getProfile?: Resolver<Maybe<ResolversTypes['UserOutput']>, ParentType, ContextType>;
+export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes["Query"] = ResolversParentTypes["Query"]> = {
+  getAlarm?: Resolver<Maybe<ResolversTypes["Alarm"]>, ParentType, ContextType, RequireFields<QueryGetAlarmArgs, "id">>;
+  getProfile?: Resolver<Maybe<ResolversTypes["UserOutput"]>, ParentType, ContextType>;
 };
 
-export type AlarmResolvers<ContextType = any, ParentType extends ResolversParentTypes['Alarm'] = ResolversParentTypes['Alarm']> = {
-  created?: Resolver<ResolversTypes['AWSDateTime'], ParentType, ContextType>;
-  creator?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  days?: Resolver<Maybe<Array<ResolversTypes['Int']>>, ParentType, ContextType>;
-  discontinued?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  enabled?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  entityType?: Resolver<ResolversTypes['EntityType'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  modified?: Resolver<Maybe<ResolversTypes['AWSDateTime']>, ParentType, ContextType>;
-  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  onceOff?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  snooze?: Resolver<ResolversTypes['AlarmSnoozeSettings'], ParentType, ContextType>;
-  time?: Resolver<ResolversTypes['AlarmRingTime'], ParentType, ContextType>;
+export type AlarmResolvers<ContextType = any, ParentType extends ResolversParentTypes["Alarm"] = ResolversParentTypes["Alarm"]> = {
+  created?: Resolver<ResolversTypes["AWSDateTime"], ParentType, ContextType>;
+  creator?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  days?: Resolver<Maybe<Array<ResolversTypes["Int"]>>, ParentType, ContextType>;
+  discontinued?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
+  enabled?: Resolver<Maybe<ResolversTypes["Boolean"]>, ParentType, ContextType>;
+  entityType?: Resolver<ResolversTypes["EntityType"], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  modified?: Resolver<Maybe<ResolversTypes["AWSDateTime"]>, ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  onceOff?: Resolver<Maybe<ResolversTypes["Boolean"]>, ParentType, ContextType>;
+  snooze?: Resolver<ResolversTypes["AlarmSnoozeSettings"], ParentType, ContextType>;
+  time?: Resolver<ResolversTypes["AlarmRingTime"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ICommonResolvers<ContextType = any, ParentType extends ResolversParentTypes['ICommon'] = ResolversParentTypes['ICommon']> = {
-  __resolveType: TypeResolveFn<'Alarm' | 'User', ParentType, ContextType>;
-  created?: Resolver<ResolversTypes['AWSDateTime'], ParentType, ContextType>;
-  discontinued?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  entityType?: Resolver<ResolversTypes['EntityType'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  modified?: Resolver<Maybe<ResolversTypes['AWSDateTime']>, ParentType, ContextType>;
+export type ICommonResolvers<ContextType = any, ParentType extends ResolversParentTypes["ICommon"] = ResolversParentTypes["ICommon"]> = {
+  __resolveType: TypeResolveFn<"Alarm" | "User", ParentType, ContextType>;
+  created?: Resolver<ResolversTypes["AWSDateTime"], ParentType, ContextType>;
+  discontinued?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
+  entityType?: Resolver<ResolversTypes["EntityType"], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  modified?: Resolver<Maybe<ResolversTypes["AWSDateTime"]>, ParentType, ContextType>;
 };
 
-export interface AwsDateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['AWSDateTime'], any> {
-  name: 'AWSDateTime';
+export interface AwsDateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes["AWSDateTime"], any> {
+  name: "AWSDateTime";
 }
 
-export type ICreatableResolvers<ContextType = any, ParentType extends ResolversParentTypes['ICreatable'] = ResolversParentTypes['ICreatable']> = {
-  __resolveType: TypeResolveFn<'Alarm', ParentType, ContextType>;
-  creator?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+export type ICreatableResolvers<ContextType = any, ParentType extends ResolversParentTypes["ICreatable"] = ResolversParentTypes["ICreatable"]> = {
+  __resolveType: TypeResolveFn<"Alarm", ParentType, ContextType>;
+  creator?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
 };
 
-export type AlarmSnoozeSettingsResolvers<ContextType = any, ParentType extends ResolversParentTypes['AlarmSnoozeSettings'] = ResolversParentTypes['AlarmSnoozeSettings']> = {
-  duration?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  interval?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+export type AlarmSnoozeSettingsResolvers<ContextType = any, ParentType extends ResolversParentTypes["AlarmSnoozeSettings"] = ResolversParentTypes["AlarmSnoozeSettings"]> = {
+  duration?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  interval?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type AlarmRingTimeResolvers<ContextType = any, ParentType extends ResolversParentTypes['AlarmRingTime'] = ResolversParentTypes['AlarmRingTime']> = {
-  hour?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  minute?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+export type AlarmRingTimeResolvers<ContextType = any, ParentType extends ResolversParentTypes["AlarmRingTime"] = ResolversParentTypes["AlarmRingTime"]> = {
+  hour?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  minute?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type UserOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserOutput'] = ResolversParentTypes['UserOutput']> = {
-  __resolveType: TypeResolveFn<'ErrorResponse' | 'User', ParentType, ContextType>;
+export type UserOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes["UserOutput"] = ResolversParentTypes["UserOutput"]> = {
+  __resolveType: TypeResolveFn<"ErrorResponse" | "User", ParentType, ContextType>;
 };
 
-export type ErrorResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ErrorResponse'] = ResolversParentTypes['ErrorResponse']> = {
-  code?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  type?: Resolver<ResolversTypes['ErrorTypes'], ParentType, ContextType>;
+export type ErrorResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes["ErrorResponse"] = ResolversParentTypes["ErrorResponse"]> = {
+  code?: Resolver<Maybe<ResolversTypes["Int"]>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  type?: Resolver<ResolversTypes["ErrorTypes"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
-  alarms?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  created?: Resolver<ResolversTypes['AWSDateTime'], ParentType, ContextType>;
-  discontinued?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  email?: Resolver<ResolversTypes['AWSEmail'], ParentType, ContextType>;
-  entityType?: Resolver<ResolversTypes['EntityType'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  modified?: Resolver<Maybe<ResolversTypes['AWSDateTime']>, ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes["User"] = ResolversParentTypes["User"]> = {
+  alarms?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  created?: Resolver<ResolversTypes["AWSDateTime"], ParentType, ContextType>;
+  discontinued?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
+  email?: Resolver<ResolversTypes["AWSEmail"], ParentType, ContextType>;
+  entityType?: Resolver<ResolversTypes["EntityType"], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  modified?: Resolver<Maybe<ResolversTypes["AWSDateTime"]>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export interface AwsEmailScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['AWSEmail'], any> {
-  name: 'AWSEmail';
+export interface AwsEmailScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes["AWSEmail"], any> {
+  name: "AWSEmail";
 }
 
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createAlarm?: Resolver<Maybe<ResolversTypes['Alarm']>, ParentType, ContextType, RequireFields<MutationCreateAlarmArgs, 'input'>>;
-  deleteUser?: Resolver<Maybe<ResolversTypes['OperationOutput']>, ParentType, ContextType>;
-  updateAlarm?: Resolver<Maybe<ResolversTypes['Alarm']>, ParentType, ContextType, RequireFields<MutationUpdateAlarmArgs, 'input'>>;
-  updateUser?: Resolver<Maybe<ResolversTypes['UserOutput']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'input'>>;
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes["Mutation"] = ResolversParentTypes["Mutation"]> = {
+  createAlarm?: Resolver<Maybe<ResolversTypes["Alarm"]>, ParentType, ContextType, RequireFields<MutationCreateAlarmArgs, "input">>;
+  deleteUser?: Resolver<Maybe<ResolversTypes["OperationOutput"]>, ParentType, ContextType>;
+  updateAlarm?: Resolver<Maybe<ResolversTypes["Alarm"]>, ParentType, ContextType, RequireFields<MutationUpdateAlarmArgs, "input">>;
+  updateUser?: Resolver<Maybe<ResolversTypes["UserOutput"]>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, "input">>;
 };
 
-export type OperationOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['OperationOutput'] = ResolversParentTypes['OperationOutput']> = {
-  __resolveType: TypeResolveFn<'ErrorResponse' | 'OperationResponse', ParentType, ContextType>;
+export type OperationOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes["OperationOutput"] = ResolversParentTypes["OperationOutput"]> = {
+  __resolveType: TypeResolveFn<"ErrorResponse" | "OperationResponse", ParentType, ContextType>;
 };
 
-export type OperationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['OperationResponse'] = ResolversParentTypes['OperationResponse']> = {
-  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+export type OperationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes["OperationResponse"] = ResolversParentTypes["OperationResponse"]> = {
+  message?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  success?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type AlarmOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['AlarmOutput'] = ResolversParentTypes['AlarmOutput']> = {
-  __resolveType: TypeResolveFn<'Alarm' | 'ErrorResponse', ParentType, ContextType>;
+export type AlarmOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes["AlarmOutput"] = ResolversParentTypes["AlarmOutput"]> = {
+  __resolveType: TypeResolveFn<"Alarm" | "ErrorResponse", ParentType, ContextType>;
 };
 
-export type AlarmResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AlarmResponse'] = ResolversParentTypes['AlarmResponse']> = {
-  alarm?: Resolver<ResolversTypes['Alarm'], ParentType, ContextType>;
-  creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+export type AlarmResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes["AlarmResponse"] = ResolversParentTypes["AlarmResponse"]> = {
+  alarm?: Resolver<ResolversTypes["Alarm"], ParentType, ContextType>;
+  creator?: Resolver<ResolversTypes["User"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export interface AwsDateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['AWSDate'], any> {
-  name: 'AWSDate';
+export interface AwsDateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes["AWSDate"], any> {
+  name: "AWSDate";
 }
 
-export interface AwsipAddressScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['AWSIPAddress'], any> {
-  name: 'AWSIPAddress';
+export interface AwsipAddressScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes["AWSIPAddress"], any> {
+  name: "AWSIPAddress";
 }
 
-export interface AwsjsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['AWSJSON'], any> {
-  name: 'AWSJSON';
+export interface AwsjsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes["AWSJSON"], any> {
+  name: "AWSJSON";
 }
 
-export interface AwsPhoneScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['AWSPhone'], any> {
-  name: 'AWSPhone';
+export interface AwsPhoneScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes["AWSPhone"], any> {
+  name: "AWSPhone";
 }
 
-export interface AwsTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['AWSTime'], any> {
-  name: 'AWSTime';
+export interface AwsTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes["AWSTime"], any> {
+  name: "AWSTime";
 }
 
-export interface AwsTimestampScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['AWSTimestamp'], any> {
-  name: 'AWSTimestamp';
+export interface AwsTimestampScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes["AWSTimestamp"], any> {
+  name: "AWSTimestamp";
 }
 
-export interface AwsurlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['AWSURL'], any> {
-  name: 'AWSURL';
+export interface AwsurlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes["AWSURL"], any> {
+  name: "AWSURL";
 }
 
 export type Resolvers<ContextType = any> = {
@@ -489,45 +489,45 @@ export const EntityTypeSchema = yup.mixed().oneOf([EntityType.Alarm, EntityType.
 export const ErrorTypesSchema = yup.mixed().oneOf([ErrorTypes.CreateFailed, ErrorTypes.InternalError, ErrorTypes.MalfomedInput, ErrorTypes.NotFound, ErrorTypes.UpdateFailed]);
 
 export function CreateAlarmInputSchema(): yup.SchemaOf<CreateAlarmInput> {
-  return yup.object({
-    days: yup.array().of(yup.number().defined()).optional(),
-    enabled: yup.boolean(),
-    name: yup.string(),
-    onceOff: yup.boolean(),
-    snooze: yup.lazy(() => AlarmSnoozeSettingsInputSchema().defined()) as never,
-    time: yup.lazy(() => AlarmRingTimeInputSchema().defined()) as never
-  })
+	return yup.object({
+		days: yup.array().of(yup.number().defined()).optional(),
+		enabled: yup.boolean(),
+		name: yup.string(),
+		onceOff: yup.boolean(),
+		snooze: yup.lazy(() => AlarmSnoozeSettingsInputSchema().defined()) as never,
+		time: yup.lazy(() => AlarmRingTimeInputSchema().defined()) as never
+	});
 }
 
 export function AlarmSnoozeSettingsInputSchema(): yup.SchemaOf<AlarmSnoozeSettingsInput> {
-  return yup.object({
-    duration: yup.number().defined(),
-    interval: yup.number().defined()
-  })
+	return yup.object({
+		duration: yup.number().defined(),
+		interval: yup.number().defined()
+	});
 }
 
 export function AlarmRingTimeInputSchema(): yup.SchemaOf<AlarmRingTimeInput> {
-  return yup.object({
-    hour: yup.number().defined(),
-    minute: yup.number().defined()
-  })
+	return yup.object({
+		hour: yup.number().defined(),
+		minute: yup.number().defined()
+	});
 }
 
 export function UpdateAlarmInputSchema(): yup.SchemaOf<UpdateAlarmInput> {
-  return yup.object({
-    days: yup.array().of(yup.number().defined()).optional(),
-    enabled: yup.boolean(),
-    id: yup.string().required(),
-    name: yup.string(),
-    onceOff: yup.boolean(),
-    snooze: yup.lazy(() => AlarmSnoozeSettingsInputSchema()) as never,
-    time: yup.lazy(() => AlarmRingTimeInputSchema()) as never
-  })
+	return yup.object({
+		days: yup.array().of(yup.number().defined()).optional(),
+		enabled: yup.boolean(),
+		id: yup.string().required(),
+		name: yup.string(),
+		onceOff: yup.boolean(),
+		snooze: yup.lazy(() => AlarmSnoozeSettingsInputSchema()) as never,
+		time: yup.lazy(() => AlarmRingTimeInputSchema()) as never
+	});
 }
 
 export function UpdateUserInputSchema(): yup.SchemaOf<UpdateUserInput> {
-  return yup.object({
-    email: yup.mixed(),
-    name: yup.string()
-  })
+	return yup.object({
+		email: yup.mixed(),
+		name: yup.string()
+	});
 }

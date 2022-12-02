@@ -33,7 +33,7 @@ export class Model {
 			},
 			ConditionLogicalOperator: "AND"
 		});
-		return { item: this.putAttributes(), params }
+		return { item: this.putAttributes(), params };
 	}
 
 	/** updatable attributes */
@@ -76,7 +76,7 @@ export class Model {
 		return {
 			...this.entity.keys.nonPrimary(),
 			discontinued: true
-		}
+		};
 	}
 
 	/** discontinue an entity */

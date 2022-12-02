@@ -31,7 +31,7 @@ class GivenAlarmUtility {
 				.fill(null)
 				.map((...args) => {
 					const array = args[2];
-					let randomDay: number
+					let randomDay: number;
 					do {
 						randomDay = chance.integer({ min: 0, max: 6 });
 					} while (array.includes(randomDay));
@@ -55,7 +55,7 @@ class GivenAlarmUtility {
 	}
 
 	async new(attributes: AlarmConstructorParams) {
-		const instance = Entities.Alarm(attributes)
+		const instance = Entities.Alarm(attributes);
 		await instance.put();
 		return instance.graphQlEntity();
 	}

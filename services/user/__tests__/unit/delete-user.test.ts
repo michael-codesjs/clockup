@@ -13,7 +13,7 @@ describe("Delete User", () => {
 		expect(lambdaResponse).toBeTruthy();
 
 		const postDeleteRecord = await Given.user.byId(user.id);
-		expect(postDeleteRecord).toBe(null);
+		expect(postDeleteRecord.discontinued).toBe(true);
 
 	});
 

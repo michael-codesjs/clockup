@@ -61,7 +61,7 @@ describe("Keys", () => {
 				partition: index.toString(),
 				sort: index.toString()
 			};
-			return cummulative
+			return cummulative;
 		}, {} as any);
 
 		keys.setGSI(GSIs);

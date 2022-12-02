@@ -29,7 +29,7 @@ namespace UserEntityGroup {
 		readonly TypeOfSelf: typeof NullUser = NullUser;
 		readonly NullTypeOfSelf: typeof NullUser = NullUser;
 		readonly AbsoluteTypeOfSelf: typeof User = User;
-		;
+		
 		public readonly attributes = new Attributes();
 		public readonly keys = new Keys(this);
 
@@ -48,10 +48,10 @@ namespace UserEntityGroup {
 			return new User(Item as UserConstructorParams);
 		}
 
-		async terminateCognito() {
+		async discontinueCognito() {
 
 			await cognitoProvider()
-				.adminDeleteUser({
+				.adminDisableUser({
 					Username: this.attributes.get("id"),
 					UserPoolId: COGNITO_USER_POOL_ID!
 				})

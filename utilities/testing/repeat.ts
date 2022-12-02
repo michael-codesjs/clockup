@@ -2,32 +2,32 @@ import { delay } from "@utilities/functions";
 
 class RepeatUtility {
 
-  private constructor() { }
-  static readonly instance = new RepeatUtility();
+	private constructor() { }
+	static readonly instance = new RepeatUtility();
 
-  async timedOnCondition(params: { times?: number, duration?: number, call: () => Promise<boolean> }) {
+	async timedOnCondition(params: { times?: number, duration?: number, call: () => Promise<boolean> }) {
 
-    let times = params.times || 5;
-    const duration = params.duration || 1000;
-    const call = params.call;
+		let times = params.times || 5;
+		const duration = params.duration || 1000;
+		const call = params.call;
 
-    const func = async (): Promise<boolean> => {
+		const func = async (): Promise<boolean> => {
 
-      const result = await call();
-      times--;
+			const result = await call();
+			times--;
       
-      if (result) return true;
-      else if (times < 1) return false;
-      else {
-        await delay(duration);
-        return await func();
-      }
+			if (result) return true;
+			else if (times < 1) return false;
+			else {
+				await delay(duration);
+				return await func();
+			}
 
-    }
+		};
 
-    return await func();
+		return await func();
 
-  };
+	}
 
 }
 

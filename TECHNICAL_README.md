@@ -1,3 +1,24 @@
+## **Entity Groups**
+
+An **EntityGroup** is a collection(namespace) of variants of an entity type.
+
+### \* Null Entities.
+
+These are universal intermidiary variants you'll find in almost all entity groups. They are used to obtain non-null variants of an entity type.
+Their **sync** methods query the database for an absolute entity and if one is found, they configure and return an absolute variant of the same entity type.
+
+### * **List Of All Entity Groups And Their Variants:** (still growing)
+
+1. **UserEntityGroup**: NullUser and User.
+2. **AlarmEntityGroup**: NullAlarm and Alarm.
+
+***
+
+## **Continuity**
+A discontinued entity is one that has been deleted. We do not actually remove the entity record from the database, instead we append/prepend the string "DISCONTINUED" to it's keys(except primary). This makes it inaccesible to the front-end via querys.
+
+***
+
 ## **Singletons**
 
 You'll see something like this everywhere in the code:(Entity Factories, Testing
@@ -25,19 +46,3 @@ For Singletons with one method, they might as well just be
 a function, I have no problem with that but they may come a time that new
 methods should be introduced to the Singleton. And turning it into a Singleton
 then will be too much work, especially updating it's users.
-
-*****
-
-## **Entity Groups**
-
-An **EntityGroup** is a collection(namespace) of variants of an entity type.
-
-### \* **Null Entities**.
-
-These are universal intermidiary variants you'll find in almost all entity groups. They are used to obtain non-null variants of an entity type.
-Their **sync** methods query the database for an absolute entity and if one is found, they configure and return an absolute variant of the same entity type.
-
-### * **List Of All Entity Groups And Their Variants:** (still growing)
-
-1. **UserEntityGroup**: NullUser and User.
-2. **AlarmEntityGroup**: NullAlarm and Alarm.

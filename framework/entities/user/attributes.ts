@@ -19,7 +19,7 @@ export class UserAttributes extends Attributes<User> {
 		super.parse({
 			...attributes,
 			entityType: EntityType.User
-		})
+		});
 	}
 
 	/** attributes also stored in cognito */

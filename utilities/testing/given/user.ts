@@ -57,7 +57,7 @@ class GivenUserAttributes {
 
 	async instance(attributes?: UserConstructorParams) {
 		attributes = attributes || this.input();
-		const instance = Entities.User(attributes)
+		const instance = Entities.User(attributes);
 		await instance.put();
 		return instance;
 	}
@@ -80,7 +80,10 @@ class GivenUserAttributes {
 			password: attributes.password
 		}); // sign in user
 
-		return this.byId(id);
+		return {
+			...(await this.byId(id)),
+			password: attributes.password
+		}
 
 	}
 

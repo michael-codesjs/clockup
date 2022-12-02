@@ -4,18 +4,18 @@ import { Error } from "./error";
 
 export class ErrorResponse implements IGraphQlEntity {
 
-  private error: Error;
+	private error: Error;
 
-  constructor(error: Error) {
-    this.error = error;
-  }
+	constructor(error: Error) {
+		this.error = error;
+	}
 
-  graphQlEntity(): TErrorResponse {
-    return {
-      __typename: "ErrorResponse",
-      type: this.error.type,
-      message: this.error.name
-    }
-  }
+	graphQlEntity(): TErrorResponse {
+		return {
+			__typename: "ErrorResponse",
+			type: this.error.type,
+			message: this.error.name
+		};
+	}
 
-};
+}

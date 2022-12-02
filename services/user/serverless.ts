@@ -132,13 +132,13 @@ const serverlessConfiguration: AWS.Service = {
 			]
 		},
 
-		syncUserDeleteWithCognito: {
-			description: "Deletes a user from cognito when deleted from our table",
-			handler: "functions/sync-user-delete-with-cognito.handler",
+		syncUserDiscontinueWithCognito: {
+			description: "Disables a user in cognito when they are discontinued from our table",
+			handler: "functions/sync-user-discontinue-with-cognito.handler",
 			iamRoleStatements: [
 				{
 					Effect: "Allow",
-					Action: ["cognito-idp:AdminDeleteUser"],
+					Action: ["cognito-idp:AdminDisableUser"],
 					Resource: [
 						"${self:custom.cognitoUserPoolArn}"
 					]
@@ -153,12 +153,15 @@ const serverlessConfiguration: AWS.Service = {
 						batchSize: 1,
 						filterPatterns: [
 							{
-								eventName: ["REMOVE"],
+								eventName: ["UPDATE"],
 								dynamodb: {
 									OldImage: {
-										entityType: {
+										EntityIndexPK: {
 											S: [EntityType.User],
 										},
+										discontinued: {
+											B: [true]
+										}
 									},
 								},
 							},

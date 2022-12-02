@@ -55,7 +55,7 @@ describe("AlarmEntityGroup Functionality Tests", () => {
 
 		try {
 			await alarm.discontinue();
-			throw new Error("Was expecting discontinue to fail")
+			throw new Error("Was expecting discontinue to fail");
 		} catch(error) {
 			expect(error.message).toBe(EntityErrorMessages.NULL_VARIANT_RESTRICTION);
 		}

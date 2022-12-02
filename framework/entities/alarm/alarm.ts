@@ -19,7 +19,7 @@ namespace AlarmEntityGroup {
 
 		readonly creator: AbsoluteUser;
 		readonly attributes: Attributes<Creatable> = new Attributes<Creatable>({ creator: { initial: null }});
-		readonly keys: Keys = new Keys(this)
+		readonly keys: Keys = new Keys(this);
 
 		constructor(params: NullCreatableEntityConstructorParams) {
 			super();
@@ -29,7 +29,7 @@ namespace AlarmEntityGroup {
 		}
 
 		graphQlEntity(): null {
-			return null
+			return null;
 		}
 
 		async sync(): Promise<Alarm> {
@@ -67,7 +67,7 @@ namespace AlarmEntityGroup {
 				__typename: "AlarmResponse",
 				alarm: this.attributes.collective(),
 				creator: this.creator.attributes.collective()
-			}
+			};
 		}
 
 		async sync(): Promise<Alarm> {
@@ -101,7 +101,7 @@ class AlarmFactoryBlueprint implements IEntityFactory {
 
 		const isPartialAlarmParams = (params:T) => {
 			return Object.keys(params).some((key) => ["name", "days", "time", "snooze", "onceOff"].includes(key));
-		}
+		};
 
 		if (isPartialAlarmParams(params) && "creator" in params) {
 			return new AlarmEntityGroup.Alarm(params as AlarmConstructorParams) as AlarmVariant<T>;
