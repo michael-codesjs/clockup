@@ -1,10 +1,8 @@
-import { UpdateUserInputSchema } from "@local-types/api";
 import { yupInputValidator } from "@middleware/yup-input-validator";
 import middy from "@middy/core";
-import * as yup from "yup";
 import { chance } from "@utilities/constants";
 import { AppSyncResolverEvent } from "aws-lambda";
-import { UpdateUserMutationVariables } from "@client/types/api";
+import * as yup from "yup";
 
 /*
  * we are not going to test each and every input validator we generate using graphql codegen.

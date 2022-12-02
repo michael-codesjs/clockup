@@ -71,6 +71,20 @@ const serverlessConfiguration: AWS.Service = {
 			]
 		},
 
+	},
+
+	functions: {
+		createAlarm: {
+			description: "Creates an alarm",
+			handler: "functions/create-alarm.handler",
+			iamRoleStatements: [
+				{
+					Effect: "Allow",
+					Action: ["dynamodb:PutItem"],
+					Resource: "${self:custom.tableArn}"
+				}
+			]
+		}
 	}
 
 };
