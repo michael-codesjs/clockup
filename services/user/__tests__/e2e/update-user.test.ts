@@ -8,7 +8,7 @@ describe("Edit User Profile", () => {
 		const { email, name } = Given.user.input(); // new user attributes
 		const updatedProfile = await When.user.update({ email, name });
 
-		Then.user_VS_user(updatedProfile, { ...user, name, email });
+		Then(updatedProfile).user({ ...user, name, email });
 
 	});
 

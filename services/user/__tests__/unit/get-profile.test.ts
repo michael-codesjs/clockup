@@ -15,7 +15,7 @@ describe("Get User", () => {
 		const lambdaResponse = await handler(event, context, () => {});
 		const instance = Entities.User(user);
 
-		Then.user_VS_user(lambdaResponse as User,instance.graphQlEntity());
+		Then(lambdaResponse).user(instance.graphQlEntity());
 
 	});
 

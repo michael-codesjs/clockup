@@ -3,8 +3,7 @@ import { commomEnviromentResources, commonCloudFormationImports, commonCustom, c
 import { config } from "../../utilities/constants";
 import { createDataSource, createMappingTemplate, generateServiceName } from "../../utilities/functions";
 
-
-const serverlessConfiguration: AWS.Service = {
+const alarmService: AWS.Service = {
 
 	service: generateServiceName("alarm"),
 
@@ -89,4 +88,4 @@ const serverlessConfiguration: AWS.Service = {
 
 };
 
-module.exports = serverlessConfiguration;
+module.exports = alarmService;

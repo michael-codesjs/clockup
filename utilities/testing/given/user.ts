@@ -7,6 +7,7 @@ import { cognitoProvider } from "@lib/cognito";
 import { configureEnviromentVariables } from "@utilities/functions";
 import { CognitoIdentityServiceProvider } from "aws-sdk";
 import { UserConstructorParams } from "framework/entities/types/constructor-params";
+import { UserFactory } from "../../../framework/entities/user";
 
 const { COGNITO_USER_POOL_ID } = configureEnviromentVariables();
 
@@ -69,7 +70,7 @@ class GivenUserAttributes {
 	async authenticated() {
 
 		const attributes = {
-			...this.attributes(),
+			...this.input(),
 			password: chance.string({ symbols: true, numeric: true, alpha: true, length: 20 })
 		};
 
@@ -81,10 +82,15 @@ class GivenUserAttributes {
 		}); // sign in user
 
 		return {
-			...(await this.byId(id)),
-			password: attributes.password
-		}
+			...attributes,
+			id
+		};
 
+	}
+
+	async authenticatedInstance() {
+		const attributes = await this.authenticated();
+		return UserFactory.createEntity(attributes);
 	}
 
 	async fromPool(id: string) {

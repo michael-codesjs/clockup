@@ -7,7 +7,7 @@ describe("Get User Profile", () => {
 		const user = await Given.user.authenticated();
 		const profile = await When.user.get();
 
-		Then.user_VS_user(user, profile!);
+		Then(user).user(profile);
   
 	});
 

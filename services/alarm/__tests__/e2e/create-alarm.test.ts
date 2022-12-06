@@ -1,4 +1,5 @@
-import { Given, When } from "@utilities/testing";
+import { AlarmResponse } from "@client/types/api";
+import { Given, Then, When } from "@utilities/testing";
 
 describe("Create Alarm", () => {
 
@@ -7,7 +8,15 @@ describe("Create Alarm", () => {
     const creator = await Given.user.authenticated(); // start session
     const input = Given.alarm.input();
 
-    const apiResponse = await When.alarm.create(input);
+    const apiResponse = (await When.alarm.create(input)) as AlarmResponse;
+    console.log('Api R:', creator, "C:", apiResponse.creator);
+
+    Then(apiResponse.creator).user({
+      ...creator,
+      alarms: 1
+    });
+
+    Then(apiResponse.alarm).alarm(input);
 
   });
 

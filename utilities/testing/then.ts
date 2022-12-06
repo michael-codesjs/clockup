@@ -1,39 +1,41 @@
 
 import * as types from "@local-types/api";
 
-type User = Omit<types.User, "__typename" | "created" | "entityType">; // created and entityType are still gonna be tested for
-type PoolUser = {
-	sub: string,
-	name: string,
-	email: string
-}
+export class ThenUtility {
 
-class ThenUtility {
+	readonly operand: any;
 
-	/* TEST CASES */
+	constructor(operand:any) {
+		this.operand = operand;
+	}
 
-	private constructor() {}
-	static readonly instance = new ThenUtility();
-
-	readonly dateMatch = () => expect.stringMatching(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?Z?/g);
+	static readonly dateMatch = () => expect.stringMatching(/\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d(?:\.\d+)?Z?/g);
 
 	/** tests one object against the other for user attributes */
-	user_VS_user(object:any, object1:any) {
-		const { id, name, email, alarms } = object1;
-		expect(object).toMatchObject({
+	user(object:any) {
+		const { id, name, email, alarms } = object;
+		expect(this.operand).toMatchObject({
 			id, name, email, alarms,
 			entityType: types.EntityType.User,
 		});
 	}
 
-	poolUser_VS_user(object:PoolUser, object1: Omit<User, "created">) {
-		const { id, name, email } = object1;
-		expect(object).toMatchObject({
+	poolUser(object:any) {
+		const { id, name, email } = object;
+		expect(this.operand).toMatchObject({
 			sub: id,
 			name, email
 		});
-	} 
+	}
+
+	alarm(object:any) {
+		const { id, name, time, snooze, days, onceOff, enabled } = object;
+		expect(this.operand).toMatchObject({
+			id, name, time, snooze, days, onceOff, enabled,
+			entityType: types.EntityType.Alarm,
+		});
+	}
 
 }
 
-export const Then = ThenUtility.instance;
+export const Then = (operand:any) => new ThenUtility(operand);

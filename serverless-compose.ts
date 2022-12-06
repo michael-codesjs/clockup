@@ -24,6 +24,13 @@ const serverlessCompose: AWS.Compose = {
 			]
 		},
 
+		[stacks.photo.name]: {
+			path: generateServicePath(stacks.photo.name),
+			dependsOn: [
+				stacks.api.name
+			]
+		},
+
 		[stacks.user.name]: {
 			path: generateServicePath(stacks.user.name),
 			dependsOn: [

@@ -7,7 +7,7 @@ const main: DynamoDBStreamHandler = async event => {
 	for (const record of event.Records) {
 		const id = record.dynamodb.OldImage.id.S;
 		const user = Entities.User({ id });
-		await user.discontinueCognito(); // delete user from cognito
+		await user.discontinueCognito(); // disable user in cognito
 	}
 
 };
