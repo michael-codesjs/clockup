@@ -1,11 +1,11 @@
 import { DynamoDB } from "aws-sdk";
 
-export const dynamdoDbClient = new DynamoDB.DocumentClient();
+export const dynamoDbClient = new DynamoDB.DocumentClient();
 
 export const dynamoDbOperations = {
-	get: (params:DynamoDB.GetItemInput) => dynamdoDbClient.get(params).promise(),
-	put: (params:DynamoDB.PutItemInput) => dynamdoDbClient.put(params).promise(),
-	update: (params: DynamoDB.UpdateItemInput) => dynamdoDbClient.update(params).promise(),
-	delete: (params:DynamoDB.DeleteItemInput) => dynamdoDbClient.delete(params).promise(),
-	transactionWrite: (params: DynamoDB.TransactWriteItemsInput) => dynamdoDbClient.transactWrite(params).promise()
+	get: (params:DynamoDB.GetItemInput) => dynamoDbClient.get(params).promise(),
+	put: (params:DynamoDB.PutItemInput) => dynamoDbClient.put(params).promise(),
+	update: (params: DynamoDB.UpdateItemInput) => dynamoDbClient.update(params).promise(),
+	delete: (params:DynamoDB.DeleteItemInput) => dynamoDbClient.delete(params).promise(),
+	transactionWrite: (params: DynamoDB.TransactWriteItemsInput) => dynamoDbClient.transactWrite(params).promise()
 };

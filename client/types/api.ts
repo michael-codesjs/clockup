@@ -105,13 +105,22 @@ export type CreateAlarmInput = {
 };
 
 export type AlarmRingTimeInput = {
-  hour?: number | null,
-  minute?: number | null,
+  hour: number,
+  minute: number,
 };
 
 export type AlarmSnoozeSettingsInput = {
-  duration?: number | null,
-  interval?: number | null,
+  duration: number,
+  interval: number,
+};
+
+export type AlarmOutput = AlarmResponse | ErrorResponse
+
+
+export type AlarmResponse = {
+  __typename: "AlarmResponse",
+  alarm: Alarm,
+  creator: User,
 };
 
 export type UpdateAlarmInput = {
@@ -145,7 +154,7 @@ export type UpdateUserMutation = {
       message?: string | null,
       code?: number | null,
     }
-  ) | null,
+  ),
 };
 
 export type DeleteUserMutation = {
@@ -159,7 +168,7 @@ export type DeleteUserMutation = {
       message?: string | null,
       code?: number | null,
     }
-  ) | null,
+  ),
 };
 
 export type CreateAlarmMutationVariables = {
@@ -167,29 +176,49 @@ export type CreateAlarmMutationVariables = {
 };
 
 export type CreateAlarmMutation = {
-  createAlarm?:  {
-    __typename: "Alarm",
-    id: string,
-    entityType: EntityType,
-    created: string,
-    modified?: string | null,
-    discontinued: boolean,
-    creator: string,
-    name?: string | null,
-    enabled?: boolean | null,
-    days?: Array< number > | null,
-    time:  {
-      __typename: "AlarmRingTime",
-      hour: number,
-      minute: number,
-    },
-    snooze:  {
-      __typename: "AlarmSnoozeSettings",
-      duration: number,
-      interval: number,
-    },
-    onceOff?: boolean | null,
-  } | null,
+  createAlarm: ( {
+      __typename: "AlarmResponse",
+      alarm:  {
+        __typename: string,
+        id: string,
+        entityType: EntityType,
+        created: string,
+        modified?: string | null,
+        discontinued: boolean,
+        creator: string,
+        name?: string | null,
+        enabled?: boolean | null,
+        days?: Array< number > | null,
+        time:  {
+          __typename: string,
+          hour: number,
+          minute: number,
+        },
+        snooze:  {
+          __typename: string,
+          duration: number,
+          interval: number,
+        },
+        onceOff?: boolean | null,
+      },
+      creator:  {
+        __typename: string,
+        id: string,
+        entityType: EntityType,
+        created: string,
+        modified?: string | null,
+        discontinued: boolean,
+        email: string,
+        name: string,
+        alarms: number,
+      },
+    } | {
+      __typename: "ErrorResponse",
+      type: ErrorTypes,
+      message?: string | null,
+      code?: number | null,
+    }
+  ),
 };
 
 export type UpdateAlarmMutationVariables = {
@@ -197,29 +226,49 @@ export type UpdateAlarmMutationVariables = {
 };
 
 export type UpdateAlarmMutation = {
-  updateAlarm?:  {
-    __typename: "Alarm",
-    id: string,
-    entityType: EntityType,
-    created: string,
-    modified?: string | null,
-    discontinued: boolean,
-    creator: string,
-    name?: string | null,
-    enabled?: boolean | null,
-    days?: Array< number > | null,
-    time:  {
-      __typename: "AlarmRingTime",
-      hour: number,
-      minute: number,
-    },
-    snooze:  {
-      __typename: "AlarmSnoozeSettings",
-      duration: number,
-      interval: number,
-    },
-    onceOff?: boolean | null,
-  } | null,
+  updateAlarm: ( {
+      __typename: "AlarmResponse",
+      alarm:  {
+        __typename: string,
+        id: string,
+        entityType: EntityType,
+        created: string,
+        modified?: string | null,
+        discontinued: boolean,
+        creator: string,
+        name?: string | null,
+        enabled?: boolean | null,
+        days?: Array< number > | null,
+        time:  {
+          __typename: string,
+          hour: number,
+          minute: number,
+        },
+        snooze:  {
+          __typename: string,
+          duration: number,
+          interval: number,
+        },
+        onceOff?: boolean | null,
+      },
+      creator:  {
+        __typename: string,
+        id: string,
+        entityType: EntityType,
+        created: string,
+        modified?: string | null,
+        discontinued: boolean,
+        email: string,
+        name: string,
+        alarms: number,
+      },
+    } | {
+      __typename: "ErrorResponse",
+      type: ErrorTypes,
+      message?: string | null,
+      code?: number | null,
+    }
+  ),
 };
 
 export type GetProfileQuery = {
@@ -239,7 +288,7 @@ export type GetProfileQuery = {
       message?: string | null,
       code?: number | null,
     }
-  ) | null,
+  ),
 };
 
 export type GetAlarmQueryVariables = {
@@ -247,7 +296,7 @@ export type GetAlarmQueryVariables = {
 };
 
 export type GetAlarmQuery = {
-  getAlarm?:  {
+  getAlarm:  {
     __typename: "Alarm",
     id: string,
     entityType: EntityType,
@@ -269,5 +318,5 @@ export type GetAlarmQuery = {
       interval: number,
     },
     onceOff?: boolean | null,
-  } | null,
+  },
 };

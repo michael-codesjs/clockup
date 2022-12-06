@@ -41,48 +41,86 @@ export const deleteUser = /* GraphQL */ `
 export const createAlarm = /* GraphQL */ `
   mutation CreateAlarm($input: CreateAlarmInput!) {
     createAlarm(input: $input) {
-      id
-      entityType
-      created
-      modified
-      discontinued
-      creator
-      name
-      enabled
-      days
-      time {
-        hour
-        minute
+      ... on AlarmResponse {
+        alarm {
+          id
+          entityType
+          created
+          modified
+          discontinued
+          creator
+          name
+          enabled
+          days
+          time {
+            hour
+            minute
+          }
+          snooze {
+            duration
+            interval
+          }
+          onceOff
+        }
+        creator {
+          id
+          entityType
+          created
+          modified
+          discontinued
+          email
+          name
+          alarms
+        }
       }
-      snooze {
-        duration
-        interval
+      ... on ErrorResponse {
+        type
+        message
+        code
       }
-      onceOff
     }
   }
 `;
 export const updateAlarm = /* GraphQL */ `
   mutation UpdateAlarm($input: UpdateAlarmInput!) {
     updateAlarm(input: $input) {
-      id
-      entityType
-      created
-      modified
-      discontinued
-      creator
-      name
-      enabled
-      days
-      time {
-        hour
-        minute
+      ... on AlarmResponse {
+        alarm {
+          id
+          entityType
+          created
+          modified
+          discontinued
+          creator
+          name
+          enabled
+          days
+          time {
+            hour
+            minute
+          }
+          snooze {
+            duration
+            interval
+          }
+          onceOff
+        }
+        creator {
+          id
+          entityType
+          created
+          modified
+          discontinued
+          email
+          name
+          alarms
+        }
       }
-      snooze {
-        duration
-        interval
+      ... on ErrorResponse {
+        type
+        message
+        code
       }
-      onceOff
     }
   }
 `;

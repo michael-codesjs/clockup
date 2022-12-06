@@ -3,7 +3,6 @@ import { EntityType } from "@local-types/api";
 import { AbsoluteUser } from "@local-types/index";
 import { IntRange } from "@local-types/utility";
 import { chance } from "@utilities/constants";
-import { AlarmAttributes } from "framework/entities/types";
 import { AlarmConstructorParams } from "framework/entities/types/constructor-params";
 import { ulid } from "ulid";
 import { User } from "./user";
@@ -13,10 +12,9 @@ class GivenAlarmUtility {
 	private constructor() { }
 	static readonly instance = new GivenAlarmUtility();
 
-	attributes() {
 
-		const entityType = EntityType.Alarm;
-		const id = ulid();
+	input() {
+
 		const name = chance.sentence({ words: 5 });
 		const time: AlarmConstructorParams["time"] = {
 			hour: chance.integer({ min: 0, max: 23 }) as IntRange<0, 24>,
@@ -41,7 +39,17 @@ class GivenAlarmUtility {
 		const onceOff = chance.bool();
 		const enabled = chance.bool();
 
-		return { entityType, id, name, time, snooze, days, onceOff, enabled };
+		return { name, time, snooze, days, onceOff, enabled };
+
+	}
+
+	attributes() {
+
+		const entityType = EntityType.Alarm;
+		const id = ulid();
+		
+
+		return { entityType, id, ...this.input() };
 
 	}
 

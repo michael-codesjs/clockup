@@ -1,10 +1,8 @@
 import { dynamoDbOperations } from "@lib/dynamoDb";
-import dynamoDbExpression from "@tuplo/dynoexpr";
 import { chance } from "@utilities/constants";
 import { configureEnviromentVariables } from "@utilities/functions";
-import { Model } from "../model";
 import { Entity } from "@utilities/testing/instantiable-abstracts";
-import { Then } from "@utilities/testing";
+import { Model } from "../model";
 
 const { DYNAMO_DB_TABLE_NAME } = configureEnviromentVariables();
 
@@ -32,8 +30,8 @@ describe("Model", () => {
 		});
 
 		expect(Item).toMatchObject({
-			...entity.keys.all,
-			...entity.attributes.valid()
+			...entity.keys.all(),
+			...entity.attributes.putable()
 		});
 
 	});
@@ -52,9 +50,8 @@ describe("Model", () => {
 	test("Model.get to get a record from the table", async () => {
 		const { Item } = await model.get();
 		expect(Item).toMatchObject({
-			...entity.attributes.valid(), // non null attributes
-			...entity.keys.all(),
-			modified: Then.dateMatch()
+			...entity.attributes.putable(),
+			...entity.keys.all()
 		});
 	});
 
@@ -62,13 +59,13 @@ describe("Model", () => {
 		entity.attributes.set({ attribute1: "value 1 mutated", attribute2: "value 2 mutated" });
 		const result = await model.update();
 		expect(result.Attributes).toMatchObject({
-			...entity.attributes.valid(),
+			...entity.attributes.updateable(),
 			...entity.keys.all()
 		});
 	});
 
 	test("Model.update does not mutate attributes (created & discontinued)", async () => {
-		
+
 		entity.attributes.parse({
 			...entity.attributes.valid(),
 			discontinued: true,

@@ -1,6 +1,7 @@
 import { configureEnviromentVariables } from "@utilities/functions";
 import { User } from "./user";
 import { Authentication } from "./authentication";
+import { Alarm } from "./alarm";
 
 configureEnviromentVariables();
 
@@ -11,6 +12,7 @@ export class WhenUtility {
   
 	readonly user = User;
 	readonly auth = Authentication;
+	readonly alarm = Alarm;
 
 }
 

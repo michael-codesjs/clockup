@@ -31,6 +31,13 @@ const serverlessCompose: AWS.Compose = {
 			]
 		},
 
+		[stacks.alarm.name]: {
+			path: generateServicePath(stacks.alarm.name),
+			dependsOn: [
+				stacks.api.name
+			]
+		},
+
 		["test"]: {
 			path: "services/test",
 			dependsOn: [

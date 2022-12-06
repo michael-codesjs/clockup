@@ -1,7 +1,7 @@
 import { EntityType } from "@local-types/api";
 import { Keys } from "../keys";
 import { CreatableEntity, Entity } from "../../../../utilities/testing/instantiable-abstracts";
-import { getRandomEntityType } from "@utilities/functions";
+import { getRandomCreatableEntityType, getRandomEntityType } from "@utilities/functions";
 import { chance } from "@utilities/constants";
 
 describe("Keys", () => {
@@ -54,7 +54,7 @@ describe("Keys", () => {
 
 		// batch setGSIs && GSIs
 
-		const GSIs = Array(Keys.GSI_count-1).fill(null).reduce((...args) => {
+		const GSIs = Array(Keys.GSI_count - 1).fill(null).reduce((...args) => {
 			const cummulative = args[0];
 			const index = args[2] + 1;
 			cummulative[index] = {
@@ -109,8 +109,8 @@ describe("Keys", () => {
 
 	test("Creatable Keys.primary", () => {
 
-		const id = "id";
-		const entityType = EntityType.Alarm;
+		const id = chance.fbid();
+		const entityType = getRandomCreatableEntityType()
 
 		const entity = new CreatableEntity({ id, entityType });
 

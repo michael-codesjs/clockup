@@ -116,17 +116,16 @@ input CreateAlarmInput {
 
 union OperationOutput = OperationResponse | ErrorResponse
 union UserOutput = User | ErrorResponse
-union AlarmOutput = Alarm | ErrorResponse
+union AlarmOutput = AlarmResponse | ErrorResponse
 
 type Query {
-  getProfile: UserOutput @aws_cognito_user_pools
-  getAlarm(id: ID!): Alarm @aws_cognito_user_pools
+  getProfile: UserOutput! @aws_cognito_user_pools
+  getAlarm(id: ID!): Alarm! @aws_cognito_user_pools
 }
 
 type Mutation {
-  updateUser(input: UpdateUserInput!): UserOutput @aws_cognito_user_pools
-  deleteUser: OperationOutput @aws_cognito_user_pools
-
-  createAlarm(input: CreateAlarmInput!): Alarm @aws_cognito_user_pools
-  updateAlarm(input: UpdateAlarmInput!): Alarm @aws_cognito_user_pools
+  updateUser(input: UpdateUserInput!): UserOutput! @aws_cognito_user_pools
+  deleteUser: OperationOutput! @aws_cognito_user_pools
+  createAlarm(input: CreateAlarmInput!): AlarmOutput! @aws_cognito_user_pools
+  updateAlarm(input: UpdateAlarmInput!): AlarmOutput! @aws_cognito_user_pools
 }

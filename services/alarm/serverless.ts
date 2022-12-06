@@ -80,7 +80,7 @@ const serverlessConfiguration: AWS.Service = {
 			iamRoleStatements: [
 				{
 					Effect: "Allow",
-					Action: ["dynamodb:PutItem"],
+					Action: ["dynamodb:PutItem", "dynamodb:GetItem", "dynamodb:UpdateItem"], // PutItem to write alarm to table, GetItem to get user from table, UpdateItem to add +1 to alarms attribute of user record.
 					Resource: "${self:custom.tableArn}"
 				}
 			]

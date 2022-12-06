@@ -5,10 +5,10 @@ import { MutateImmutable } from "../error";
 import { AttributeSchema, ICommon } from "../types/attributes";
 import { EntriesFromAttributesSchema, GetSetMutableAttributes, GetSetSetsFromAttributeSchema, RefinedToAttributeParams, ToAttributeRecord } from "../types/utility";
 import { Attribute } from "./attribute";
-import { IPutable } from "./interfaces";
+import { IPutable, IUpdateable } from "./interfaces";
 import { Publisher } from "./publisher";
 
-export class Attributes<T extends (ICommon & Record<string, AttributeSchema<any, boolean>>)> extends Publisher implements IPutable {
+export class Attributes<T extends (ICommon & Record<string, AttributeSchema<any, boolean>>)> extends Publisher implements IPutable, IUpdateable {
 
 	private Attributes: ToAttributeRecord<T> = {} as ToAttributeRecord<T>; // safe to cast, will populate in constructor
 
@@ -22,7 +22,7 @@ export class Attributes<T extends (ICommon & Record<string, AttributeSchema<any,
 
 		this.Attributes.entityType = new Attribute<EntityType, true>({
 			required: true,
-			value: "" as EntityType, // safe to cast, validator will stop you from writing it to the table
+			value: "" as EntityType, // safe to cast, validator will stop you from writing it to the table anyway
 			validate: entityType => getEntityTypes().includes(entityType),
 			immutable: true
 		});
@@ -34,7 +34,7 @@ export class Attributes<T extends (ICommon & Record<string, AttributeSchema<any,
 			immutable: true
 		});
 
-		this.Attributes.created = new Attribute<string, true>({ required: true, value: null, immutable: true });
+		this.Attributes.created = new Attribute<string, true>({ required: true, value: new Date().toJSON(), immutable: true });
 		this.Attributes.modified = new Attribute<string, true>({ value: null, immutable: true });
 
 		this.Attributes.discontinued = new Attribute<boolean, true>({
@@ -55,17 +55,21 @@ export class Attributes<T extends (ICommon & Record<string, AttributeSchema<any,
 	/** set values of attributes including immutable values */
 	parse(attributes: Partial<EntriesFromAttributesSchema<T>>) {
 
-		const { entityType, discontinued, created, id, ...rest } = attributes;
+		const { entityType, discontinued, created, id, modified, ...rest } = attributes;
+
+		const _created = created || new Date().toJSON();
+		const _modified = modified ? new Date(modified) : null;
 
 		// some special cases were we set things manually
-		this.Attributes.entityType.value = entityType;
-		this.Attributes.discontinued.value = typeof discontinued !== "boolean" ? false : discontinued;
-		this.Attributes.created.value = created || new Date().toJSON();
-		this.Attributes.id.value = id || ulid();
+		this.Attributes.entityType.setValue(entityType, _modified);
+		this.Attributes.discontinued.setValue(typeof discontinued !== "boolean" ? false : discontinued, _modified);
+		this.Attributes.created.setValue(_created, _modified);
+		this.Attributes.modified.setValue(_modified && _modified.toJSON(), _modified);
+		this.Attributes.id.setValue(id || ulid(), _modified);
 
 		for (const key in rest) {
 			if (!this.Attributes[key]) continue;
-			this.Attributes[key].value = attributes[key];
+			this.Attributes[key].setValue(attributes[key], _modified);
 		}
 
 		this.publish(); // notify subscribers of value changes
@@ -74,16 +78,18 @@ export class Attributes<T extends (ICommon & Record<string, AttributeSchema<any,
 
 	private forEachOnMutate(
 		attributes: Partial<EntriesFromAttributesSchema<T>>,
-		setter: (value: any, key: string) => void // REVIEW: properly type this
+		setter: (value: any, key: string, modified?: Date) => void // REVIEW: properly type this
 	) {
+
+		const modified = new Date();
+		this.Attributes.modified.setValue(modified.toJSON());
 
 		for (const key in attributes) {
 			if (!(key in this.Attributes)) continue;
 			const value = attributes[key];
-			setter(value, key);
+			setter(value, key, modified);
 		}
 
-		this.Attributes.modified.value = new Date().toJSON();
 		this.publish(); // notify subscribers of value changes
 
 	}
@@ -91,10 +97,10 @@ export class Attributes<T extends (ICommon & Record<string, AttributeSchema<any,
 	/** set mutable attributes */
 	set(attributes: GetSetMutableAttributes<T>) {
 
-		this.forEachOnMutate(attributes as EntriesFromAttributesSchema<T>, (value, key) => {
+		this.forEachOnMutate(attributes as EntriesFromAttributesSchema<T>, (value, key, modified) => {
 			const attribute = this.Attributes[key];
 			if (attribute.immutable) throw new MutateImmutable(key); // can not mutate immutable attribute via set
-			attribute.value = value;
+			attribute.setValue(value, modified);
 		});
 
 	}
@@ -102,8 +108,8 @@ export class Attributes<T extends (ICommon & Record<string, AttributeSchema<any,
 	/** overrides sets */
 	override(sets: GetSetSetsFromAttributeSchema<T>) {
 
-		this.forEachOnMutate(sets as EntriesFromAttributesSchema<T>, (value, key) => {
-			this.Attributes[key].override(value);
+		this.forEachOnMutate(sets as EntriesFromAttributesSchema<T>, (value, key, modified) => {
+			this.Attributes[key].override(value, modified);
 		});
 
 		this.publish(); // notify subscribers of value changes
@@ -136,14 +142,40 @@ export class Attributes<T extends (ICommon & Record<string, AttributeSchema<any,
 			}, {} as Partial<EntriesFromAttributesSchema<T>>);
 	}
 
-	putable(): boolean {
-		const notPutable = Object.values(this.Attributes).some(attribute => !attribute.putable()); // find at least one attribute that is not putable
-		return !notPutable;
+	/** checks if we have enough values to write to the table */
+	isPutable(): boolean {
+		// attributes collection is not putable if at least one of it's attributes are not putable
+		return !(Object.values(this.Attributes).some(attribute => !attribute.isPutable()));
+	}
+
+	/** get putable version of attributes */
+	putable() {
+		return this.entries()
+			.reduce((cumulative, [key, value]) => {
+				if (value.isPutable()) cumulative[key as keyof EntriesFromAttributesSchema<T>] = value.putable();
+				return cumulative;
+			}, {} as EntriesFromAttributesSchema<T>);
+	}
+	/** checks if we have values we can update */
+	isUpdateable(): boolean {
+		return Object.values(this.Attributes).some(attribute => attribute.isUpdateable());
+	}
+
+	updateable() {
+		return this.entries()
+			.reduce((cumulative, [key, value]) => {
+				if (value.isUpdateable(new Date(this.get("modified")))) cumulative[key as keyof EntriesFromAttributesSchema<T>] = value.updateable();
+				return cumulative;
+			}, {} as EntriesFromAttributesSchema<T>)
 	}
 
 	/** list of all attributes */
 	keys<R extends T = T>(): Array<keyof R> {
 		return Object.keys(this.Attributes);
+	}
+
+	private entries<R extends T = T>(): Array<[keyof R, ToAttributeRecord<R>[keyof R]]> {
+		return Object.entries(this.Attributes);
 	}
 
 }

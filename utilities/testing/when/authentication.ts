@@ -33,6 +33,11 @@ class AuthenticationUtility {
 		};
 
 	}
+
+	async signOut() {
+		return await auth.signOut({ global: true });
+	}
+
 }
 
 export const Authentication = AuthenticationUtility.instance;

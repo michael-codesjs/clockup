@@ -18,7 +18,7 @@ describe("UserEntityGroup Creational Tests", () => {
 		const user = UserFactory.createEntity({ name, email, id });
 		expect(user.TypeOfSelf).toBe(user.AbsoluteTypeOfSelf);
 		expect(user.attributes.collective()).toMatchObject({
-			email, name, id
+			email, name, id, alarms: 0
 		});
 	});
 

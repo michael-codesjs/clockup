@@ -19,7 +19,7 @@ export class Model {
 	protected putAttributes() {
 		return {
 			...this.entity.keys.all(),
-			...this.entity.attributes.valid(),
+			...this.entity.attributes.putable(),
 		};
 	}
 
@@ -41,8 +41,8 @@ export class Model {
 
 		const attributes = {
 			...this.entity.keys.nonPrimary(),
-			...this.entity.attributes.valid(),
-			modified: new Date().toJSON()
+			...this.entity.attributes.updateable(),
+			modified: this.entity.attributes.get("modified") || new Date().toJSON()
 		};
 
 		delete attributes.created;
@@ -58,7 +58,7 @@ export class Model {
 		const attributes = this.updateAttributes();
 
 		return dynamoDbExpression({
-			Update: attributes,
+			Update: attributes as any,
 			Key: this.entity.keys.primary(),
 			ReturnValues: "ALL_NEW",
 			Condition: {
@@ -75,6 +75,7 @@ export class Model {
 	protected discontinueAttributes() {
 		return {
 			...this.entity.keys.nonPrimary(),
+			modified: this.entity.attributes.get("modified") || new Date().toJSON(),
 			discontinued: true
 		};
 	}

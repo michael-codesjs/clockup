@@ -51,7 +51,7 @@ export abstract class Entity implements IGraphQlEntity {
 
 	async put(): Promise<Entity> {
 		if(this.TypeOfSelf === this.NullTypeOfSelf) throw new Error("Can not insert record of null entity into the table");
-		if(!this.attributes.putable()) throw new Error(EntityErrorMessages.INSUFFICIENT_ATTRIBUTES_TO_PUT);
+		if(!this.attributes.isPutable()) throw new Error(EntityErrorMessages.INSUFFICIENT_ATTRIBUTES_TO_PUT);
 		await this.model.put();
 		return this;
 	}

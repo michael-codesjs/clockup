@@ -5,15 +5,16 @@ import { AppSyncIdentityCognito, AppSyncResolverEvent } from "aws-lambda";
 
 export type ArgumentsWithCreator<A extends Record<string, any>> = A & { user: AbsoluteUser };
 
-/** instaciates an absolute user entity and adds to to the event arguments of a lambda resolver */
+/**
+ * Instaciates an absolute user entity and adds it to the event arguments of a lambda resolver.
+ * Remember to supply dynamodb:GetItem permissions on the table to the lambda functions using this middleware.
+ */
 export const userInstanciator = <A extends Record<string, any>,R>(): middy.MiddlewareObj<AppSyncResolverEvent<ArgumentsWithCreator<A>>, R> => {
 
-	const before: middy.MiddlewareFn<AppSyncResolverEvent<ArgumentsWithCreator<A>>, R> = async request => {
-    
-		const { sub } = request.event.identity as AppSyncIdentityCognito;
-    const user = await Entities.User({ id: sub }).sync();
-    request.event.arguments.user = user;
-	
+	const before: middy.MiddlewareFn<AppSyncResolverEvent<ArgumentsWithCreator<A>>, R> = async request => {    
+		const { sub } = request.event.identity as AppSyncIdentityCognito; // sub === userId
+    const user = await Entities.User({ id: sub }).sync(); // get UserEntityGroup.User from UserEntityGroup.NullUser.sync
+    request.event.arguments.user = user; // add user to event arguments to be used by lambda
 	};
 
 	return {

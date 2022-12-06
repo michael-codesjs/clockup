@@ -1,5 +1,6 @@
 import { AbsoluteUser } from "@local-types/index";
 import { AttributeSchema, ICommon, User, Alarm } from "../types/attributes";
+import { Attribute } from "./attribute";
 import { Attributes } from "./attributes";
 
 export interface IEntity {
@@ -7,7 +8,14 @@ export interface IEntity {
 }
 
 export interface IPutable {
-  putable(): boolean
+  putable(): any,
+  isPutable(): boolean
+}
+
+export interface IUpdateable {
+  updateable(): any,
+  isUpdateable(date: Date): boolean,
+  modified?: Date | Attribute<Date, boolean>
 }
 
 export interface IGraphQlEntity {

@@ -6,9 +6,9 @@ import { AlarmConstructorParams } from "framework/entities/types/constructor-par
 import { withResolverStandard } from "@hofs/with-resolver-standard";
 import { yupInputValidator } from "@middleware/yup-input-validator";
 
-const main: AppSyncResolverHandler<ArgumentsWithCreator<MutationCreateAlarmArgs>, AlarmResponse> = async event => {
+const main: AppSyncResolverHandler<MutationCreateAlarmArgs, AlarmResponse> = async event => {
 
-  const { user, input } = event.arguments;
+  const { user, input } = event.arguments as ArgumentsWithCreator<MutationCreateAlarmArgs>;
 
   const alarm = Entities.Alarm({ ...input as AlarmConstructorParams, creator: user });
 

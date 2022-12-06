@@ -18,4 +18,5 @@ describe("Delete User", () => {
 		expect(postDeleteDbRecord.discontinued).toBe(true);
 
 	});
+	
 });

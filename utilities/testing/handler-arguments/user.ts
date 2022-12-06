@@ -2,7 +2,6 @@ import { UpdateUserInput } from "@local-types/api";
 import { Appsync } from "./appsync";
 
 
-
 class UserHandlerArgumentsUtility {
 
 	private constructor() {}

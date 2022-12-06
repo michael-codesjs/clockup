@@ -21,7 +21,10 @@
     "user-tests": "jest --verbose services/user/__tests__",
     "user-tests:unit": "jest --verbose services/user/__tests__/unit",
     "user-tests:integration": "jest --verbose services/user/__tests__/integration",
-    "user-tests:e2e": "jest --verbose services/user/__tests__/e2e"
+    "user-tests:e2e": "jest --verbose services/user/__tests__/e2e",
+    "alarm-tests": "jest --verbose services/alarm/__tests__",
+    "alarm-tests:unit": "jest --verbose services/alarm/__tests__/unit",
+    "alarm-tests:e2e": "jest --verbose services/alarm/__tests__/e2e"
   },
   "engines": {
     "node": ">=14.15.0"
@@ -77,6 +80,9 @@
     "ts-node": "^10.4.0",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^4.8.2"
+  },
+  "resolutions": {
+    "graphql": "^14.1.0"
   },
   "author": "Michael Phiri (michael-codesjs@gmail.com) | https://github.com/michael-codesjs",
   "license": "MIT"

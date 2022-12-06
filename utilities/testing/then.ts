@@ -19,11 +19,10 @@ class ThenUtility {
 
 	/** tests one object against the other for user attributes */
 	user_VS_user(object:any, object1:any) {
-		const { id, name, email } = object1;
+		const { id, name, email, alarms } = object1;
 		expect(object).toMatchObject({
-			id, name, email,
+			id, name, email, alarms,
 			entityType: types.EntityType.User,
-			created: this.dateMatch(),
 		});
 	}
 

@@ -66,7 +66,7 @@ namespace AlarmEntityGroup {
 			return {
 				__typename: "AlarmResponse",
 				alarm: this.attributes.collective(),
-				creator: this.creator.attributes.collective()
+				creator: this.creator.graphQlEntity()
 			};
 		}
 

@@ -1,6 +1,5 @@
 import { chance } from "@utilities/constants";
 import { getRandomEntityType } from "@utilities/functions";
-import { Then } from "@utilities/testing";
 import { EntityType } from "../../../../types/api";
 import { AttributeSchema, ICommon } from "../../types/attributes";
 import { Attributes } from "../attributes";
@@ -26,10 +25,6 @@ describe("Attributes", () => {
 		set: AttributeSchema<Record<string, any>>
 	};
 
-	type SA = ICommon & {
-		array: AttributeSchema<Array<any>>
-	}
-
 	type PA = Omit<A, "attribute1" | "attribute2">; // partial A
 
 	beforeEach(() => {
@@ -38,21 +33,25 @@ describe("Attributes", () => {
 		created = chance.date().toJSON();
 		modified = chance.date().toJSON();
 		discontinued = chance.bool();
-		attribute = "string";
-		attribute1 = 1;
-		attribute2 = true;
+		attribute = chance.word();
+		attribute1 = chance.integer();
+		attribute2 = chance.bool();
 	});
 
 	test("Base attributes", () => {
+
 		const attributes = new Attributes({});
-		attributes.parse({ entityType, id });
+
+		attributes.parse({ entityType, id, created });
+
 		expect(attributes.collective()).toMatchObject({
 			entityType,
 			id,
-			created: Then.dateMatch(),
+			created,
 			modified: null,
 			discontinued: false
 		});
+
 	});
 
 	test("Explicit base attributes", () => {
@@ -73,8 +72,8 @@ describe("Attributes", () => {
 		expect(attributes.collective()).toMatchObject({
 			entityType,
 			id,
-			created: Then.dateMatch(),
-			modified: Then.dateMatch(),
+			created: created,
+			modified: modified,
 			discontinued,
 			attribute,
 			attribute1,
@@ -100,28 +99,27 @@ describe("Attributes", () => {
 		const attributes = new Attributes<PA>({ attribute: { initial: null } });
 		attributes.set({ attribute });
 		expect(attributes.collective()).toMatchObject({
-			modified: Then.dateMatch(),
 			attribute
 		});
 	});
 
-	test("Attributes.putable true", () => {
+	test("Attributes.isPutable true", () => {
 		const attributes = new Attributes<PA>({ attribute: { initial: null, required: true } });
 		attributes.parse({ entityType, id, attribute });
-		expect(attributes.putable()).toBe(true);
+		expect(attributes.isPutable()).toBe(true);
 	});
 
-	test("Attributes.putable false", () => {
+	test("Attributes.isPutable false", () => {
 		const attributes = new Attributes<PA>({ attribute: { initial: null, required: true } });
 		attributes.parse({ entityType, id });
-		expect(attributes.putable()).toBe(false);
+		expect(attributes.isPutable()).toBe(false);
 	});
 
 	test("Attributes.valid", () => {
 
 		const attributes = new Attributes<PA>({ attribute: { initial: null, required: true } });
 		attributes.parse({ entityType, id });
-		
+
 		const collectiveNonNullAttributes = attributes.valid();
 		const nullAttributes: Array<keyof ReturnType<typeof attributes.collective>> = ["attribute"];
 
@@ -131,7 +129,7 @@ describe("Attributes", () => {
 
 	test("Attribute.(set & override) sets(object)", () => {
 
-		const attributes = new Attributes<S>({ set: { initial: {}, required: true }});
+		const attributes = new Attributes<S>({ set: { initial: {}, required: true } });
 
 		attributes.set({
 			set: {
@@ -156,5 +154,38 @@ describe("Attributes", () => {
 		expect(attributes.get("set")).toMatchObject({});
 
 	});
+
+	test("Attributes.updatable", () => {
+
+		const attributes = new Attributes<A>({
+			attribute: { initial: null },
+			attribute1: { initial: null },
+			attribute2: { initial: null }
+		});
+
+		attributes.parse({
+			entityType, id, created, modified, discontinued,
+			attribute,
+			attribute1,
+			attribute2
+		});
+
+		expect(attributes.updateable()).toMatchObject({
+			entityType, id,
+			attribute,
+			attribute1,
+			attribute2
+		});
+
+		attribute = chance.word();
+		attributes.set({ attribute: attribute });
+
+		expect(attributes.updateable()).toMatchObject({
+			attribute
+		});
+
+	});
+
+
 
 });

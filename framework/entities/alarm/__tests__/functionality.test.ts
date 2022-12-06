@@ -2,7 +2,6 @@ import { Given, Then } from "@utilities/testing";
 import { EntityErrorMessages } from "../../types";
 import { AlarmFactory } from "../alarm";
 
-
 describe("AlarmEntityGroup Functionality Tests", () => {
 
 	it("Partial Attribute Put Fails", async () => {
@@ -61,5 +60,5 @@ describe("AlarmEntityGroup Functionality Tests", () => {
 		}
 
 	});
-
+	
 });

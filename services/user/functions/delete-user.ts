@@ -7,9 +7,8 @@ const main: AppSyncResolverHandler<null, OperationResponse> = async (event) => {
 
 	const { sub } = event.identity as AppSyncIdentityCognito;
 
-	await Entities
-		.User({ id: sub })
-		.discontinue(); // discontinue user
+	const user = await Entities.User({ id: sub }).sync();
+	await user.discontinue(); // discontinue user
 
 	return {
 		__typename: "OperationResponse",

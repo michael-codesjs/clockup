@@ -19,10 +19,10 @@ export class Keys implements ISubscriber {
 	static readonly GSI_count: 8 = 8; // number of GSIs, including entityIndex
 
 	public Entity: Entity | (Entity & ICreatable);
-	/* managed keys across all entities */
+	/** managed keys across all entities */
 	private Primary: { PK: string, SK: string };
 	private EntityIndex: { EntityIndexPK: string, EntityIndexSK: string }; /* EntityIndex is a global secondary index we force every entity to have, it is infact GSI_0 */
-	/* gsi keys */
+	/** gsi keys */
 	private GSIs: Partial<Record<IntRange<1, typeof Keys.GSI_count>, PartitionKey>> = {} as any;
 
 	constructor(entity: Entity) {

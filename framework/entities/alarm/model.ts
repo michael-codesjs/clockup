@@ -1,4 +1,4 @@
-import { dynamoDbOperations } from "@lib/dynamoDb";
+import { dynamoDbClient, dynamoDbOperations } from "@lib/dynamoDb";
 import dynamoDbExpression from "@tuplo/dynoexpr";
 import { configureEnviromentVariables } from "@utilities/functions";
 import { ExecuteTransactionOutput } from "aws-sdk/clients/dynamodb";
@@ -25,8 +25,8 @@ export class AlarmModel extends Model {
 							PK: "attribute_not_exists",
 							SK: "attribute_not_exists"
 						},
-						ConditionLogicalOperator: "AND"
-					},
+						ReturnValues: "ALL"
+					}
 				},
 				{
 					// update user record to have +1 alarms
@@ -41,10 +41,12 @@ export class AlarmModel extends Model {
 							SK: "attribute_exists",
 							discontinued: false
 						},
-						ConditionLogicalOperator: "AND"
+						ReturnValues: "ALL"
 					}
 				}
-			]
+			],
+			ReturnConsumedCapacity: "TOTAL",
+			ReturnItemCollectionMetrics: "SIZE"
 		});
 
 	}
@@ -62,7 +64,8 @@ export class AlarmModel extends Model {
 							SK: "attribute_exists",
 							discontinued: false
 						}
-					}
+					},
+					ReturnValues: "ALL"
 				},
 				// update user record to have -1 alarms
 				{
@@ -76,7 +79,8 @@ export class AlarmModel extends Model {
 							PK: "attribute_exists",
 							SK: "attribute_exists",
 							discontinued: false
-						}
+						},
+						ReturnValues: "ALL"
 					}
 				}
 			]
@@ -84,7 +88,16 @@ export class AlarmModel extends Model {
 	}
 
 	async put(): Promise<ExecuteTransactionOutput> {
-		return await dynamoDbOperations.transactionWrite(this.putParams());
+
+		const result = await dynamoDbOperations.transactionWrite(this.putParams());
+		
+		this.entity.creator.attributes.parse({
+			...this.entity.creator.attributes.valid(),
+			alarms: this.entity.creator.attributes.get("alarms")+1
+		});
+
+		return result;
+	
 	}
 
 	async discontinue(): Promise<ExecuteTransactionOutput> {

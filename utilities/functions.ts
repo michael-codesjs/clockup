@@ -92,3 +92,11 @@ export const getRandomCreatableEntityType = () => {
 export const delay = (ms: number) => {
 	return new Promise(resolve => setTimeout(() => resolve(null), ms));
 };
+
+export const isLiteralObject = (obj:any): obj is Object => {
+	return (!!obj) && (obj.constructor === Object);
+};
+
+export const isLiteralArray =  <T>(arr: T[]): arr is T[] => {
+	return Array.isArray(arr);
+}

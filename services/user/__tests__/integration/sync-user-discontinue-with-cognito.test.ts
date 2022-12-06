@@ -1,39 +1,31 @@
 import Entities from "@entities";
-import { cognitoProvider } from "@lib/cognito";
-import { configureEnviromentVariables, delay } from "@utilities/functions";
-import { Given } from "@utilities/testing";
-import { Repeat } from "@utilities/testing/repeat";
-
-const { COGNITO_USER_POOL_ID } = configureEnviromentVariables();
+import { Given, When } from "@utilities/testing";
+import { Repeat } from "@utilities/testing";
 
 describe("Sync User Delete", () => {
 
-	const userDoesNotExist = async (id:string) => {
+	const userIsDisabled = async (username: string, password: string) => {
 		try {
-			await cognitoProvider()
-				.adminGetUser({
-					Username: id,
-					UserPoolId: COGNITO_USER_POOL_ID
-				})
-				.promise();
-			return false; // false cause user was fetched successfully
+			await When.auth.signIn({ username, password }); // try to sign into disabled user
+			return false; // false cause user was signed in successfully
 		} catch (error: any) {
-			return error.message === "User does not exist.";
-		} 
+			;
+			return error.name === "NotAuthorizedException" && error.message === "User is disabled.";
+		}
 	};
 
 	test("User was deleted from cognito", async () => {
 
 		const user = await Given.user.authenticated();
-		expect(await userDoesNotExist(user.id)).toBe(false);
-    
-		const instance = Entities.User(user);
-		await instance.terminate(); // delete user in dynamodb
 
+		const instance = Entities.User(user);
+		await instance.discontinue(); // discontinue user in dynamodb
+
+		// repeat N times every T seconds until we get true from userIsDisabled
 		const result = await Repeat.timedOnCondition({
-			times: 10, // repeat 10 times until we get true from 'call'
-			duration: 100, // check every 100ms
-			call: async () => await userDoesNotExist(instance.attributes.get("id"))
+			times: 10,
+			duration: 100,
+			call: async () => await userIsDisabled(instance.attributes.get("email"), user.password)
 		});
 
 		expect(result).toBe(true);

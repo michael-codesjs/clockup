@@ -1,3 +1,4 @@
+import { Alarm } from "./alarm";
 import { Appsync } from "./appsync";
 import { Cognito } from "./cognito";
 import { Stream } from "./dynamoDb-stream";
@@ -12,6 +13,7 @@ class HandlerArgumentsUtility {
 	readonly appsync = Appsync;
 	readonly stream = Stream;
 	readonly user = User;
+	alarm = Alarm
   
 }
 

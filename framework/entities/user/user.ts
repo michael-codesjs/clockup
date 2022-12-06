@@ -29,7 +29,7 @@ namespace UserEntityGroup {
 		readonly TypeOfSelf: typeof NullUser = NullUser;
 		readonly NullTypeOfSelf: typeof NullUser = NullUser;
 		readonly AbsoluteTypeOfSelf: typeof User = User;
-		
+
 		public readonly attributes = new Attributes();
 		public readonly keys = new Keys(this);
 

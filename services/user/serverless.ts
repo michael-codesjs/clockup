@@ -119,7 +119,7 @@ const serverlessConfiguration: AWS.Service = {
 		},
 
 		deleteUser: {
-			description: "Deletes a user from our table on their request",
+			description: "Deletes a user from our table.",
 			handler: "functions/delete-user.handler",
 			iamRoleStatements: [
 				{
@@ -153,14 +153,11 @@ const serverlessConfiguration: AWS.Service = {
 						batchSize: 1,
 						filterPatterns: [
 							{
-								eventName: ["UPDATE"],
+								eventName: ["MODIFY"],
 								dynamodb: {
-									OldImage: {
+									NewImage: {
 										EntityIndexPK: {
-											S: [EntityType.User],
-										},
-										discontinued: {
-											B: [true]
+											S: [EntityType.User+"#discontinued"],
 										}
 									},
 								},

@@ -16,6 +16,7 @@ describe("Sync User Delete With Cognito", () => {
 			await When.auth.signIn({ username: email, password }); // should fail, can not log into disabled user acconunt.
 			throw new Error("Was expecting sign-in to fail");
 		} catch(error:any) {
+			console.log('Error', error);
 			expect(error.name).toBe("NotAuthorizedException");
 			expect(error.message).toBe("User is disabled.");
 		}
