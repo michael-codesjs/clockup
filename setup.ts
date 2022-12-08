@@ -30,7 +30,7 @@ const generateEnvFile = async (index: number) => {
   const success = await execAsync(`cd services/test && npx sls export-env --filename ../../.env`, { stdio: "pipe" });
   if (success) {
     spinner.succeed(`Successfully generated final enviroment variables.`);
-    console.log(" " + chalk.bgGreen.black(" TEST AWAY! ") + "\n");
+    console.log("\n   " + chalk.bgGreen.bold.black(" TEST AWAY! ") + "\n");
   } else {
     spinner.fail("Failed to generate final enviroment variables");
   }

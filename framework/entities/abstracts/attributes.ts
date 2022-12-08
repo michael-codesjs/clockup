@@ -135,7 +135,7 @@ export class Attributes<T extends (ICommon & Record<string, AttributeSchema<any,
 	valid(): Partial<EntriesFromAttributesSchema<T>> {
 		return Object.entries(this.Attributes)
 			.reduce((collective, [key, value]) => {
-				if (value.value !== null && value.value !== undefined && value.putable()) {
+				if (value.valid()) {
 					collective[key as keyof typeof collective] = value.value;
 				}
 				return collective;

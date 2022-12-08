@@ -9,14 +9,16 @@ describe("Create Alarm", () => {
     const input = Given.alarm.input();
 
     const apiResponse = (await When.alarm.create(input)) as AlarmResponse;
-    console.log('Api R:', creator, "C:", apiResponse.creator);
 
     Then(apiResponse.creator).user({
       ...creator,
       alarms: 1
     });
 
-    Then(apiResponse.alarm).alarm(input);
+    Then(apiResponse.alarm).alarm({
+      ...input,
+      id: apiResponse.alarm.id
+    });
 
   });
 

@@ -12,7 +12,7 @@ describe("Create Alarm", () => {
 
     const lambdaResponse = await handler(event, context);
     
-    Then(lambdaResponse.alarm).alarm(input);
+    Then(lambdaResponse.alarm).alarm({ id: lambdaResponse.alarm.id, ...input });
 
     Then(lambdaResponse.creator).user({
       ...creator.graphQlEntity(),

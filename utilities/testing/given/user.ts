@@ -83,7 +83,8 @@ class GivenUserAttributes {
 
 		return {
 			...attributes,
-			id
+			id,
+			alarms: 0
 		};
 
 	}

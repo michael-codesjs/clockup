@@ -1,6 +1,5 @@
 import Entities from "@entities";
-import { Given, When } from "@utilities/testing";
-import { Repeat } from "@utilities/testing";
+import { Given, When, Repeat } from "@utilities/testing";
 
 describe("Sync User Delete", () => {
 
@@ -9,7 +8,6 @@ describe("Sync User Delete", () => {
 			await When.auth.signIn({ username, password }); // try to sign into disabled user
 			return false; // false cause user was signed in successfully
 		} catch (error: any) {
-			;
 			return error.name === "NotAuthorizedException" && error.message === "User is disabled.";
 		}
 	};

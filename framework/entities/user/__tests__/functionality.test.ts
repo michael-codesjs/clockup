@@ -11,7 +11,7 @@ describe("UserEntityGroup Functionality Tests", () => {
 		console.log("Pre:", instance.attributes.updateable());
 		await instance.sync();
 		const postEditAttributes = instance.attributes.collective();
-		Then.user_VS_user(postEditAttributes, {
+		Then(postEditAttributes).user({
 			...preEditAttributes,
 			name
 		});

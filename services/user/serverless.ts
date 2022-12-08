@@ -124,7 +124,7 @@ const serverlessConfiguration: AWS.Service = {
 			iamRoleStatements: [
 				{
 					Effect: "Allow",
-					Action: ["dynamodb:DeleteItem"],
+					Action: ["dynamodb:GetItem", "dynamodb:UpdateItem"],
 					Resource: [
 						"${self:custom.tableArn}"
 					]
@@ -157,7 +157,7 @@ const serverlessConfiguration: AWS.Service = {
 								dynamodb: {
 									NewImage: {
 										EntityIndexPK: {
-											S: [EntityType.User+"#discontinued"],
+											S: [EntityType.User + "#discontinued"],
 										}
 									},
 								},

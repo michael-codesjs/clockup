@@ -26,7 +26,7 @@ describe("UserEntityGroup Creational Tests", () => {
 		const attributes = (await Given.user.random())!; // create random user
 		const user = await UserFactory.createEntity({ id: attributes.id  }).sync();
 		expect(user.TypeOfSelf).toBe(user.AbsoluteTypeOfSelf);
-		Then.user_VS_user(user.attributes.collective(), attributes);
+		Then(user.attributes.collective()).user(attributes);
 	});
 
 	it("Fails when UserEntityGroup.NullUser is given an id for a user that does not exist with the right EntityErrorMessage", async () => {

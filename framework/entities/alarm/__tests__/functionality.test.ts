@@ -26,7 +26,7 @@ describe("AlarmEntityGroup Functionality Tests", () => {
 		expect(postEditAttributes).toMatchObject({
 			...preEditAttributes.alarm,
 			name, time,
-			modified: Then.dateMatch(),
+			modified: Then({}).dateMatch(),
 		});
 	});
 
