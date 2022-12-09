@@ -1,4 +1,4 @@
-import { AbsoluteUser } from "@local-types/index";
+import { AbsoluteUser } from "shared/types/index";
 import { AttributeSchema, ICommon, User, Alarm } from "../types/attributes";
 import { Attribute } from "./attribute";
 import { Attributes } from "./attributes";

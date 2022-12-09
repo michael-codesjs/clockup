@@ -1,5 +1,5 @@
-import { AlarmRingTime, AlarmSnoozeSettings, EntityType, CreateAlarmInput } from "@local-types/api";
-import { AbsoluteUser } from "@local-types/index";
+import { AlarmRingTime, AlarmSnoozeSettings, EntityType, CreateAlarmInput } from "shared/types/api";
+import { AbsoluteUser } from "shared/types/index";
 
 export type SyncOptions = {
   exists: boolean

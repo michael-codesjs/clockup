@@ -1,4 +1,4 @@
-import { ErrorTypes } from "@local-types/api";
+import { ErrorTypes } from "shared/types/api";
 import { BaseError } from "./utility";
 
 export class Error extends BaseError {

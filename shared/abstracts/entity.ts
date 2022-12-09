@@ -1,4 +1,4 @@
-import { ICreatable } from "@local-types/api";
+import { ICreatable } from "shared/types/api";
 import { EntityErrorMessages } from "../types";
 import { AttributeSchema, ICommon } from "../types/attributes";
 import { Attributes } from "./attributes";

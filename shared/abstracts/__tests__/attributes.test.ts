@@ -1,6 +1,6 @@
 import { chance } from "@utilities/constants";
 import { getRandomEntityType } from "@utilities/functions";
-import { EntityType } from "../../../../types/api";
+import { EntityType } from "../../../../shared/types/api";
 import { AttributeSchema, ICommon } from "../../types/attributes";
 import { Attributes } from "../attributes";
 

@@ -1,4 +1,4 @@
-import { AWS } from "@local-types/aws";
+import { AWS } from "shared/types/aws";
 import { commomEnviromentResources, commonCloudFormationImports, commonCustom, commonEnviromentVariables, commonPluginConfig, commonPlugins } from "@utilities/commons";
 import { config } from "@utilities/constants";
 import { stacks } from "@utilities/stacks";

@@ -1,5 +1,5 @@
-import { CreateAlarmInput, UpdateUserInput } from "@local-types/api";
-import { AbsoluteUser } from "@local-types/index";
+import { CreateAlarmInput, UpdateUserInput } from "shared/types/api";
+import { AbsoluteUser } from "shared/types/index";
 import { Appsync } from "./appsync";
 
 

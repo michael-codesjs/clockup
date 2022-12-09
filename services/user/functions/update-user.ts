@@ -1,8 +1,8 @@
 
 import Entities from "@entities";
-import { MutationUpdateUserArgs, UpdateUserInputSchema as validator, User } from "@local-types/api";
+import { MutationUpdateUserArgs, UpdateUserInputSchema as validator, User } from "shared/types/api";
 import { AppSyncIdentityCognito, AppSyncResolverHandler } from "aws-lambda";
-import { withResolverStandard } from "@hofs/with-resolver-standard";
+import { withResolverStandard } from "shared/hofs/with-resolver-standard";
 import { yupInputValidator } from "@middleware/yup-input-validator";
 
 const main: AppSyncResolverHandler<MutationUpdateUserArgs, User> = async (event) => {

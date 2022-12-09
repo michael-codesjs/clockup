@@ -1,4 +1,4 @@
-import { EntityType } from "@local-types/api";
+import { EntityType } from "shared/types/api";
 import { Keys } from "../keys";
 import { CreatableEntity, Entity } from "../../../../utilities/testing/instantiable-abstracts";
 import { getRandomCreatableEntityType, getRandomEntityType } from "@utilities/functions";

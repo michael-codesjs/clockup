@@ -1,4 +1,4 @@
-import { AWS } from "@local-types/aws";
+import { AWS } from "shared/types/aws";
 import {
 	commonPluginConfig,
 	commonEnviromentVariables,

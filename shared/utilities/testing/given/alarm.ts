@@ -1,7 +1,7 @@
 import Entities from "@entities";
-import { EntityType } from "@local-types/api";
-import { AbsoluteUser } from "@local-types/index";
-import { IntRange } from "@local-types/utility";
+import { EntityType } from "shared/types/api";
+import { AbsoluteUser } from "shared/types/index";
+import { IntRange } from "shared/types/utility";
 import { chance } from "@utilities/constants";
 import { AlarmConstructorParams } from "framework/entities/types/constructor-params";
 import { ulid } from "ulid";

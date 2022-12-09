@@ -1,6 +1,6 @@
-import { EntityType } from "@local-types/api";
-import { CompositeKey } from "@local-types/index";
-import { IntRange } from "@local-types/utility";
+import { EntityType } from "shared/types/api";
+import { CompositeKey } from "shared/types/index";
+import { IntRange } from "shared/types/utility";
 import { Entity } from ".";
 import { ICreatable, ISubscriber } from "./interfaces";
 

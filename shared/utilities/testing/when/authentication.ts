@@ -1,5 +1,5 @@
-import { EntityType } from "@local-types/api";
-import { SignInCredentials, SignUpCredentials } from "@local-types/index";
+import { EntityType } from "shared/types/api";
+import { SignInCredentials, SignUpCredentials } from "shared/types/index";
 import { auth } from "../../../lib/amplify";
 
 class AuthenticationUtility {

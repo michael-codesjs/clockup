@@ -1,4 +1,4 @@
-import { ErrorTypes, User } from "@local-types/api";
+import { ErrorTypes, User } from "shared/types/api";
 import { chance } from "@utilities/constants";
 import { Given, HandlerArguments, Then } from "@utilities/testing";
 import { handler } from "../../functions/update-user";

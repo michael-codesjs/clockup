@@ -1,5 +1,5 @@
 
-import * as types from "@local-types/api";
+import * as types from "shared/types/api";
 
 export class ThenUtility {
 

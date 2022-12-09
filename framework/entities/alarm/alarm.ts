@@ -1,6 +1,6 @@
-import { AlarmResponse, EntityType } from "@local-types/api";
-import { AbsoluteUser } from "@local-types/index";
-import { IEntityFactory } from "@local-types/interfaces";
+import { AlarmResponse, EntityType } from "shared/types/api";
+import { AbsoluteUser } from "shared/types/index";
+import { IEntityFactory } from "shared/types/interfaces";
 import { Attributes, Entity, Keys } from "../abstracts";
 import { IAlarm, ICreatable } from "../abstracts/interfaces";
 import { EntityErrorMessages } from "../types";

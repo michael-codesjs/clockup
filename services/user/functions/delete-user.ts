@@ -1,6 +1,6 @@
 import Entities from "@entities";
-import { withResolverStandard } from "@hofs/with-resolver-standard";
-import { OperationResponse } from "@local-types/api";
+import { withResolverStandard } from "shared/hofs/with-resolver-standard";
+import { OperationResponse } from "shared/types/api";
 import { AppSyncIdentityCognito, AppSyncResolverHandler } from "aws-lambda";
 
 const main: AppSyncResolverHandler<null, OperationResponse> = async (event) => {

@@ -1,4 +1,4 @@
-import { EntityType } from "@local-types/api";
+import { EntityType } from "shared/types/api";
 import { getEntityTypes } from "@utilities/functions";
 import { ulid } from "ulid";
 import { MutateImmutable } from "../error";

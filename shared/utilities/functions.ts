@@ -2,7 +2,7 @@
 import { config, stacks } from "./constants";
 import { config as dotenvConfig } from "dotenv";
 import { ValidationError } from "yup";
-import { EntityType, ErrorResponse, ErrorTypes } from "@local-types/api";
+import { EntityType, ErrorResponse, ErrorTypes } from "shared/types/api";
 
 export function configureEnviromentVariables() {
 	dotenvConfig();

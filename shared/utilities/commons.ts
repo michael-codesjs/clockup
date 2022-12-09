@@ -1,5 +1,5 @@
-import { esBuildConfig } from "../plugin-configs/esbuild";
-import { AWS } from "../types/aws";
+import { esBuildConfig } from "../shared/plugin-configs/esbuild";
+import { AWS } from "../shared/types/aws";
 import { config } from "./constants";
 import { stacks } from "@utilities/stacks";
 import { importLocalCloudFormationParam } from "./functions";

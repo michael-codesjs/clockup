@@ -1,5 +1,5 @@
 import { stacks } from "./utilities/stacks";
-import { AWS } from "./types/aws";
+import { AWS } from "./shared/types/aws";
 import { generateServicePath } from "./utilities/functions";
 
 const serverlessCompose: AWS.Compose = {

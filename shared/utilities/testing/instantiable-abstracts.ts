@@ -1,5 +1,5 @@
-import { EntityType } from "@local-types/api";
-import { AbsoluteUser } from "@local-types/index";
+import { EntityType } from "shared/types/api";
+import { AbsoluteUser } from "shared/types/index";
 import { AttributeSchema, ICommon } from "../../framework/entities/types/attributes";
 import { Attributes, Entity as AbstractEntity, Keys } from "../../framework/entities/abstracts";
 import { ICreatable } from "../../framework/entities/abstracts/interfaces";

@@ -1,4 +1,4 @@
-import { UpdateUserInput } from "@local-types/api";
+import { UpdateUserInput } from "shared/types/api";
 import { Appsync } from "./appsync";
 
 

@@ -1,6 +1,6 @@
 import { ulid } from "ulid";
 import Entities from "@entities";
-import { EntityType, User as TUser } from "@local-types/api";
+import { EntityType, User as TUser } from "shared/types/api";
 import { chance } from "@utilities/constants";
 import { Authentication } from "../when/authentication";
 import { cognitoProvider } from "@lib/cognito";

@@ -1,4 +1,4 @@
-import { ErrorResponse as TErrorResponse, ErrorTypes } from "@local-types/api";
+import { ErrorResponse as TErrorResponse, ErrorTypes } from "shared/types/api";
 import { IGraphQlEntity } from "../abstracts/interfaces";
 import { Error } from "./error";
 

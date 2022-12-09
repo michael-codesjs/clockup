@@ -1,5 +1,5 @@
 import { s3BucketResource, dynamoDbResource } from "@resources";
-import { AWS } from "@local-types/aws";
+import { AWS } from "shared/types/aws";
 import { commonCustom, commonPluginConfig, commonPlugins, commonProviderSettings } from "@utilities/commons";
 import { logicalResourceNames } from "@utilities/constants";
 import { stacks } from "@utilities/stacks";
