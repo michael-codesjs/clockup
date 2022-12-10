@@ -1,4 +1,4 @@
-import type { AWS } from "@local-types/aws";
+import type { AWS } from "shared/types/aws";
 import { cognitoUserPoolResource, webCognitoClientResource } from "@resources";
 import { commonCloudFormationImports, commonCustom, commonEnviromentVariables, commonPlugins, commonProviderSettings } from "@utilities/commons";
 import { logicalResourceNames } from "@utilities/constants";

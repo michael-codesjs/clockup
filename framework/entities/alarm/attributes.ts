@@ -1,4 +1,4 @@
-import { EntityType } from "@local-types/api";
+import { EntityType } from "shared/types/api";
 import { Attributes } from "../abstracts";
 import { Alarm, SnoozeableDuration, SnoozeableInterval } from "../types/attributes";
 import { EntriesFromAttributesSchema, RefinedToAttributeParams } from "../types/utility";

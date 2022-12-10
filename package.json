@@ -10,21 +10,9 @@
     "documentation": "npx jsdoc -c jsdoc.json",
     "coverage": "npx jest --coverage",
     "test": "jest --verbose",
-    "middleware-tests": "jest --verbose middleware/__tests__",
-    "entity-tests:abstract": "jest --verbose framework/entities/abstracts/__tests__",
-    "entity-tests:user": "jest --verbose framework/entities/user/__tests__",
-    "entity-tests:alarm": "jest --verbose framework/entities/alarm/__tests__",
-    "authentication-tests": "jest --verbose services/authentication/__tests__",
-    "authentication-tests:unit": "jest --verbose services/authentication/__tests__/unit",
-    "authentication-tests:integration": "jest --verbose services/authentication/__tests__/integration",
-    "authentication-tests:e2e": "jest --verbose services/authentication/__tests__/e2e",
-    "user-tests": "jest --verbose services/user/__tests__",
-    "user-tests:unit": "jest --verbose services/user/__tests__/unit",
-    "user-tests:integration": "jest --verbose services/user/__tests__/integration",
-    "user-tests:e2e": "jest --verbose services/user/__tests__/e2e",
-    "alarm-tests": "jest --verbose services/alarm/__tests__",
-    "alarm-tests:unit": "jest --verbose services/alarm/__tests__/unit",
-    "alarm-tests:e2e": "jest --verbose services/alarm/__tests__/e2e"
+    "test:shared": "jest --verbose shared/",
+    "test:abstracts": "jest --verbose shared/abstracts/__tests__",
+    "test:middleware": "jest --verbose shared/middleware/__tests__"
   },
   "engines": {
     "node": ">=14.15.0"

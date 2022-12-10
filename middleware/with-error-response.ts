@@ -1,4 +1,4 @@
-import { ErrorResponse, ErrorTypes } from "@local-types/api";
+import { ErrorResponse, ErrorTypes } from "shared/types/api";
 import middy from "@middy/core";
 import { getErrorResponse } from "@utilities/functions";
 import { AppSyncResolverEvent } from "aws-lambda";

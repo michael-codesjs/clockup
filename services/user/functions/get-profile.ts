@@ -1,7 +1,7 @@
 import Entities from "@entities";
-import type { User } from "@local-types/api";
+import type { User } from "shared/types/api";
 import { AppSyncIdentityCognito, AppSyncResolverHandler } from "aws-lambda";
-import { withResolverStandard } from "@hofs/with-resolver-standard";
+import { withResolverStandard } from "shared/hofs/with-resolver-standard";
 import { EntityErrorMessages } from "../../../framework/entities/types";
 
 const main: AppSyncResolverHandler<null,User> = async (event) => {

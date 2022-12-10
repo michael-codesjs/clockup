@@ -1,4 +1,4 @@
-import { ErrorTypes } from "@local-types/api";
+import { ErrorTypes } from "shared/types/api";
 import middy from "@middy/core";
 import { EntityErrorMessages } from "../../framework/entities/types";
 import { ValidationError } from "yup";

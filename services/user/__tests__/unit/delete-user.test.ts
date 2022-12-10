@@ -1,4 +1,4 @@
-import { OperationResponse } from "@local-types/api";
+import { OperationResponse } from "shared/types/api";
 import { Given, HandlerArguments } from "@utilities/testing";
 import { handler } from "../../functions/delete-user";
 

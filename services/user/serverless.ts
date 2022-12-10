@@ -1,5 +1,5 @@
 
-import { AWS } from "../../types/aws";
+import { AWS } from "../../shared/types/aws";
 import {
 	commomEnviromentResources,
 	commonCloudFormationImports,
@@ -11,7 +11,7 @@ import {
 import { config } from "@utilities/constants";
 import { stacks } from "@utilities/stacks";
 import { createDataSource, createMappingTemplate, generateServiceName, importLocalCloudFormationParam } from "@utilities/functions";
-import { EntityType } from "@local-types/api";
+import { EntityType } from "shared/types/api";
 
 const serverlessConfiguration: AWS.Service = {
 

@@ -1,4 +1,4 @@
-import { AbsoluteUser } from "@local-types/index";
+import { AbsoluteUser } from "shared/types/index";
 import { userInstanciator } from "@middleware/user-instanciator";
 import middy from "@middy/core";
 import { chance } from "@utilities/constants";

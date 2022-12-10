@@ -1,5 +1,5 @@
 import Entities from "@entities";
-import { AbsoluteUser } from "@local-types/index";
+import { AbsoluteUser } from "shared/types/index";
 import middy from "@middy/core";
 import { AppSyncIdentityCognito, AppSyncResolverEvent } from "aws-lambda";
 

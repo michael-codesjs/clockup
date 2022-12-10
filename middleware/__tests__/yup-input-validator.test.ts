@@ -38,7 +38,6 @@ describe("With Zod Input Validator", () => {
   let attribute1: number;
 
   const lambda = withMiddleware((event: AppSyncResolverEvent<{ input: input }>) => {
-  	console.log(event.arguments.input);
   	expect(event.arguments.input).toMatchObject({
   		attribute, attribute1
   	});

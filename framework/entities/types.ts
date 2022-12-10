@@ -1,5 +1,5 @@
-import { AlarmRingTime, AlarmSnoozeSettings, EntityType, CreateAlarmInput } from "@local-types/api";
-import { AbsoluteUser } from "@local-types/index";
+import { Entity } from "../../shared/abstracts";
+import { AlarmRingTime, AlarmSnoozeSettings, EntityType, CreateAlarmInput } from "shared/types/api";
 
 export type SyncOptions = {
   exists: boolean
@@ -34,7 +34,7 @@ export enum EntityErrorMessages {
 }
 
 export type NullEntityAttributes = { id: string };
-export type CreatableEntityAttributes = { creator: AbsoluteUser };
+export type CreatableEntityAttributes = { creator: Entity };
 export type NullCreatableEntityAttributes = NullEntityAttributes & Partial<CreatableEntityAttributes>;
 
 type SnoozeSettingsMinusRingTime = { time?: AlarmRingTime, snooze: AlarmSnoozeSettings };
@@ -44,4 +44,4 @@ export type NullAlarmAttributes = NullCreatableEntityAttributes;
 export type AlarmAttributes<T = SnoozeSettingsMinusRingTime | RingTimeMinusSnoozeSettings> = (
   Partial<CreateAlarmInput> & CreatableEntityAttributes &
   (T extends SnoozeSettingsMinusRingTime ? SnoozeSettingsMinusRingTime : RingTimeMinusSnoozeSettings)
-) & { creator: AbsoluteUser };
+) & { creator: Entity };

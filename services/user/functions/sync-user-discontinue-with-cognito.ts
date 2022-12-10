@@ -1,5 +1,5 @@
 import Entities from "@entities";
-import { withLambdaStandard } from "@hofs/with-lambda-standard";
+import { withLambdaStandard } from "shared/hofs/with-lambda-standard";
 import { DynamoDBStreamHandler } from "aws-lambda";
 
 const main: DynamoDBStreamHandler = async event => {

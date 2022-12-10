@@ -1,4 +1,4 @@
-import { EntityType } from "@local-types/api";
+import { EntityType } from "shared/types/api";
 import { Attributes } from "../abstracts";
 import { ICommon, User } from "../types/attributes";
 import { EntriesFromAttributesSchema, ToAttributeParams } from "../types/utility";

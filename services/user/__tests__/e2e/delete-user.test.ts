@@ -1,4 +1,4 @@
-import { OperationResponse } from "@local-types/api";
+import { OperationResponse } from "shared/types/api";
 import { Given, When } from "@utilities/testing";
 
 describe("Delete User", () => {
