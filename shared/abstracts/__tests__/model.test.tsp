@@ -1,7 +1,7 @@
 import { dynamoDbOperations } from "@lib/dynamoDb";
-import { chance } from "@utilities/constants";
-import { configureEnviromentVariables } from "@utilities/functions";
-import { Entity } from "@utilities/testing/instantiable-abstracts";
+import { chance } from "../../utilities/constants";
+import { configureEnviromentVariables } from "../../utilities/functions";
+import { Entity } from "../../utilities/testing/instantiable-abstracts";
 import { Model } from "../model";
 
 const { DYNAMO_DB_TABLE_NAME } = configureEnviromentVariables();

@@ -1,5 +1,5 @@
-import { isLiteralObject } from "@utilities/functions";
-import { AttributeParams } from "../types";
+import { isLiteralObject } from "../utilities/functions";
+import { AttributeParams } from "./types";
 import { IPutable, IUpdateable } from "./interfaces";
 
 export class Attribute<T = any, I = false> implements IPutable, IUpdateable {

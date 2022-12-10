@@ -1,4 +1,3 @@
-import { ErrorResponse } from "shared/types/api";
 import middy from "@middy/core";
 import { AppSyncResolverEvent } from "aws-lambda";
 import { SchemaOf } from "yup";

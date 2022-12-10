@@ -1,14 +1,14 @@
-import { EntityType } from "shared/types/api";
-import { getEntityTypes } from "@utilities/functions";
+import { EntityType } from "../types/api";
+import { getEntityTypes } from "../utilities/functions";
 import { ulid } from "ulid";
-import { MutateImmutable } from "../error";
-import { AttributeSchema, ICommon } from "../types/attributes";
-import { EntriesFromAttributesSchema, GetSetMutableAttributes, GetSetSetsFromAttributeSchema, RefinedToAttributeParams, ToAttributeRecord } from "../types/utility";
+import { MutateImmutable } from "../errors";
+import { AttributeSchema, CommonAttributes } from "./types";
+import { EntriesFromAttributesSchema, GetSetMutableAttributes, GetSetSetsFromAttributeSchema, RefinedToAttributeParams, ToAttributeRecord } from "./types/utility";
 import { Attribute } from "./attribute";
 import { IPutable, IUpdateable } from "./interfaces";
 import { Publisher } from "./publisher";
 
-export class Attributes<T extends (ICommon & Record<string, AttributeSchema<any, boolean>>)> extends Publisher implements IPutable, IUpdateable {
+export class Attributes<T extends (CommonAttributes & Record<string, AttributeSchema<any, boolean>>)> extends Publisher implements IPutable, IUpdateable {
 
 	private Attributes: ToAttributeRecord<T> = {} as ToAttributeRecord<T>; // safe to cast, will populate in constructor
 

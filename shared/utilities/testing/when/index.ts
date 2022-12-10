@@ -1,7 +1,7 @@
-import { configureEnviromentVariables } from "@utilities/functions";
-import { User } from "./user";
-import { Authentication } from "./authentication";
-import { Alarm } from "./alarm";
+import { configureEnviromentVariables } from "../../functions";
+// import { User } from "./user";
+// import { Authentication } from "./authentication";
+// import { Alarm } from "./alarm";
 
 configureEnviromentVariables();
 
@@ -10,9 +10,9 @@ export class WhenUtility {
 	private constructor() {}
 	static readonly instance = new WhenUtility();
   
-	readonly user = User;
-	readonly auth = Authentication;
-	readonly alarm = Alarm;
+	// readonly user = User;
+	// readonly auth = Authentication;
+	// readonly alarm = Alarm;
 
 }
 

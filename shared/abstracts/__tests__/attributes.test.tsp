@@ -1,8 +1,8 @@
-import { chance } from "@utilities/constants";
-import { getRandomEntityType } from "@utilities/functions";
-import { EntityType } from "../../../../shared/types/api";
-import { AttributeSchema, ICommon } from "../../types/attributes";
-import { Attributes } from "../attributes";
+import { chance } from "../../utilities/constants";
+import { getRandomEntityType } from "../../utilities/functions";
+import { EntityType } from "../../types/api";
+import { AttributeSchema, CommonAttributes } from "../types";
+import { Attributes } from "..";
 
 describe("Attributes", () => {
 
@@ -15,13 +15,13 @@ describe("Attributes", () => {
 	let attribute1: number;
 	let attribute2: boolean;
 
-	type A = ICommon & {
+	type A = CommonAttributes & {
 		attribute: AttributeSchema<string>,
 		attribute1: AttributeSchema<number>,
 		attribute2: AttributeSchema<boolean>,
 	};
 
-	type S = ICommon & {
+	type S = CommonAttributes & {
 		set: AttributeSchema<Record<string, any>>
 	};
 

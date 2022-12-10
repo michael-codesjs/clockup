@@ -1,10 +1,8 @@
-import { ICreatable } from "shared/types/api";
-import { EntityErrorMessages } from "../types";
-import { AttributeSchema, ICommon } from "../types/attributes";
 import { Attributes } from "./attributes";
 import { IGraphQlEntity } from "./interfaces";
 import { Keys } from "./keys";
 import { Model } from "./model";
+import { CommonAttributes, EntityErrorMessages } from "./types";
 
 /**
  * Base abstract class that all entities and their variants should extend.
@@ -17,7 +15,7 @@ import { Model } from "./model";
 export abstract class Entity implements IGraphQlEntity {
 
 	/** Entity attributes */
-	public abstract attributes: Attributes<ICommon>;
+	public abstract attributes: Attributes<CommonAttributes>;
 	/** Entity DynamoDB keys for the table and all its Global Secondary Indexes */
 	public abstract keys: Keys;
 
@@ -56,7 +54,7 @@ export abstract class Entity implements IGraphQlEntity {
 		return this;
 	}
 
-	/** deletes an entites record from the database(legacy) */
+	/** deletes an entites record from the database */
 	async terminate(): Promise<Entity> {
 		if(this.TypeOfSelf === this.NullTypeOfSelf) throw new Error("Null variant of entity can not be used to terminate an entity");
 		await this.model.delete();

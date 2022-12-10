@@ -1,13 +1,12 @@
-import { EntityType } from "shared/types/api";
-import { AbsoluteUser } from "shared/types/index";
-import { AttributeSchema, ICommon } from "../../framework/entities/types/attributes";
-import { Attributes, Entity as AbstractEntity, Keys } from "../../framework/entities/abstracts";
-import { ICreatable } from "../../framework/entities/abstracts/interfaces";
-import { getRandomCreatableEntityType, getRandomEntityType } from "@utilities/functions";
+import { EntityType } from "../../types/api";
+import { AttributeSchema, CommonAttributes } from "../../abstracts/types";
+import { Attributes, Entity as AbstractEntity, Keys } from "../../abstracts";
+import { ICreatable } from "../../abstracts/interfaces";
+import { getRandomCreatableEntityType, getRandomEntityType } from "../../utilities/functions";
 
 // INSTANTIABLE VERSIONS OF ABSTRACT CLASSES TO BE USED FOR TESTING
 
-type InstatiableEntity = ICommon & {
+type InstatiableEntity = CommonAttributes & {
 	attribute1: AttributeSchema<string>,
 	attribute2: AttributeSchema<string>,
 	attribute3: AttributeSchema<number>
@@ -44,7 +43,7 @@ export class Entity extends AbstractEntity {
 
 }
 
-type TCreatable = ICommon & {
+type TCreatable = CommonAttributes & {
 	creator: AttributeSchema<string, true>
 }
 
@@ -54,7 +53,7 @@ export class CreatableEntity extends AbstractEntity implements ICreatable {
 	NullTypeOfSelf: typeof CreatableEntity;
 	AbsoluteTypeOfSelf: typeof CreatableEntity | (typeof CreatableEntity)[] = CreatableEntity;
 	
-	creator: AbsoluteUser;
+	creator: AbstractEntity;
 
 	attributes: Attributes<TCreatable> = new Attributes<TCreatable>({
 		creator: {
@@ -66,13 +65,13 @@ export class CreatableEntity extends AbstractEntity implements ICreatable {
 
 	keys: Keys = new Keys(this);
 
-	constructor(params?: { id?: string, entityType?: EntityType, creator?: AbsoluteUser }) {
+	constructor(params?: { id?: string, entityType?: EntityType, creator?: AbstractEntity }) {
 		
 		super();
 		
 		const { id, entityType } = params || {};
 
-		this.creator = params.creator || new Entity({ entityType: EntityType.User, }) as any as AbsoluteUser;
+		this.creator = params.creator || new Entity({ entityType: EntityType.User, }) as any as AbstractEntity;
 
 		this.attributes.parse({
 			id,

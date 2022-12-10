@@ -4,7 +4,7 @@ import type { IEntityFactory } from "shared/types/interfaces";
 import { configureEnviromentVariables } from "@utilities/functions";
 import { Attributes, Entity, Keys } from "../abstracts";
 import { IUser } from "../abstracts/interfaces";
-import { UserNotFoundError } from "../error/user-not-found";
+import { UserNotFoundError } from "../../../shared/errors/user-not-found";
 import { EntityErrorMessages } from "../types";
 import { NullUserConstructorParams, UserConstructorParams } from "../types/constructor-params";
 import { UserAttributes } from "./attributes";

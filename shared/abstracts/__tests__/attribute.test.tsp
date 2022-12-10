@@ -1,5 +1,5 @@
-import { chance } from "@utilities/constants";
-import { Attribute } from "../attribute";
+import { chance } from "../../utilities/constants";
+import { Attribute } from "..";
 
 describe("Attribute", () => {
 

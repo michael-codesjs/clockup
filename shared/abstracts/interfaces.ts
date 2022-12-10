@@ -1,7 +1,5 @@
-import { AbsoluteUser } from "shared/types/index";
-import { AttributeSchema, ICommon, User, Alarm } from "../types/attributes";
-import { Attribute } from "./attribute";
-import { Attributes } from "./attributes";
+import { AttributeSchema, CommonAttributes } from "./types";
+import { Entity, Attribute, Attributes } from ".";
 
 export interface IEntity {
   composable(): boolean
@@ -18,23 +16,6 @@ export interface IUpdateable {
   modified?: Date | Attribute<Date, boolean>
 }
 
-export interface IGraphQlEntity {
-  graphQlEntity(): Record<string, any> | null
-}
-
-export interface ICreatable {
-  creator: AbsoluteUser,
-  attributes: Attributes<ICommon & { creator: AttributeSchema<string, true> }>
-}
-
-export interface IUser extends IEntity {
-  attributes: Attributes<User>
-}
-
-export interface IAlarm extends IEntity, ICreatable {
-  attributes: Attributes<Alarm>
-}
-
 export interface IPublisher {
   subscribers: Array<ISubscriber>
   subscribe(subscriber: ISubscriber): void
@@ -44,4 +25,13 @@ export interface IPublisher {
 
 export interface ISubscriber {
   update(): void;
+}
+
+export interface IGraphQlEntity {
+  graphQlEntity(): Record<string, any> | null
+}
+
+export interface ICreatable {
+  creator: Entity,
+  attributes: Attributes<CommonAttributes & { creator: AttributeSchema<string, true> }>
 }

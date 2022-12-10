@@ -1,8 +1,8 @@
 import dynamoDbExpression from "@tuplo/dynoexpr";
 import type { DeleteItemOutput, ExecuteTransactionOutput, GetItemOutput, PutItemOutput, UpdateItemOutput } from "aws-sdk/clients/dynamodb";
 import { Entity } from ".";
-import { dynamoDbOperations } from "../../../lib/dynamoDb";
-import { configureEnviromentVariables } from "../../../utilities/functions";
+import { dynamoDbOperations } from "../lib/dynamoDb";
+import { configureEnviromentVariables } from "../utilities/functions";
 import { ICreatable } from "./interfaces";
 
 const { DYNAMO_DB_TABLE_NAME } = configureEnviromentVariables();

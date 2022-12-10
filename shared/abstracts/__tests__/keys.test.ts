@@ -1,8 +1,8 @@
-import { EntityType } from "shared/types/api";
+import { EntityType } from "../../types/api";
 import { Keys } from "../keys";
-import { CreatableEntity, Entity } from "../../../../utilities/testing/instantiable-abstracts";
-import { getRandomCreatableEntityType, getRandomEntityType } from "@utilities/functions";
-import { chance } from "@utilities/constants";
+import { CreatableEntity, Entity } from "../../utilities/testing/instantiable-abstracts";
+import { getRandomCreatableEntityType, getRandomEntityType } from "../../utilities/functions";
+import { chance } from "../../utilities/constants";
 
 describe("Keys", () => {
 

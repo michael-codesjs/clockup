@@ -90,11 +90,12 @@ export type ErrorResponse = {
 };
 
 export enum ErrorTypes {
-  CreateFailed = 'CREATE_FAILED',
-  InternalError = 'INTERNAL_ERROR',
-  MalfomedInput = 'MALFOMED_INPUT',
-  NotFound = 'NOT_FOUND',
-  UpdateFailed = 'UPDATE_FAILED'
+  CreateFailed = "CREATE_FAILED",
+  InternalError = "INTERNAL_ERROR",
+  ValidationError = "VALIDATION_ERROR",
+  MalfomedInput = "MALFOMED_INPUT",
+  NotFound = "NOT_FOUND",
+  UpdateFailed = "UPDATE_FAILED"
 }
 
 export type User = ICommon & {

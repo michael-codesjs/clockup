@@ -2,7 +2,7 @@
 import { config, stacks } from "./constants";
 import { config as dotenvConfig } from "dotenv";
 import { ValidationError } from "yup";
-import { EntityType, ErrorResponse, ErrorTypes } from "shared/types/api";
+import { EntityType, ErrorResponse, ErrorTypes } from "../types/api";
 
 export function configureEnviromentVariables() {
 	dotenvConfig();
@@ -93,10 +93,10 @@ export const delay = (ms: number) => {
 	return new Promise(resolve => setTimeout(() => resolve(null), ms));
 };
 
-export const isLiteralObject = (obj:any): obj is Object => {
+export const isLiteralObject = (obj: any): obj is Object => {
 	return (!!obj) && (obj.constructor === Object);
 };
 
-export const isLiteralArray =  <T>(arr: T[]): arr is T[] => {
+export const isLiteralArray = <T>(arr: T[]): arr is T[] => {
 	return Array.isArray(arr);
 }

@@ -1,6 +1,6 @@
-import { EntityType } from "shared/types/api";
-import { CompositeKey } from "shared/types/index";
-import { IntRange } from "shared/types/utility";
+import { EntityType } from "../types/api";
+import { CompositeKey } from "../types";
+import { IntRange } from "../types/utility";
 import { Entity } from ".";
 import { ICreatable, ISubscriber } from "./interfaces";
 
@@ -9,9 +9,19 @@ type PartitionKey = {
 	sort?: string
 };
 
+type PKSK = "PK" | "SK";
+
+type GetGSIReturnType<N extends number> = {
+	[K in keyof Record<PKSK, any> as `GSI${N}_${K}`]: string | null
+};
+
+type GetGSIsReturnType = Record<
+	keyof GetGSIReturnType<IntRange<1, typeof Keys.GSI_count>>,
+	string | null | undefined
+>;
+
 /**
  * Entity keys for the table and all it's global secondary index.
- * Should be instanciated after
  */
 
 export class Keys implements ISubscriber {
@@ -25,6 +35,7 @@ export class Keys implements ISubscriber {
 	/** gsi keys */
 	private GSIs: Partial<Record<IntRange<1, typeof Keys.GSI_count>, PartitionKey>> = {} as any;
 
+	// should be instanciated after an entity's attributes because the keys subscribe to the attributes.
 	constructor(entity: Entity) {
 		this.Entity = entity;
 		if (!entity.attributes) throw new Error("Entity attributes do not exist: keys need to subscribe to an entity's attributes");
@@ -110,25 +121,23 @@ export class Keys implements ISubscriber {
 	}
 
 	private GSI_exists(gsi: keyof typeof this.GSIs) {
-		return gsi >= 1 && gsi <= (Keys.GSI_count-1);
+		return gsi >= 1 && gsi <= (Keys.GSI_count - 1);
 	}
-
 	/** get GSI key */
-	getGSI<N extends keyof typeof this.GSIs>(gsi: N): { [K in keyof Record<"PK" | "SK", any> as `GSI${N}_${K}`]: string | null } {
-		gsi;
-		if(!this.GSI_exists(gsi)) throw new Error("GSI does not exist");
-		return  {
+	getGSI<N extends keyof typeof this.GSIs>(gsi: N): GetGSIReturnType<N> {
+		if (!this.GSI_exists(gsi)) throw new Error("GSI does not exist");
+		return {
 			[`GSI${gsi}_PK`]: this.GSIs[gsi]?.partition || null,
 			[`GSI${gsi}_SK`]: this.GSIs[gsi]?.sort || null,
-		};
+		} as GetGSIReturnType<N>;
 	}
 
 	/** get all GSI keys */
-	getGSIs(): Record<keyof ReturnType<typeof this.getGSI<keyof typeof this.GSIs>>, string> {
+	getGSIs(): GetGSIsReturnType {
 		//
 		let cumulative = {} as ReturnType<typeof this.getGSIs>; // will populate below;
-		
-		for(const gsi in this.GSIs) {
+
+		for (const gsi in this.GSIs) {
 			cumulative = {
 				...cumulative,
 				...this.getGSI(gsi as unknown as keyof typeof this.GSIs)
@@ -136,13 +145,13 @@ export class Keys implements ISubscriber {
 		}
 
 		return cumulative;
-	
+
 	}
 
 	setGSI(GSIs: Partial<Record<keyof typeof this.GSIs, PartitionKey>>) {
 		Object.entries(GSIs).forEach(([s_gsi, key]) => {
 			const gsi = Number(s_gsi) as keyof typeof this.GSIs;
-			if(!this.GSI_exists(gsi)) throw new Error("Can not set GSI that does not exist");
+			if (!this.GSI_exists(gsi)) throw new Error("Can not set GSI that does not exist");
 			this.GSIs[gsi] = key;
 		});
 	}
