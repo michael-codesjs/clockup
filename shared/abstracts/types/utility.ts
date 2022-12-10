@@ -1,7 +1,7 @@
 import { ICommon } from "shared/types/api";
 import { AttributeParams } from ".";
 import { Attribute } from "../attribute";
-import { AttributeSchema } from "./attributes";
+import { AttributeSchema } from ".";
 
 export type ToAttributeRecord<T extends Record<string, AttributeSchema<any, boolean>>> = {
   [Key in keyof T]: Attribute<T[Key]["type"], T[Key]["immutable"]>

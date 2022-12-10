@@ -1,6 +1,7 @@
 import { isLiteralObject } from "../utilities/functions";
 import { AttributeParams } from "./types";
 import { IPutable, IUpdateable } from "./interfaces";
+import { InvalidAttributeAttribute } from "../errors";
 
 export class Attribute<T = any, I = false> implements IPutable, IUpdateable {
 
@@ -21,7 +22,7 @@ export class Attribute<T = any, I = false> implements IPutable, IUpdateable {
 	get value() { return this.Value; }
 
 	setValue(value: T, modified: Date = new Date()) {
-		if (!this.validate(value)) throw new Error("Invalid value for attribute");
+		if (!this.validate(value)) throw new InvalidAttributeAttribute(value as string);
 		if (Array.isArray(value)) {
 			this.Value = (this.Value as Array<any> || []).concat(value) as T;
 		} else if (isLiteralObject(value)) {
@@ -36,7 +37,7 @@ export class Attribute<T = any, I = false> implements IPutable, IUpdateable {
 	}
 
 	override(value: T, modified: Date = new Date()) {
-		if (!this.validate(value)) throw new Error("Invalid value for attribute");
+		if (!this.validate(value)) throw new InvalidAttributeAttribute(value as string);
 		this.Value = value;
 		this.setModified(modified);
 	}

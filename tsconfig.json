@@ -13,7 +13,7 @@
   },
   "include": [
     "**/*.ts",
-    "**/*.js",
+    "**/*.js", "shared/middleware/__tests__/user-instaciator.test.tsp",
   ],
   "exclude": [
     "node_modules/**/*",

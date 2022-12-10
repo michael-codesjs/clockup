@@ -1,7 +1,7 @@
-import { yupInputValidator } from "@middleware/yup-input-validator";
 import middy from "@middy/core";
-import { chance } from "@utilities/constants";
 import { AppSyncResolverEvent } from "aws-lambda";
+import { yupInputValidator } from "../yup-input-validator";
+import { chance } from "../../utilities/constants";
 import * as yup from "yup";
 
 /*
@@ -38,7 +38,6 @@ describe("With Zod Input Validator", () => {
   let attribute1: number;
 
   const lambda = withMiddleware((event: AppSyncResolverEvent<{ input: input }>) => {
-  	console.log(event.arguments.input);
   	expect(event.arguments.input).toMatchObject({
   		attribute, attribute1
   	});

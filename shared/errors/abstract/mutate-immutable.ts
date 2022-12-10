@@ -1,5 +1,5 @@
-import { EntityErrorMessages } from "../../framework/entities/types";
-import { Error } from "./error";
+import { EntityErrorMessages } from "../../../framework/entities/types";
+import { Error } from "../error";
 
 export class MutateImmutable extends Error {
 	constructor(attribute?: string, collection?:string) {
