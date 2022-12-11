@@ -7,7 +7,7 @@ import {
 	commonEnviromentVariables,
 	commonPluginConfig,
 	commonPlugins
-} from "@utilities/commons";
+} from "../../shared/utilities/commons";
 import { config } from "@utilities/constants";
 import { stacks } from "@utilities/stacks";
 import { createDataSource, createMappingTemplate, generateServiceName, importLocalCloudFormationParam } from "@utilities/functions";

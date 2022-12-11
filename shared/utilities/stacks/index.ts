@@ -1,4 +1,4 @@
-import { root } from "./root";
+import { infrastructure } from "./infrastructure";
 import { authentication } from "./authentication";
 import { api } from "./api";
 import { photo } from "./photo";
@@ -7,7 +7,7 @@ import { alarm } from "./alarm";
 
 export const stacks = Object.freeze({
 
-	root,
+	infrastructure,
 	authentication,
 	api,
 	photo,

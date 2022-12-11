@@ -10,7 +10,7 @@ export enum config {
   runtime = "nodejs16.x",
 }
 
-export type stacks = "root" | "authentication" | "api" | "user" | "alarm";
+export type stacks = "infrastructure" | "authentication" | "api" | "user" | "alarm";
 
 export const logicalResourceNames = Object.freeze({
 	table: "DynamoDbTable",
