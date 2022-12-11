@@ -1,91 +1,66 @@
 
 import { AWS } from "../../shared/types/aws";
-import {
-	commomEnviromentResources,
-	commonCloudFormationImports,
-	commonCustom,
-	commonEnviromentVariables,
-	commonPluginConfig,
-	commonPlugins
-} from "../../shared/utilities/commons";
-import { config } from "@utilities/constants";
-import { stacks } from "@utilities/stacks";
-import { createDataSource, createMappingTemplate, generateServiceName, importLocalCloudFormationParam } from "@utilities/functions";
-import { EntityType } from "shared/types/api";
+import { cloudImports, common } from "../../shared/utilities";
+import { generateServiceName } from "../../shared/utilities/functions";
 
 const serverlessConfiguration: AWS.Service = {
 
 	service: generateServiceName("user"),
 
 	provider: {
-		name: config.provider,
-		region: config.region,
-		stage: config.stage,
-		runtime: config.runtime,
+		...common.providerSettings,
 		environment: {
-			...commonEnviromentVariables,
-			...commomEnviromentResources,
-			COGNITO_USER_POOL_ID: importLocalCloudFormationParam({
-				stack: "authentication",
-				output: stacks.authentication.outputs.cognito.id
-			}),
-			COGNITO_CLIENT_ID: importLocalCloudFormationParam({
-				stack: "authentication",
-				output: stacks.authentication.outputs.clients.web.id
-			})
+			...common.enviromentVariables,
+			...common.enviromentResources,
 		}
 	},
 
+	package: {
+		individually: true
+	},
+
 	plugins: [
-		...commonPlugins,
-		"serverless-appsync-plugin",
+		...common.plugins
 	],
 
 	custom: {
-
-		...commonCustom,
-		...commonPluginConfig,
-		...commonCloudFormationImports,
-		tableStreamArn: commonCloudFormationImports.tableStreamArn,
-		cognitoUserPoolArn: importLocalCloudFormationParam({
-			stack: "authentication",
-			output: stacks.authentication.outputs.cognito.arn
-		}),
-
-		appSync: {
-			apiId: "${self:custom.apiId}",
-			schema: "../../schema.graphql",
-			mappingTemplates: [
-				createMappingTemplate({
-					field: "getProfile",
-					type: "Query",
-					source: "getProfile",
-				}),
-				createMappingTemplate({
-					field: "updateUser",
-					type: "Mutation",
-					source: "updateUser",
-				}),
-				createMappingTemplate({
-					field: "deleteUser",
-					type: "Mutation",
-					source: "deleteUser",
-				})
-			],
-			dataSources: [
-				createDataSource("getProfile"),
-				createDataSource("updateUser"),
-				createDataSource("deleteUser")
-			]
-		},
-
+		...common.custom,
+		...common.pluginConfigs,
+		...cloudImports.common,
+		tableStreamArn: cloudImports.tableStreamArn,
+		cognitoUserPoolArn: cloudImports.userPoolArn,
 	},
 
 	functions: {
 
+		createUser: {
+			description: "Creates a user.",
+			handler: "functions/create-user.handler",
+			iamRoleStatements: [
+				{
+					Effect: "Allow",
+					Action: ["dynamodb:GetItem"],
+					Resource: [
+						"${self:custom.tableArn}"
+					]
+				}
+			],
+			events: [
+				{
+					cognitoUserPool: {
+						pool: "clock-up-user-pool-${self:custom.stage}",
+						existing: true,
+						trigger: "PostConfirmation"
+					}
+				}
+			]
+		}
+
+		/*
 		getProfile: {
 			description: "Gets a user information",
 			handler: "functions/get-profile.handler",
+			
 			iamRoleStatements: [
 				{
 					Effect: "Allow",
@@ -167,7 +142,7 @@ const serverlessConfiguration: AWS.Service = {
 				},
 			]
 		}
-
+		*/
 	}
 
 };

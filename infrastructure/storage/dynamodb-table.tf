@@ -83,6 +83,12 @@ resource "aws_ssm_parameter" "tableARN" {
   value = aws_dynamodb_table.dynamoDb_table.arn
 }
 
+resource "aws_ssm_parameter" "tableStreamARN" {
+  name = "/clock-up/${var.stage}/storage/table/stream/arn"
+  type = "String"
+  value = aws_dynamodb_table.dynamoDb_table.stream_arn
+}
+
 output "dynamoDb_table_name" {
   value = aws_dynamodb_table.dynamoDb_table.name
   description = "DynamoDB table name."
