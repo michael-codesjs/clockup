@@ -1,13 +1,11 @@
 import { s3BucketResource, dynamoDbResource } from "@resources";
-import { AWS } from "shared/types/aws";
-import { commonCustom, commonPluginConfig, commonPlugins, commonProviderSettings } from "@utilities/commons";
-import { logicalResourceNames } from "@utilities/constants";
-import { stacks } from "@utilities/stacks";
-import { generateLogicalResourcelName, generateServiceName } from "@utilities/functions";
+import { AWS } from "../../shared/types/aws";
+import { commonCustom, commonPluginConfig, commonPlugins, commonProviderSettings } from "../../shared/utilities/commons";
+import { logicalResourceNames } from "../../shared/utilities/constants";
+import { stacks } from "../../shared/utilities/stacks";
+import { generateLogicalResourcelName, generateServiceName } from "../../shared/utilities/functions";
 
-
-
-const serverlessConfiguration: AWS.Service = {
+const slsInfrastructure: AWS.Service = {
 
 	service: generateServiceName("root"),
 
@@ -70,4 +68,4 @@ const serverlessConfiguration: AWS.Service = {
 	}
 };
 
-module.exports = serverlessConfiguration;
+module.exports = slsInfrastructure;
