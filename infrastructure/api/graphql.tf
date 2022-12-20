@@ -2,7 +2,7 @@ resource "aws_appsync_graphql_api" "api" {
 
   name                = "clock-up-api-${var.stage}"
   authentication_type = "AMAZON_COGNITO_USER_POOLS"
-  schema              = file("${path.module}/../../schema.graphql")
+  schema              = file("${path.module}/../../shared/graphql/schema.graphql")
 
   user_pool_config {
     aws_region     = var.region

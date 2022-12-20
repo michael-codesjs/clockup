@@ -4,6 +4,7 @@ terraform {
       source = "hashicorp/aws"
     }
   }
+  required_version = ">= 1.2.0"
 }
 
 provider "aws" {
@@ -37,7 +38,13 @@ module "authentication" {
 
 
 module "api" {
-  source = "./api"
-  stage  = var.stage
+  source               = "./api"
+  stage                = var.stage
   cognito_user_pool_id = module.authentication.cognito_user_pool_id
+}
+
+module "io" {
+  source = "./io"
+  stage  = var.stage
+  region = var.region
 }

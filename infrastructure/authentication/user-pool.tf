@@ -28,8 +28,14 @@ resource "aws_cognito_user_pool" "user_pool" {
 
 }
 
-resource "aws_ssm_parameter" "userPoolId" {
+resource "aws_ssm_parameter" "userPoolName" {
   name  = "/clock-up/${var.stage}/authentication/user-pool/name"
+  type  = "String"
+  value = aws_cognito_user_pool.user_pool.name
+}
+
+resource "aws_ssm_parameter" "userPoolId" {
+  name  = "/clock-up/${var.stage}/authentication/user-pool/id"
   type  = "String"
   value = aws_cognito_user_pool.user_pool.id
 }
