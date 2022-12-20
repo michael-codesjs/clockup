@@ -1,4 +1,4 @@
-import { ICommon } from "@local-types/api";
+import { ICommon } from "shared/types/api";
 import { AttributeParams } from ".";
 import { Attribute } from "../abstracts";
 import { AttributeSchema } from "./attributes";

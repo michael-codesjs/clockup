@@ -1,53 +1,45 @@
-import { AWS } from "@local-types/aws";
-import { commomEnviromentResources, commonCloudFormationImports, commonCustom, commonEnviromentVariables, commonPluginConfig, commonPlugins } from "@utilities/commons";
-import { config } from "@utilities/constants";
-import { stacks } from "@utilities/stacks";
-import { generateServiceName, importLocalCloudFormationParam } from "../../utilities/functions";
+import { AWS } from "../../shared/typescript/types/aws";
+import { cloudImports, common } from "../../shared/typescript/utilities";
+import { config } from "../../shared/typescript/utilities/constants";
+import { generateServiceName } from "../../shared/typescript/utilities/functions";
 
 /*
  * THIS SERVICE IS A UTILITY DEVELOPMENT SERVICE. YOU NEED NOT DEPLOY IT !
- * I import all cloudformation outputs here and use sls export-env to export the ouputs in a .env file
- * I then use those exports in my tests
- * Will probably grow to do more things
+ * I simply use it import every enviroment variable I can think of that is used by every services.
+ * I then export then enviroment variables to a dotenv file to be used in my tests.
  */
 
 
 const serverlessConfiguration: AWS.Service = {
-  
-	service: generateServiceName("test"),
 
-	provider: {
-		name: config.provider,
-		stage: config.stage,
-		region: config.region,
-		runtime: config.runtime,
-		environment: {
-			...commonEnviromentVariables,
-			...commomEnviromentResources,
-			COGNITO_USER_POOL_ID: importLocalCloudFormationParam({
-				stack: "authentication",
-				output: stacks.authentication.outputs.cognito.id
-			}),
-			COGNITO_CLIENT_ID: importLocalCloudFormationParam({
-				stack: "authentication",
-				output: stacks.authentication.outputs.clients.web.id
-			})
-		}
-	},
+  service: generateServiceName("test"),
 
-	package: {
-		individually: true
-	},
+  provider: {
+    name: config.provider,
+    stage: config.stage,
+    region: config.region,
+    runtime: config.runtime,
+    environment: {
+      ...common.enviromentVariables,
+      ...common.enviromentResources,
+      COGNITO_USER_POOL_ID: cloudImports.userPoolId,
+      COGNITO_CLIENT_ID: cloudImports.userPoolWebClient
+    }
+  },
 
-	plugins: [
-		...commonPlugins,
-	],
+  package: {
+    individually: true
+  },
 
-	custom: {
-		...commonCustom,
-		...commonPluginConfig,
-		...commonCloudFormationImports,
-	}
+  plugins: [
+    ...common.plugins,
+  ],
+
+  custom: {
+    ...common.custom,
+    ...common.pluginConfigs,
+    ...cloudImports.common,
+  }
 
 };
 

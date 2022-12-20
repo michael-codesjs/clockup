@@ -1,5 +1,5 @@
-import { EntityType } from "@local-types/api";
-import { IntRange } from "@local-types/utility";
+import { EntityType } from "shared/types/api";
+import { IntRange } from "shared/types/utility";
 
 export type AttributeSchema<T = any, I extends boolean = false> = {
   type: T,

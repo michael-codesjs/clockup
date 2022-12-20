@@ -1,10 +1,10 @@
 import { cognitoProvider } from "@lib/cognito";
-import * as types from "@local-types/api";
-import type { IEntityFactory } from "@local-types/interfaces";
-import { configureEnviromentVariables } from "@utilities/functions";
-import { Attributes, Entity, Keys } from "../abstracts";
-import { IUser } from "../abstracts/interfaces";
-import { UserNotFoundError } from "../error/user-not-found";
+import * as types from "../../../shared/typescript/types/api";
+import type { IEntityFactory } from "../../../shared/typescript/types/interfaces";
+import { configureEnviromentVariables } from "../../../shared/typescript/utilities/functions";
+import { Attributes, Entity, Keys } from "../../../shared/typescript/abstracts";
+import { IUser } from "../../../shared/typescript/abstracts/interfaces";
+import { UserNotFoundError } from "../../../shared/errors/user-not-found";
 import { EntityErrorMessages } from "../types";
 import { NullUserConstructorParams, UserConstructorParams } from "../types/constructor-params";
 import { UserAttributes } from "./attributes";

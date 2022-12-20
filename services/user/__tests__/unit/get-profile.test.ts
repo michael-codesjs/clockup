@@ -1,5 +1,5 @@
 import Entities from "@entities";
-import { ErrorTypes, User } from "@local-types/api";
+import { ErrorTypes, User } from "shared/types/api";
 import { Given, HandlerArguments, Then } from "@utilities/testing";
 import { EntityErrorMessages } from "../../../../framework/entities/types";
 import { handler } from "../../functions/get-profile";

@@ -1,5 +1,5 @@
-import { AbsoluteUser } from "@local-types/index";
-import { IntRange } from "@local-types/utility";
+import { AbsoluteUser } from "shared/types/index";
+import { IntRange } from "shared/types/utility";
 import { SnoozeableDuration, SnoozeableInterval } from "./attributes";
 
 export type NullEntityConstructorParams = { id: string };

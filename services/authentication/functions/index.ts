@@ -1,0 +1,1 @@
+export { confirmSignUp } from "./confirm-sign-up";

@@ -1,4 +1,4 @@
-import { EntityType } from "@local-types/api";
+import { EntityType } from "shared/types/api";
 import { UserAttributes } from "../attributes";
 
 describe("UserAttribtues", () => {
