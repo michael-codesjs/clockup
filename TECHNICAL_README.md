@@ -1,3 +1,35 @@
+## **Folder Structure**.
+### **Config**
+
+Contains config files for stuff like jest, jsdoc, eslint and many more.
+
+### **Infrastructure**
+
+Contains terraform source files where we define our infrastructure. Our infrastructure is split into 4 modules, these are the:
+- **api** infrastructure, eg: AppSync GraphQL API.
+- **authentication** infrastructure, eg: Cognito User Pool, Cognito Clients.
+- **io** infrastructure for communication between our microservices, eg: SNS topics, SQS queues and event buses.
+- **storage** infrastructure, eg: single DynamoDB table and S3 buckets.
+
+
+### **Scripts**
+
+Contains scripts for perfoming jobs like:
+- full project **deployment** or **removal** (both infrastructure and services).
+- geneerating typescript types and graphql queries & mutations from the schema.
+
+### **Services**
+
+Contains our projects serverless microservices, these include the **user**, ***alarm*** and **photo** service.
+
+### **Shared**
+
+Contains all shared code between microservices. Shared code is also categorized by programming language.
+
+
+***
+
+
 ## **Entity Groups**
 
 An **EntityGroup** is a collection(namespace) of variants of an entity type.

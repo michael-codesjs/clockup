@@ -1,0 +1,14 @@
+overwrite: true
+schema:
+  - shared/graphql/schema.graphql
+  - shared/graphql/appsync.types.graphql
+generates:
+  'shared/typescript/types/api.ts':
+    plugins:
+      - '@graphql-codegen/typescript'
+      - typescript-operations
+      - typescript-resolvers
+      - typescript-validation-schema
+    config:
+      schema: yup
+      notAllowEmptyString: true

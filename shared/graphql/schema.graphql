@@ -1,0 +1,131 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+enum ErrorTypes {
+  NOT_FOUND
+  MALFOMED_INPUT
+  INTERNAL_ERROR
+  CREATE_FAILED
+  UPDATE_FAILED
+}
+
+type ErrorResponse {
+  type: ErrorTypes!
+  message: String
+  code: Int
+}
+
+interface ICreatable {
+  creator: ID!
+}
+
+enum EntityType {
+  USER
+  ALARM
+}
+
+type OperationResponse {
+  success: Boolean!
+  message: String
+}
+
+interface Common {
+  id: ID!
+  entityType: EntityType!
+  created: AWSDateTime!
+  modified: AWSDateTime
+  discontinued: Boolean!
+}
+
+type User implements Common {
+  id: ID!
+  entityType: EntityType!
+  created: AWSDateTime!
+  modified: AWSDateTime
+  discontinued: Boolean!
+  email: AWSEmail!
+  name: String!
+  alarms: Int!
+}
+
+type Alarm implements Common & ICreatable {
+  id: ID!
+  entityType: EntityType!
+  created: AWSDateTime!
+  modified: AWSDateTime
+  discontinued: Boolean!
+  creator: ID!
+  name: String
+  enabled: Boolean
+  days: [Int!]
+  time: AlarmRingTime!
+  snooze: AlarmSnoozeSettings!
+  onceOff: Boolean
+}
+
+type AlarmResponse {
+  alarm: Alarm!
+  creator: User!
+}
+
+type AlarmRingTime {
+  hour: Int!
+  minute: Int!
+}
+
+type AlarmSnoozeSettings {
+  duration: Int!
+  interval: Int!
+}
+
+input UpdateUserInput {
+  email: AWSEmail
+  name: String
+}
+
+input AlarmRingTimeInput {
+  hour: Int!
+  minute: Int!
+}
+
+input AlarmSnoozeSettingsInput {
+  duration: Int!
+  interval: Int!
+}
+
+input UpdateAlarmInput {
+  id: ID!
+  name: String
+  enabled: Boolean
+  days: [Int!]
+  time: AlarmRingTimeInput
+  snooze: AlarmSnoozeSettingsInput
+  onceOff: Boolean
+}
+
+input CreateAlarmInput {
+  name: String
+  enabled: Boolean
+  days: [Int!]
+  time: AlarmRingTimeInput!
+  snooze: AlarmSnoozeSettingsInput!
+  onceOff: Boolean
+}
+
+union OperationOutput = OperationResponse | ErrorResponse
+union UserOutput = User | ErrorResponse
+union AlarmOutput = AlarmResponse | ErrorResponse
+
+type Query {
+  getProfile: UserOutput! @aws_cognito_user_pools
+  getAlarm(id: ID!): Alarm! @aws_cognito_user_pools
+}
+
+type Mutation {
+  updateUser(input: UpdateUserInput!): UserOutput! @aws_cognito_user_pools
+  deleteUser: OperationOutput! @aws_cognito_user_pools
+  createAlarm(input: CreateAlarmInput!): AlarmOutput! @aws_cognito_user_pools
+  updateAlarm(input: UpdateAlarmInput!): AlarmOutput! @aws_cognito_user_pools
+}

@@ -8,6 +8,11 @@ jspm_packages
 documentation
 coverage
 
+# Terraform
+terraform.tfstate
+terraform.tfstate.backup
+.terraform
+
 # Serverless directories
 .serverless
 
