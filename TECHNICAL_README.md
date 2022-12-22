@@ -8,23 +8,24 @@ Contains config files for stuff like jest, jsdoc, eslint and many more.
 Contains terraform source files where we define our infrastructure. Our infrastructure is split into 4 modules, these are the:
 - **api** infrastructure, eg: AppSync GraphQL API.
 - **authentication** infrastructure, eg: Cognito User Pool, Cognito Clients.
-- **io** infrastructure for communication between our microservices, eg: SNS topics, SQS queues and event buses.
+- **io** infrastructure for communication between our microservices, eg: SNS topics, SQS queues and EventBridge event buses.
 - **storage** infrastructure, eg: single DynamoDB table and S3 buckets.
 
 
 ### **Scripts**
 
 Contains scripts for perfoming jobs like:
-- full project **deployment** or **removal** (both infrastructure and services).
-- geneerating typescript types and graphql queries & mutations from the schema.
+- Deploying and Destroying the project, infrastructure and/or microservices.
+- Generating enviroment variables to be used in tests.
+- Generating typescript types and graphql queries & mutations from the schema.
 
 ### **Services**
 
-Contains our projects serverless microservices, these include the **user**, ***alarm*** and **photo** service.
+Contains our projects serverless microservices which are their own NodeJS projects with their own dependencies.
 
 ### **Shared**
 
-Contains all shared code between microservices. Shared code is also categorized by programming language.
+Contains all shared code between microservices. Shared code is grouped by programming language.
 
 
 ***
@@ -47,7 +48,7 @@ Their **sync** methods query the database for an absolute entity and if one is f
 ***
 
 ## **Continuity**
-A discontinued entity is one that has been deleted. We do not actually remove the entity record from the database, instead we append/prepend the string "DISCONTINUED" to it's keys(except primary). This makes it inaccesible to the front-end via querys.
+A discontinued entity is one that has been deleted. We do not actually remove the entity record from the database, instead we append/prepend the string "DISCONTINUED" to it's keys(except primary). This makes it inaccesible to the front-end via querys unless explictly specified.
 
 ***
 

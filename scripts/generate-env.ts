@@ -1,8 +1,6 @@
-import { exec } from "node:child_process";
-import { readdirSync } from "node:fs";
-import ora from "ora";
 import chalk from "chalk";
-import { getServices, execAsync } from "../shared/typescript/utilities/functions";
+import ora from "ora";
+import { execAsync, getServices } from "../shared/typescript/utilities/functions";
 
 console.clear();
 

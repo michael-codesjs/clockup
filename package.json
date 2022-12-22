@@ -5,14 +5,14 @@
   "main": "serverless-compose.ts",
   "scripts": {
     "lint": "eslint . --ext .ts --fix -c config/.eslintrc.js",
-    "deploy": "npx ts-node scripts/deploy.ts",
-    "destroy": "npx ts-node scripts/destroy.ts",
-    "setup": "npx ts-node scripts/setup.ts",
+    "deploy": "npx ts-node scripts/state/deploy.ts",
+    "destroy": "npx ts-node scripts/state/destroy.ts",
+    "generate-env": "npx ts-node scripts/generate-env.ts",
     "codegen": "npx ts-node scripts/codegen.ts",
     "documentation": "npx jsdoc -c config/jsdoc.json",
     "coverage": "npx jest --coverage",
     "test": "jest --verbose",
-    "test:shared": "jest --verbose shared/ --config config/jest.config.js",
+    "test:shared": "jest --verbose shared/ --config ./jest.config.js",
     "test:abstracts": "jest shared/typescript/abstracts/__tests__ --verbose --config ./jest.config.js",
     "test:middleware": "jest ../shared/typescript/middleware/__tests__ --verbose --config ./jest.config.js"
   },

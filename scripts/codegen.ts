@@ -31,10 +31,15 @@ const generateCodegenTypes = async () => {
 
 const generateAmplifyTypesAndQueriesAndMutations = async () => {
 
-	const spinner = ora("Generating Amplify types, queries and mutations from the GraphQL schema.").start();
-	await copySchema();
+	const spinner = ora("Generating Amplify types, queries and mutations from the GraphQL schema.")
+	spinner.start();
+
+	await copySchema(); // copy scheme to ./config/schema.graphql because Amplify codegen requires the config file and schema to be in the same folder.
+	
 	const success = await execAsync("cd config && amplify codegen", { });
-	await deleteCopiedSchema();
+	
+	await deleteCopiedSchema(); // delete copied ./config/schema.graphql cause who wants two schemas to confuse people?
+	
 	if (success) spinner.succeed("Successfully generated Amplify types, queries and mutations.");
 	else spinner.fail("Failed to generate Amplify types, queries and mutations.");
 

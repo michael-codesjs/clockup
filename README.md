@@ -5,29 +5,25 @@ Serverless backend for the clock-up platform that is split into several decouple
 
 ## **Dependencies & Installation**
 
-Install dependencies in the root directory by running **`yarn install`** in the root project directory. These dependencies are required for scripts, testing shared typescript code and many more.
-
-Each microservice, NodeJS based or not uses its own Serverless Framework version, run **`yarn install`** in the service directory to install it's NodeJS dependencies. If the service has lambda functions written in another language other than NodeJS, run that languages equivalent of **`yarn install`** to install the dependencies.
+Install dependencies by running **`yarn install`** in the root directory and service directories.
 
 Our infrastructure is defined and deployed to AWS using HashiCorp's **Terraform**. To install the Terraform CLI, follow [**these**](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) instructions.
 
 ## **Deploying & Destroying**
 
-Make sure you have your **AWS credentials** set, to do so follow [**these**](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html) instructions. These credentials are used by both Terraform and the Serverless Framework to deploy the infrastructure and microservices(respectively) to AWS.
+You should have an AWS Account and your credentials set on your local machine. I like to do so via the shared credentials file, you can do so too by following [**these**](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html) instructions. These credentials are used by Terraform and The Serverless Framework to deploy the infrastructure and microservices to your AWS account.
 
-To **deploy** everything(infrastructure and microservices) at one go, run **`yarn deploy`**. A script will first deploy the infrastructure and then the microservices.
+To deploy and destroy your infrastructure and microservices, run the commands **`yarn deploy`** and **`yarn destroy`**.
 
-To **destroy** everything(infrastructure and microservices) at one go, run **`yarn deploy`**. A script will first destroy the microservices and then the infrastructure.
-
-The **deploy** and **destroy** scripts will ask you for the stage and region the projects will be/is deployed to. Defaults are **dev** and **eu-central-1**.
+**Note:** the deploy and destroy scripts are custom scripts and can be found in the **scripts/state** folder.
 
 ## **Testing**
 
 To run tests, you'll first have to:
-- Set the **AWS_REGION** enviroment variable to whatever region you deployed the services to. For example: **`export AWS_REGION=eu-central-1`**.
-- Generate enviroment variables. You can do so by running **`yarn setup`**.
+- Set the **AWS_REGION** enviroment variable to whatever region you deployed the infrastructure and services to. For example: **`export AWS_REGION=eu-central-1`**.
+- Generate enviroment variables. You can do so by running **`yarn generate-env`**.
 
-Refer to the `package.json` for specific tests.
+Refer to the `package.json` files for specific tests.
 ## **Meta**
 
 Michael Phiri – [@michael_wcjs](https://twitter.com/michael_wcjs) – michael.codesjs@gmail.com
@@ -40,7 +36,7 @@ Michael Phiri – [@michael_wcjs](https://twitter.com/michael_wcjs) – michael.
 4. Push to the branch (`git push origin feature/fooBar`)
 5. Create a new Pull Request
 
-Some useful resources that will help understand the codebase.
+### **Some useful resources that will help understand the codebase.**
 * **[Dive Into DESIGN PATTERNS](https://refactoring.guru/design-patterns/book)**.
 * **[The DynamoDB Book](https://www.dynamodbbook.com/)**
 * **[Alex Debrie: The What, Why, and When of Single-Table Design with DynamoDB](https://www.alexdebrie.com/posts/dynamodb-single-table/)**
