@@ -37,9 +37,9 @@ export class Attributes<T extends CommonAttributesPlusOthers> extends Publisher 
 		});
 
 		this.Attributes.creator = new Attribute<string, true>({
-			required: true,
+			required: false,
 			value: null,
-			validate: value => typeof value === "string" && value.length > 0,
+			validate: value => value === null || (typeof value === "string" && value.length > 0),
 			immutable: true
 		});
 
@@ -85,7 +85,7 @@ export class Attributes<T extends CommonAttributesPlusOthers> extends Publisher 
 		this.Attributes.created.setValue(_created, _modified);
 		this.Attributes.modified.setValue(_modified && _modified.toJSON(), _modified);
 		this.Attributes.id.setValue(id || ulid(), _modified);
-		this.Attributes.creator.setValue(creator || this.Attributes.id.value, _modified);
+		this.Attributes.creator.setValue(creator || null, _modified);
 
 		for (const key in rest) {
 			if (!this.Attributes[key]) continue;
