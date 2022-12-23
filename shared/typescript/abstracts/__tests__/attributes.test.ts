@@ -171,7 +171,6 @@ describe("Attributes", () => {
 		});
 
 		expect(attributes.updateable()).toMatchObject({
-			entityType, id,
 			attribute,
 			attribute1,
 			attribute2

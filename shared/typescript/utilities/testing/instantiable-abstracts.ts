@@ -1,8 +1,9 @@
 import { EntityType } from "../../types/api";
 import { AttributeSchema, CommonAttributes } from "../../abstracts/types";
 import { Attributes, Entity as AbstractEntity, Keys } from "../../abstracts";
-import { ICreatable } from "../../abstracts/interfaces";
+import { ICreatable, IEntityState } from "../../abstracts/interfaces";
 import { getRandomCreatableEntityType, getRandomEntityType } from "../../utilities/functions";
+import { Null } from "../../abstracts/state";
 
 // INSTANTIABLE VERSIONS OF ABSTRACT CLASSES TO BE USED FOR TESTING
 
@@ -14,10 +15,6 @@ type InstatiableEntity = CommonAttributes & {
 
 export class Entity extends AbstractEntity {
 
-	TypeOfSelf: typeof Entity = Entity;
-	NullTypeOfSelf: typeof Entity;
-	AbsoluteTypeOfSelf: typeof Entity | (typeof Entity)[] = Entity;
-
 	attributes: Attributes<InstatiableEntity> = new Attributes<InstatiableEntity>({
 		attribute1: { initial: null },
 		attribute2: { initial: null },
@@ -28,6 +25,8 @@ export class Entity extends AbstractEntity {
 	});
 
 	keys: Keys = new Keys(this);
+
+	protected state: IEntityState = new Null(this);
 
 	constructor(params?: { id?: string, entityType?: EntityType }) {
 		super();
@@ -48,13 +47,7 @@ type TCreatable = CommonAttributes & {
 }
 
 export class CreatableEntity extends AbstractEntity implements ICreatable {
-
-	TypeOfSelf: typeof CreatableEntity = CreatableEntity;
-	NullTypeOfSelf: typeof CreatableEntity;
-	AbsoluteTypeOfSelf: typeof CreatableEntity | (typeof CreatableEntity)[] = CreatableEntity;
 	
-	creator: AbstractEntity;
-
 	attributes: Attributes<TCreatable> = new Attributes<TCreatable>({
 		creator: {
 			initial: null,
@@ -62,21 +55,21 @@ export class CreatableEntity extends AbstractEntity implements ICreatable {
 			required: true
 		}
 	});
-
+	
 	keys: Keys = new Keys(this);
 
-	constructor(params?: { id?: string, entityType?: EntityType, creator?: AbstractEntity }) {
+	protected state: IEntityState = new Null(this);
+
+	constructor(params?: { id?: string, entityType?: EntityType, creator?: string }) {
 		
 		super();
 		
-		const { id, entityType } = params || {};
-
-		this.creator = params.creator || new Entity({ entityType: EntityType.User, }) as any as AbstractEntity;
+		const { id, entityType, creator } = params || {};
 
 		this.attributes.parse({
 			id,
 			entityType: entityType || getRandomCreatableEntityType(),
-			creator:  this.creator.attributes.get("id")
+			creator: creator
 		});
 
 	}
