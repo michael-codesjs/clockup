@@ -5,6 +5,14 @@ export interface IEntity {
   composable(): boolean
 }
 
+export interface IEntityState {
+  sync(): Promise<Entity>,
+  put(): Promise<Entity>,
+  terminate(): Promise<Entity>,
+  discontinue(): Promise<Entity>
+  graphQlEntity(): null | Record<string, any>
+}
+
 export interface IPutable {
   putable(): any,
   isPutable(): boolean
@@ -32,6 +40,5 @@ export interface IGraphQlEntity {
 }
 
 export interface ICreatable {
-  creator: Entity,
   attributes: Attributes<CommonAttributes & { creator: AttributeSchema<string, true> }>
 }

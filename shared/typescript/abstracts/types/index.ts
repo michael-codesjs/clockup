@@ -2,7 +2,7 @@ import { EntityType } from "../../types/api";
 
 export enum EntityErrorMessages {
   ATTEMPT_TO_MUTATE_IMMUTABLE = "Attempting to mutate immutable attribute",
-  INSUFFICIENT_ATTRIBUTES_TO_PUT = "Entity requires more attributes for each to be put to the table.",
+  INSUFFICIENT_ATTRIBUTES_TO_PUT = "Entity requires more attributes to be put to the table.",
   CREATABLE_DISCONTINUE_MISSING_CREATOR = "Cannot terminate creatable entity without specifying it's creator",
   NULL_VARIANT_RESTRICTION = "Null variant of entity can not be used to perform operation",
   CREATABLE_BY_CREATOR_NOT_FOUND = "Creatable by user was not found",

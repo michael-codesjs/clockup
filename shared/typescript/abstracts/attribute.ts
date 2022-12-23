@@ -65,11 +65,13 @@ export class Attribute<T = any, I = false> implements IPutable, IUpdateable {
 
 	/** checks if an attribute was modified at the same time as the collection it belongs to. */
 	isUpdateable(date?: Date): boolean {
+		if(this.immutable) return false;
 		if(date && this.modified) return (date.valueOf() === this.modified.valueOf()) && this.valid() && this.validate(this.Value);
 		else if(this.valid() && this.validate(this.Value)) return true;
 		else return false;
 	}
 
+	/** get version/structure/state of attribute that can be written to table */
 	updateable() {
 		return this.putable();
 	}

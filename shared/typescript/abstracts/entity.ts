@@ -1,8 +1,7 @@
 import { Attributes } from "./attributes";
-import { IGraphQlEntity } from "./interfaces";
+import { IEntity, IGraphQlEntity, IEntityState } from "./interfaces";
 import { Keys } from "./keys";
-import { Model } from "./model";
-import { CommonAttributes, EntityErrorMessages } from "./types";
+import { CommonAttributes } from "./types";
 
 /**
  * Base abstract class that all entities and their variants should extend.
@@ -12,65 +11,44 @@ import { CommonAttributes, EntityErrorMessages } from "./types";
  * @param {types.EntityType} entityType type of entity.
  */
 
-export abstract class Entity implements IGraphQlEntity {
+export abstract class Entity implements IGraphQlEntity, IEntity {
 
 	/** Entity attributes */
 	public abstract attributes: Attributes<CommonAttributes>;
 	/** Entity DynamoDB keys for the table and all its Global Secondary Indexes */
 	public abstract keys: Keys;
-
-	abstract readonly TypeOfSelf: typeof Entity;
-	abstract readonly NullTypeOfSelf: typeof Entity;
-	abstract readonly AbsoluteTypeOfSelf: typeof Entity | Array<typeof Entity>;
-
-	protected readonly model: Model = new Model(this);
+	/** Entity state */
+	protected abstract state: IEntityState;
 
 	constructor({ }: {} = {}) { } // {}: {} = {} is for constructor signature purposes only
 	/*eslint no-empty-pattern: "off"*/
 
-	/**
-	 * @returns {Object extends types.ICommon} GraphQL representation of an entity defined the schema
-	 * @abstract
-	 */
-
-	graphQlEntity(): null | Record<string, any> {
-		return null;
+	setState(State: new (context: Entity) => IEntityState) {
+		this.state = new State(this);
 	}
 
-	/**
-	 * Keeps the entity in sync with it's record in the database and vice versa.
-	 * For Absolute variants of Entity, it upserts the entities attributes into the table.
-	 * For Null variants of entities, it gets the attributes from the table and returns an absolute variant of that entity type.
-	 * @abstract
-	 */
-	abstract sync(): Promise<Entity>;
+	graphQlEntity() {
+		return this.state.graphQlEntity();
+	}
 
-	/** inserts an entities record into the table */
+	/** Keeps the entity in sync with it's record in the table. */
+	async sync() {
+		return await this.state.sync();
+	}
 
+	/** Inserts an entities record into the table */
 	async put(): Promise<Entity> {
-		if(this.TypeOfSelf === this.NullTypeOfSelf) throw new Error("Can not insert record of null entity into the table");
-		if(!this.attributes.isPutable()) throw new Error(EntityErrorMessages.INSUFFICIENT_ATTRIBUTES_TO_PUT);
-		await this.model.put();
-		return this;
+		return await this.state.put();
 	}
 
 	/** deletes an entites record from the database */
 	async terminate(): Promise<Entity> {
-		if(this.TypeOfSelf === this.NullTypeOfSelf) throw new Error("Null variant of entity can not be used to terminate an entity");
-		await this.model.delete();
-		const ConstructableNullTypeOfSelf = this.NullTypeOfSelf as new () => Entity;
-		return new ConstructableNullTypeOfSelf();
+		return await this.state.terminate();
 	}
 
 	/** discontinues an entity */
 	async discontinue(): Promise<Entity> {
-		if(this.TypeOfSelf === this.NullTypeOfSelf) throw new Error(EntityErrorMessages.NULL_VARIANT_RESTRICTION);
-		this.attributes.parse({
-			...this.attributes.valid(),
-			discontinued: true
-		});
-		await this.model.discontinue();
-		return this;
+		return await this.state.discontinue();
 	}
 
 	composable(): boolean {
