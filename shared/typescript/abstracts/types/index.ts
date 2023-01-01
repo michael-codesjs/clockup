@@ -31,8 +31,3 @@ export type CommonAttributes = {
   modified: AttributeSchema<string, true>,
   discontinued: AttributeSchema<boolean, true>
 };
-
-export type CreatableAttributes = CommonAttributes & {
-  creator: AttributeSchema<string,true>
-};
-

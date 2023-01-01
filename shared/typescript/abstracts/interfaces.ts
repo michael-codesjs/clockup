@@ -1,16 +1,19 @@
-import { AttributeSchema, CommonAttributes } from "./types";
-import { Entity, Attribute, Attributes } from ".";
+import { Attribute, Entity } from ".";
 
 export interface IEntity {
   composable(): boolean
 }
 
+export interface IStateableEntity {
+  state: IEntityState
+};
+
 export interface IEntityState {
+  context: Entity & IStateableEntity,
   sync(): Promise<Entity>,
   put(): Promise<Entity>,
-  terminate(): Promise<Entity>,
   discontinue(): Promise<Entity>
-  graphQlEntity(): null | Record<string, any>
+  graphQlEntity(): Promise<Record<string, any>>
 }
 
 export interface IPutable {
@@ -37,8 +40,4 @@ export interface ISubscriber {
 
 export interface IGraphQlEntity {
   graphQlEntity(): Record<string, any> | null
-}
-
-export interface ICreatable {
-  attributes: Attributes<CommonAttributes & { creator: AttributeSchema<string, true> }>
 }

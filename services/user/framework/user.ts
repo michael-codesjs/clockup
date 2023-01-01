@@ -1,153 +1,48 @@
-import { cognitoProvider } from "../../../shared/typescript/lib/cognito";
-import * as types from "../../../shared/typescript/types/api";
-import type { IEntityFactory } from "../../../shared/typescript/types/interfaces";
-import { configureEnviromentVariables } from "../../../shared/typescript/utilities/functions";
-import { Attributes, Entity, Keys } from "../../../shared/typescript/abstracts";
-import { UserNotFoundError } from "../../../shared/typescript/abstracts/errors";
-import { NullUserConstructorParams, UserConstructorParams } from "./types";
+import { Entity } from "../../../shared/typescript/abstracts";
+import { IStateableEntity } from "../../../shared/typescript/abstracts/interfaces";
+import { User as UserGraphQLEntity } from "../../../shared/typescript/types/api";
 import { UserAttributes } from "./attributes";
+import { IUser, IUserState } from "./interfaces";
 import { UserKeys } from "./keys";
-import { UserModel } from "./model";
+import { Null } from "./states";
+import { AbsoluteStateUserConstructorParams, NullStateUserConstructorParams, SemiStateUserConstructorParams } from "./types";
 
-const { COGNITO_USER_POOL_ID } = configureEnviromentVariables();
+// type aliases
+type N = NullStateUserConstructorParams;
+type S = SemiStateUserConstructorParams;
+type A = AbsoluteStateUserConstructorParams;
 
-namespace UserEntityGroup {
+/** Low level entity in our entity framzwork */
+export class User extends Entity implements IStateableEntity, IUser {
 
-	/**
-	 * NULL USER:
-	 * A user whose existence and variant is unverified
-	 * An intermidiary you use to obtain an absolute user via it's sync method.
-	 * @param {NullUserAttributes} properties object containing the id of the absolute user the client wishes to obtain.
-	 */
+	public attributes: UserAttributes = new UserAttributes();
+	public keys = new UserKeys(this);
 
-	export class NullUser extends Entity {
+	state: IUserState = new Null(this);
 
-		readonly entityType = types.EntityType.User;
-
-		readonly TypeOfSelf: typeof NullUser = NullUser;
-		readonly NullTypeOfSelf: typeof NullUser = NullUser;
-		readonly AbsoluteTypeOfSelf: typeof User = User;
-
-		public readonly attributes = new Attributes();
-		public readonly keys = new Keys(this);
-
-		constructor(properties: NullUserConstructorParams) {
-			super();
-			this.attributes.parse({ ...properties, entityType: types.EntityType.User });
-		}
-
-		graphQlEntity(): null {
-			return null;
-		}
-
-		async sync(): Promise<User | never> {
-			const { Item } = await this.model.get(); // get user record from db
-			if (!Item) throw new UserNotFoundError(this.attributes.get("id"));
-			return new User(Item as UserConstructorParams);
-		}
-
-		async discontinueCognito() {
-
-			await cognitoProvider()
-				.adminDisableUser({
-					Username: this.attributes.get("id"),
-					UserPoolId: COGNITO_USER_POOL_ID!
-				})
-				.promise();
-		}
-
+	constructor(attributes: N | S | A) {
+		super();
+		this.attributes.parse(attributes);
 	}
 
-	export class User extends Entity implements IUser {
+	/** Returns users GraphQL entity. */
+	async graphQlEntity(): Promise<UserGraphQLEntity> {
+		return await this.state.graphQlEntity();
+	}
 
-		readonly TypeOfSelf: typeof User = User;
-		readonly NullTypeOfSelf: typeof NullUser = NullUser;
-		readonly AbsoluteTypeOfSelf: typeof User = User;
+	/** Syncs a user with its record in the table. */
+	async sync(): Promise<User> {
+		return (await this.state.sync()) as unknown as User;
+	}
 
-		protected readonly model: UserModel = new UserModel(this);
-		public attributes: UserAttributes = new UserAttributes();
-		public keys = new UserKeys(this);
+	/** Inserts a users record into the table. */
+	async put(): Promise<User> {
+		return (await this.state.put()) as unknown as User;
+	}
 
-		constructor(attributes: UserConstructorParams) {
-			super();
-			this.attributes.parse(attributes);
-		}
-
-		/**
-		 * Use to obtain graphql representation of UserEntityGroup.User
-		 * @returns {types.User}
-		 */
-		graphQlEntity(): types.User {
-			return {
-				__typename: "User",
-				...this.attributes.collective()
-			};
-		}
-
-		async sync(): Promise<User> {
-			const { Attributes } = await this.model.update();
-			this.attributes.parse(Attributes);
-			return this;
-		}
-
-		/** updates user attributes in cognito */
-		public async syncCognito() {
-
-			const attributes = [];
-
-			// populate attributes to contain non null values
-			Object.entries(this.attributes.cognito)
-				.forEach(([key, value]) => {
-					value !== null && value !== undefined && attributes.push({
-						Name: key,
-						Value: value as string
-					});
-				});
-
-			const cognitoAdminUpdateParams = {
-				UserPoolId: COGNITO_USER_POOL_ID!,
-				Username: this.attributes.get("id"),
-				UserAttributes: attributes
-			};
-
-			await cognitoProvider()
-				.adminUpdateUserAttributes(cognitoAdminUpdateParams) // update user attributes in the cognito user pool
-				.promise();
-
-		}
-
+	/** Discontinues a user. */
+	async discontinue(): Promise<User> {
+		return await this.state.discontinue();
 	}
 
 }
-
-/* USER FACTORY */
-
-type UserFactoryParams = UserConstructorParams | NullUserConstructorParams;
-type UserVariant<T> = (
-	T extends UserConstructorParams ? UserEntityGroup.User :
-	T extends NullUserConstructorParams ? UserEntityGroup.NullUser : never
-);
-
-/**
- * Factory used to obtain variants from the UserEntityGroup.
- * @param {Attribtues} params containing attributes that determine which variant from the UserEntityGroup it gets.
- */
-
-class UserFactoryBlueprint implements IEntityFactory {
-
-	private constructor() { }
-	static readonly instance = new UserFactoryBlueprint();
-
-	createEntity<T extends UserFactoryParams>(params: T): UserVariant<T> {
-		if (params && ("name" in params || "email" in params)) {
-			return new UserEntityGroup.User(params) as UserVariant<T>;
-		} else if (params && "id" in params) {
-			return new UserEntityGroup.NullUser(params) as UserVariant<T>;
-		} else {
-			throw new Error(EntityErrorMessages.USER_VARIANT_NOT_FOUND);
-		}
-	}
-
-}
-
-export const UserFactory = UserFactoryBlueprint.instance;

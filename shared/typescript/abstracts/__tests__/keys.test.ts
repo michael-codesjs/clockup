@@ -1,7 +1,7 @@
 import { EntityType } from "../../types/api";
 import { chance } from "../../utilities/constants";
 import { getRandomEntityType } from "../../utilities/functions";
-import { Entity } from "../../utilities/testing/instantiable-abstracts";
+import { Entity } from "../../utilities/testing/instanciable-abstracts";
 import { Keys } from "../keys";
 
 describe("Keys", () => {

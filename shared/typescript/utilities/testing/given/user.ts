@@ -1,10 +1,12 @@
 import { ulid } from "ulid";
+import { dynamoDbOperations } from "../../../lib/dynamoDb";
 import { EntityType, User as TUser } from "../../../types/api";
 import { chance } from "../../../utilities/constants";
 import { configureEnviromentVariables } from "../../../utilities/functions";
-// import { UserFactory } from "../../../framework/entities/user";
 
-const { COGNITO_USER_POOL_ID } = configureEnviromentVariables();
+const { DYNAMO_DB_TABLE_NAME } = configureEnviromentVariables();
+
+const TableName = DYNAMO_DB_TABLE_NAME!;
 
 class GivenUserAttributes {
 
@@ -20,18 +22,58 @@ class GivenUserAttributes {
 
 	}
 
+
 	attributes(): TUser {
 
 		const entityType = EntityType.User;
 		const id = ulid();
+		const creator = ulid();
 		const discontinued = false;
 		const created = chance.date().toJSON();
 		const alarms = chance.integer({ min: 0, max: 20 });
 
-		return { entityType, id, ...this.input(), created, discontinued, alarms };
+		return {
+			entityType,
+			id,
+			creator,
+			created,
+			discontinued,
+			alarms,
+			...this.input(),
+		};
 
 	}
 
+	async byId(id: string) {
+    const PK = "USER#"+id.toLowerCase() as any;
+		const result = await dynamoDbOperations.get({
+      TableName,
+      Key: {
+        PK,
+        SK: PK
+      }
+    });
+    return result.Item as TUser
+	}
+
+	async new(attributes: TUser = this.attributes()) {
+
+    const PK = "USER#"+attributes.id.toLowerCase();
+		
+    const Item = {
+      ...attributes,
+      PK,
+      SK: PK
+    } as any;
+    
+    await dynamoDbOperations.put({
+      TableName,
+      Item
+    });
+
+    return Item as TUser;
+	
+  }
 	/*
 
 	async byId(id: string) {

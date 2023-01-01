@@ -1,15 +1,21 @@
 ## **Folder Structure**.
+
+### **Clients**
+
+Source projects for clock-up clents(web micro front-ends & native apps).
+
 ### **Config**
 
-Contains config files for stuff like jest, jsdoc, eslint and many more.
+Config files for stuff like jest, jsdoc, eslint and many more.
 
 ### **Infrastructure**
 
-Contains terraform source files where we define our infrastructure. Our infrastructure is split into 4 modules, these are the:
+**HCL** source files where we define our infrastructure. Our infrastructure is split into 4 modules, these are the:
+
 - **api** infrastructure, eg: AppSync GraphQL API.
 - **authentication** infrastructure, eg: Cognito User Pool, Cognito Clients.
 - **io** infrastructure for communication between our microservices, eg: SNS topics, SQS queues and EventBridge event buses.
-- **storage** infrastructure, eg: single DynamoDB table and S3 buckets.
+- **storage** infrastructure, eg: DynamoDB table and S3 buckets.
 
 
 ### **Scripts**

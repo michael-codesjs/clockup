@@ -1,11 +1,11 @@
 # **clock-up**
-Serverless backend for the clock-up platform that is split into several decoupled microservices.
 
-* [DynamoDB Schema](https://docs.google.com/spreadsheets/d/1EYoTWwzbV6BqmQ7m5NTOcZJNXM3eSF4EHg3DeTIVX9k/edit?usp=sharing)
+Welcome, this repository contains everything that makes up the clock-up platform.
+The backend comprised of several serverless microservices, web clients comprised of several micro front-ends and a cross platform native app.
 
 ## **Dependencies & Installation**
 
-Install dependencies by running **`yarn install`** in the root directory and service directories.
+Install dependecies of **Node/Typescript** components by running **`yarn install`** in the component directory(this includes the root directory).
 
 Our infrastructure is defined and deployed to AWS using HashiCorp's **Terraform**. To install the Terraform CLI, follow [**these**](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) instructions.
 
@@ -13,9 +13,7 @@ Our infrastructure is defined and deployed to AWS using HashiCorp's **Terraform*
 
 You should have an AWS Account and your credentials set on your local machine. I like to do so via the shared credentials file, you can do so too by following [**these**](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html) instructions. These credentials are used by Terraform and The Serverless Framework to deploy the infrastructure and microservices to your AWS account.
 
-To deploy and destroy your infrastructure and microservices, run the commands **`yarn deploy`** and **`yarn destroy`**.
-
-**Note:** the deploy and destroy scripts are custom scripts and can be found in the **scripts/state** folder.
+To deploy and destroy the infrastructure and/or microservices, run the commands **`yarn deploy`** and **`yarn destroy`** respectively and let the scripts I wrote handle the long process of deploying/destroying the backend for you. The scripts will ask you a few questions before deploying.
 
 ## **Testing**
 

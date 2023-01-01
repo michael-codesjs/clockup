@@ -4,7 +4,8 @@
   "description": "user service of the clock-up backend",
   "main": "serverless.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --verbose",
+    "test:framework": "jest ./framework/__tests__ --verbose"
   },
   "engines": {
     "node": ">=14.15.0"
@@ -12,7 +13,7 @@
   "dependencies": {
     "@middy/core": "^3.4.0",
     "@middy/http-json-body-parser": "^3.4.0",
-    "@tuplo/dynoexpr": "^2.15.0",
+    "@tuplo/dynoexpr": "^2.16.0",
     "uuid": "^8.3.2",
     "yup": "^0.32.11"
   },
@@ -21,10 +22,12 @@
     "@types/aws-lambda": "^8.10.71",
     "@types/node": "^14.14.25",
     "esbuild": "^0.14.11",
+    "jest": "^29.3.1",
     "json-schema-to-ts": "^1.5.0",
     "serverless": "^3.0.0",
     "serverless-esbuild": "^1.23.3",
-    "ts-node": "^10.4.0",
+    "ts-jest": "^29.0.3",
+    "ts-node": "^10.9.1",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^4.1.3"
   },

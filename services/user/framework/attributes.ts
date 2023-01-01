@@ -1,22 +1,24 @@
-import { EntityType } from "shared/types/api";
-import { Attributes } from "../abstracts";
-import { ICommon, User } from "../../../framework/entities/types/attributes";
-import { EntriesFromAttributesSchema, ToAttributeParams } from "../../../framework/entities/types/utility";
+import { EntityType } from "../../../shared/typescript/types/api";
+import { Attributes } from "../../../shared/typescript/abstracts";
+import { CommonAttributes } from "../../../shared/typescript/abstracts/types";
+import { EntriesFromAttributesSchema, ToAttributeParams } from "../../../shared/typescript/abstracts/types/utility";
+import { UserAttributesSchemaCollection } from "./types";
 
-export class UserAttributes extends Attributes<User> {
+export class UserAttributes extends Attributes<UserAttributesSchemaCollection> {
 
-	private static readonly config: ToAttributeParams<Omit<User, keyof ICommon>> = {
+	private static readonly config: ToAttributeParams<Omit<UserAttributesSchemaCollection, keyof CommonAttributes>> = {
 		name: { initial: null, required: true },
 		email: { initial: null, required: true },
-		alarms: { initial: 0, required: false }
+		alarms: { initial: null, required: false }
 	};
 
 	constructor() {
 		super(UserAttributes.config);
 	}
 
-	parse(attributes: Partial<EntriesFromAttributesSchema<User>>): void {
+	parse(attributes: Partial<EntriesFromAttributesSchema<UserAttributesSchemaCollection>>): void {
 		super.parse({
+			alarms: 0,
 			...attributes,
 			entityType: EntityType.User
 		});

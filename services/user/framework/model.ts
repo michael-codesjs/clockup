@@ -1,4 +1,4 @@
-import { Model } from "../abstracts";
+import { Model } from "../../../shared/typescript/abstracts";
 
 export class UserModel extends Model {
 

@@ -1,6 +1,6 @@
-import { exec } from "node:child_process";
-import { readdirSync } from "node:fs";
-import { config, stacks } from "./constants";
+import { exec } from "child_process";
+import { readdirSync } from "fs";
+import { chance, config, stacks } from "./constants";
 import { config as dotenvConfig } from "dotenv";
 import { ValidationError } from "yup";
 import { EntityType, ErrorResponse, ErrorTypes } from "../types/api";
@@ -115,3 +115,27 @@ export const isLiteralArray = <T>(arr: T[]): arr is T[] => {
 export const handlerPath = (context: string) => {
 	return `${context.split(process.cwd())[1].substring(1).replace(/\\/g, "/")}`;
 };
+
+/** picks and returns random attributes from an object, attributes returned are less than the total number of attributes and at least one attribute is returned. */
+export const pickRandomAttributesFromObject = <T extends Record<string, any>>(obj: T): Partial<T> => {
+	
+	const final: T = {} as T;
+	
+	const entries = Object.entries(obj);
+	const maxAttributes = chance.integer({ min: 1, max: entries.length - 1 });
+	
+	for (let x = 0; x < maxAttributes; x++) {
+		
+		let attribute: (typeof entries)[number];
+		
+		do {
+			attribute = entries[chance.integer({ min: 0, max: maxAttributes })];
+		} while (attribute[0] in final); // while key in final
+		
+		final[attribute[0] as keyof T] = attribute[1];
+	
+	}
+
+	return final;
+
+}
