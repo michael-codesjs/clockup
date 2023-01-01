@@ -2,7 +2,7 @@ import { EntityType } from "../types/api";
 import { CompositeKey } from "../types";
 import { IntRange } from "../types/utility";
 import { Entity } from ".";
-import { ICreatable, ISubscriber } from "./interfaces";
+import { ISubscriber } from "./interfaces";
 
 type PartitionKey = {
 	partition: string,
@@ -30,7 +30,7 @@ export class Keys implements ISubscriber {
 
 	static readonly GSI_count: 8 = 8; // number of GSIs, including entityIndex
 
-	public entity: Entity | (Entity & ICreatable);
+	public entity: Entity;
 	/** managed keys across all entities */
 	private Primary: { PK: string, SK: string };
 	private EntityIndex: { EntityIndexPK: string, EntityIndexSK: string }; /* EntityIndex is a global secondary index we force every entity to have, it is infact GSI_0 */

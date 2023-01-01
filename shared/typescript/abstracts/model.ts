@@ -3,13 +3,12 @@ import type { DeleteItemOutput, ExecuteTransactionOutput, GetItemOutput, PutItem
 import { Entity } from ".";
 import { dynamoDbOperations } from "../lib/dynamoDb";
 import { configureEnviromentVariables } from "../utilities/functions";
-import { ICreatable } from "./interfaces";
 
 const { DYNAMO_DB_TABLE_NAME } = configureEnviromentVariables();
 
 export class Model {
 
-	readonly entity: Entity | (Entity & ICreatable);
+	readonly entity: Entity;
 
 	constructor(entity: Entity) {
 		this.entity = entity;

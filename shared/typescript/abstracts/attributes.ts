@@ -85,7 +85,7 @@ export class Attributes<T extends CommonAttributesPlusOthers> extends Publisher 
 		this.Attributes.created.setValue(_created, _modified);
 		this.Attributes.modified.setValue(_modified && _modified.toJSON(), _modified);
 		this.Attributes.id.setValue(id || ulid(), _modified);
-		this.Attributes.creator.setValue(creator || null, _modified);
+		this.Attributes.creator.setValue(creator || this.Attributes.id.value, _modified);
 
 		for (const key in rest) {
 			if (!this.Attributes[key]) continue;

@@ -35,7 +35,7 @@ export type QueryGetAlarmArgs = {
   id: Scalars['ID'];
 };
 
-export type Alarm = Common & ICreatable & {
+export type Alarm = Common & {
   __typename?: 'Alarm';
   created: Scalars['AWSDateTime'];
   creator: Scalars['ID'];
@@ -53,6 +53,7 @@ export type Alarm = Common & ICreatable & {
 
 export type Common = {
   created: Scalars['AWSDateTime'];
+  creator: Scalars['ID'];
   discontinued: Scalars['Boolean'];
   entityType: EntityType;
   id: Scalars['ID'];
@@ -61,12 +62,9 @@ export type Common = {
 
 export enum EntityType {
   Alarm = 'ALARM',
+  Note = 'NOTE',
   User = 'USER'
 }
-
-export type ICreatable = {
-  creator: Scalars['ID'];
-};
 
 export type AlarmSnoozeSettings = {
   __typename?: 'AlarmSnoozeSettings';
@@ -101,6 +99,7 @@ export type User = Common & {
   __typename?: 'User';
   alarms: Scalars['Int'];
   created: Scalars['AWSDateTime'];
+  creator: Scalars['ID'];
   discontinued: Scalars['Boolean'];
   email: Scalars['AWSEmail'];
   entityType: EntityType;
@@ -258,7 +257,6 @@ export type ResolversTypes = {
   AWSDateTime: ResolverTypeWrapper<Scalars['AWSDateTime']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   EntityType: EntityType;
-  ICreatable: ResolversTypes['Alarm'];
   Int: ResolverTypeWrapper<Scalars['Int']>;
   String: ResolverTypeWrapper<Scalars['String']>;
   AlarmSnoozeSettings: ResolverTypeWrapper<AlarmSnoozeSettings>;
@@ -295,7 +293,6 @@ export type ResolversParentTypes = {
   Common: ResolversParentTypes['Alarm'] | ResolversParentTypes['User'];
   AWSDateTime: Scalars['AWSDateTime'];
   Boolean: Scalars['Boolean'];
-  ICreatable: ResolversParentTypes['Alarm'];
   Int: Scalars['Int'];
   String: Scalars['String'];
   AlarmSnoozeSettings: AlarmSnoozeSettings;
@@ -347,6 +344,7 @@ export type AlarmResolvers<ContextType = any, ParentType extends ResolversParent
 export type CommonResolvers<ContextType = any, ParentType extends ResolversParentTypes['Common'] = ResolversParentTypes['Common']> = {
   __resolveType: TypeResolveFn<'Alarm' | 'User', ParentType, ContextType>;
   created?: Resolver<ResolversTypes['AWSDateTime'], ParentType, ContextType>;
+  creator?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   discontinued?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   entityType?: Resolver<ResolversTypes['EntityType'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -356,11 +354,6 @@ export type CommonResolvers<ContextType = any, ParentType extends ResolversParen
 export interface AwsDateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['AWSDateTime'], any> {
   name: 'AWSDateTime';
 }
-
-export type ICreatableResolvers<ContextType = any, ParentType extends ResolversParentTypes['ICreatable'] = ResolversParentTypes['ICreatable']> = {
-  __resolveType: TypeResolveFn<'Alarm', ParentType, ContextType>;
-  creator?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-};
 
 export type AlarmSnoozeSettingsResolvers<ContextType = any, ParentType extends ResolversParentTypes['AlarmSnoozeSettings'] = ResolversParentTypes['AlarmSnoozeSettings']> = {
   duration?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -388,6 +381,7 @@ export type ErrorResponseResolvers<ContextType = any, ParentType extends Resolve
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   alarms?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   created?: Resolver<ResolversTypes['AWSDateTime'], ParentType, ContextType>;
+  creator?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   discontinued?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['AWSEmail'], ParentType, ContextType>;
   entityType?: Resolver<ResolversTypes['EntityType'], ParentType, ContextType>;
@@ -461,7 +455,6 @@ export type Resolvers<ContextType = any> = {
   Alarm?: AlarmResolvers<ContextType>;
   Common?: CommonResolvers<ContextType>;
   AWSDateTime?: GraphQLScalarType;
-  ICreatable?: ICreatableResolvers<ContextType>;
   AlarmSnoozeSettings?: AlarmSnoozeSettingsResolvers<ContextType>;
   AlarmRingTime?: AlarmRingTimeResolvers<ContextType>;
   UserOutput?: UserOutputResolvers<ContextType>;
@@ -484,7 +477,7 @@ export type Resolvers<ContextType = any> = {
 
 
 
-export const EntityTypeSchema = yup.mixed().oneOf([EntityType.Alarm, EntityType.User]);
+export const EntityTypeSchema = yup.mixed().oneOf([EntityType.Alarm, EntityType.Note, EntityType.User]);
 
 export const ErrorTypesSchema = yup.mixed().oneOf([ErrorTypes.CreateFailed, ErrorTypes.InternalError, ErrorTypes.MalfomedInput, ErrorTypes.NotFound, ErrorTypes.UpdateFailed]);
 

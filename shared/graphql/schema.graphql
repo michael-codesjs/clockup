@@ -17,23 +17,21 @@ type ErrorResponse {
   code: Int
 }
 
-interface ICreatable {
-  creator: ID!
-}
-
-enum EntityType {
-  USER
-  ALARM
-}
-
 type OperationResponse {
   success: Boolean!
   message: String
 }
 
+enum EntityType {
+  USER
+  ALARM
+  NOTE
+}
+
 interface Common {
   id: ID!
   entityType: EntityType!
+  creator: ID!
   created: AWSDateTime!
   modified: AWSDateTime
   discontinued: Boolean!
@@ -42,6 +40,7 @@ interface Common {
 type User implements Common {
   id: ID!
   entityType: EntityType!
+  creator: ID!
   created: AWSDateTime!
   modified: AWSDateTime
   discontinued: Boolean!
@@ -50,13 +49,13 @@ type User implements Common {
   alarms: Int!
 }
 
-type Alarm implements Common & ICreatable {
+type Alarm implements Common {
   id: ID!
   entityType: EntityType!
+  creator: ID!
   created: AWSDateTime!
   modified: AWSDateTime
   discontinued: Boolean!
-  creator: ID!
   name: String
   enabled: Boolean
   days: [Int!]

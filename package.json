@@ -1,15 +1,13 @@
 {
-  "name": "clock-up-backend",
+  "name": "clock-up",
   "version": "1.0.0",
-  "description": "Serverless backend for the clock-up front end.",
-  "main": "serverless-compose.ts",
+  "description": "Serverless microservices and micro frontends.",
   "scripts": {
     "lint": "eslint . --ext .ts --fix -c config/.eslintrc.js",
     "deploy": "npx ts-node scripts/state/deploy.ts",
     "destroy": "npx ts-node scripts/state/destroy.ts",
     "generate-env": "npx ts-node scripts/generate-env.ts",
     "codegen": "npx ts-node scripts/codegen.ts",
-    "documentation": "npx jsdoc -c config/jsdoc.json",
     "coverage": "npx jest --coverage",
     "test": "jest --verbose",
     "test:shared": "jest --verbose shared/ --config ./jest.config.js",
@@ -23,7 +21,7 @@
     "@middy/core": "^2.5.7",
     "@middy/http-json-body-parser": "^2.5.3",
     "@middy/input-output-logger": "^3.6.2",
-    "@tuplo/dynoexpr": "^2.15.0",
+    "@tuplo/dynoexpr": "^2.16.0",
     "uuid": "^8.3.2",
     "yup": "^0.32.11"
   },
@@ -47,7 +45,6 @@
     "amplify-velocity-template": "^1.4.8",
     "aws-amplify": "^4.3.30",
     "aws-sdk": "^2.1180.0",
-    "better-docs": "^2.7.2",
     "chalk": "2",
     "chalk-animation": "^2.0.3",
     "chalk-cli-spinner": "^0.2.0",
@@ -62,7 +59,6 @@
     "graphql-codegen-typescript-validation-schema": "^0.4.0",
     "inquirer": "8",
     "jest": "^28.1.3",
-    "jsdoc": "^3.6.11",
     "json-schema-to-ts": "^1.5.0",
     "ora": "2",
     "serverless": "^3.0.0",
@@ -79,6 +75,6 @@
   "resolutions": {
     "graphql": "^14.1.0"
   },
-  "author": "Michael Phiri (michael-codesjs@gmail.com) | https://github.com/michael-codesjs",
+  "author": "Michael Phiri (michael.codesjs@gmail.com) | https://github.com/michael-codesjs",
   "license": "MIT"
 }

@@ -17,39 +17,21 @@ export abstract class Entity implements IGraphQlEntity, IEntity {
 	public abstract attributes: Attributes<CommonAttributes>;
 	/** Entity DynamoDB keys for the table and all its Global Secondary Indexes */
 	public abstract keys: Keys;
-	/** Entity state */
-	protected abstract state: IEntityState;
 
 	constructor({ }: {} = {}) { } // {}: {} = {} is for constructor signature purposes only
 	/*eslint no-empty-pattern: "off"*/
 
-	setState(State: new (context: Entity) => IEntityState) {
-		this.state = new State(this);
-	}
-
-	graphQlEntity() {
-		return this.state.graphQlEntity();
-	}
+	/** Returns an entity's GraphQL representation. */
+	abstract graphQlEntity(): Promise<Record<string, any>>;
 
 	/** Keeps the entity in sync with it's record in the table. */
-	async sync() {
-		return await this.state.sync();
-	}
+	abstract sync(): Promise<Record<string, any>>;
 
 	/** Inserts an entities record into the table */
-	async put(): Promise<Entity> {
-		return await this.state.put();
-	}
+	abstract put(): Promise<Entity>;
 
-	/** deletes an entites record from the database */
-	async terminate(): Promise<Entity> {
-		return await this.state.terminate();
-	}
-
-	/** discontinues an entity */
-	async discontinue(): Promise<Entity> {
-		return await this.state.discontinue();
-	}
+	/** Discontinues an entity */
+	abstract discontinue(): Promise<Entity>;
 
 	composable(): boolean {
 		return !this.attributes.get("discontinued");
