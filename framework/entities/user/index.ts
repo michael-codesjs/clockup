@@ -1,1 +1,0 @@
-export { UserFactory } from "./user";
