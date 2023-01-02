@@ -30,6 +30,16 @@ resource "aws_dynamodb_table" "dynamoDb_table" {
   }
 
   attribute {
+    name = "CreatorIndexPK"
+    type = "S"
+  }
+
+  attribute {
+    name = "CreatorIndexSK"
+    type = "S"
+  }
+
+  attribute {
     name = "GSI1_PK"
     type = "S"
   }
@@ -61,6 +71,15 @@ resource "aws_dynamodb_table" "dynamoDb_table" {
   }
 
   global_secondary_index {
+    name            = "CreatorIndex"
+    hash_key        = "CreatorIndexPK"
+    range_key       = "CreatorIndexSK"
+    write_capacity  = 1
+    read_capacity   = 1
+    projection_type = "ALL"
+  }
+
+  global_secondary_index {
     name            = "GSI1"
     hash_key        = "GSI1_PK"
     range_key       = "GSI1_SK"
@@ -72,29 +91,29 @@ resource "aws_dynamodb_table" "dynamoDb_table" {
 }
 
 resource "aws_ssm_parameter" "tableName" {
-  name = "/clock-up/${var.stage}/storage/table/name"
-  type = "String"
+  name  = "/clock-up/${var.stage}/storage/table/name"
+  type  = "String"
   value = aws_dynamodb_table.dynamoDb_table.name
 }
 
 resource "aws_ssm_parameter" "tableARN" {
-  name = "/clock-up/${var.stage}/storage/table/arn"
-  type = "String"
+  name  = "/clock-up/${var.stage}/storage/table/arn"
+  type  = "String"
   value = aws_dynamodb_table.dynamoDb_table.arn
 }
 
 resource "aws_ssm_parameter" "tableStreamARN" {
-  name = "/clock-up/${var.stage}/storage/table/stream/arn"
-  type = "String"
+  name  = "/clock-up/${var.stage}/storage/table/stream/arn"
+  type  = "String"
   value = aws_dynamodb_table.dynamoDb_table.stream_arn
 }
 
 output "dynamoDb_table_name" {
-  value = aws_dynamodb_table.dynamoDb_table.name
+  value       = aws_dynamodb_table.dynamoDb_table.name
   description = "DynamoDB table name."
 }
 
 output "dynamoDb_table_arn" {
-  value = aws_dynamodb_table.dynamoDb_table.arn
+  value       = aws_dynamodb_table.dynamoDb_table.arn
   description = "DynamoDB table ARN."
 }

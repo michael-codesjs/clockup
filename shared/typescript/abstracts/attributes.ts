@@ -1,4 +1,4 @@
-import { getEntityTypes } from "../utilities/functions";
+import { getEntityTypes, isLiteralArray, isLiteralObject } from "../utilities/functions";
 import { ulid } from "ulid";
 import { MutateImmutable } from "./errors";
 import { AttributeSchema, CommonAttributes } from "./types";
@@ -24,7 +24,7 @@ export class Attributes<T extends CommonAttributesPlusOthers> extends Publisher 
 
 		this.Attributes.entityType = new Attribute<T["entityType"]["type"], true>({
 			required: true,
-			value: "" as T["entityType"]["type"], // safe to cast, validator will stop you from writing it to the table anyway
+			value: null as T["entityType"]["type"], // safe to cast, validator will stop you from writing it to the table anyway
 			validate: entityType => getEntityTypes().includes(entityType),
 			immutable: true
 		});
@@ -37,9 +37,16 @@ export class Attributes<T extends CommonAttributesPlusOthers> extends Publisher 
 		});
 
 		this.Attributes.creator = new Attribute<string, true>({
-			required: false,
+			required: true,
 			value: null,
 			validate: value => value === null || (typeof value === "string" && value.length > 0),
+			immutable: true
+		});
+
+		this.Attributes.creatorType = new Attribute<T["creatorType"]["type"], true>({
+			required: true,
+			value: null,
+			validate: creatorType => getEntityTypes().includes(creatorType),
 			immutable: true
 		});
 
@@ -74,7 +81,7 @@ export class Attributes<T extends CommonAttributesPlusOthers> extends Publisher 
 	// not advisable to be used in higher level code(eg: lambda functions)
 	parse(attributes: Partial<EntriesFromAttributesSchema<T>>) {
 
-		const { entityType, discontinued, created, id, creator, modified, ...rest } = attributes;
+		const { entityType, discontinued, created, id, creator, modified, creatorType, ...rest } = attributes;
 
 		const _created = created || new Date().toJSON();
 		const _modified = modified ? new Date(modified) : null;
@@ -85,7 +92,14 @@ export class Attributes<T extends CommonAttributesPlusOthers> extends Publisher 
 		this.Attributes.created.setValue(_created, _modified);
 		this.Attributes.modified.setValue(_modified && _modified.toJSON(), _modified);
 		this.Attributes.id.setValue(id || ulid(), _modified);
-		this.Attributes.creator.setValue(creator || this.Attributes.id.value, _modified);
+
+		if (creator && creatorType) {
+			this.Attributes.creator.setValue(creator, _modified);
+			this.Attributes.creatorType.setValue(creatorType, _modified);
+		} else {
+			this.Attributes.creator.setValue(this.Attributes.id.value, _modified);
+			this.Attributes.creatorType.setValue(this.Attributes.entityType.value);
+		}
 
 		for (const key in rest) {
 			if (!this.Attributes[key]) continue;

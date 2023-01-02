@@ -8,7 +8,7 @@ export class Attribute<T = any, I = false> implements IPutable, IUpdateable {
 	protected readonly required: boolean;
 	public readonly immutable: I;
 	private readonly validate: AttributeParams<T, I>["validate"] = () => true;
-	
+
 	protected Modified: Date | null;
 	protected Value: T;
 
@@ -23,16 +23,7 @@ export class Attribute<T = any, I = false> implements IPutable, IUpdateable {
 
 	setValue(value: T, modified: Date = new Date()) {
 		if (!this.validate(value)) throw new InvalidAttributeAttribute(value as string);
-		if (Array.isArray(value)) {
-			this.Value = (this.Value as Array<any> || []).concat(value) as T;
-		} else if (isLiteralObject(value)) {
-			this.Value = {
-				...this.Value,
-				...value,
-			};
-		} else {
-			this.Value = value;
-		}
+		this.Value = value;
 		this.setModified(modified);
 	}
 
@@ -59,15 +50,15 @@ export class Attribute<T = any, I = false> implements IPutable, IUpdateable {
 
 	/** return version/structure/state of attribute that can be written to the table, example: Date to Date.toJSON() */
 	putable() {
-		if(this.Value instanceof Date) return this.Value.toJSON();
+		if (this.Value instanceof Date) return this.Value.toJSON();
 		return this.Value;
 	}
 
 	/** checks if an attribute was modified at the same time as the collection it belongs to. */
 	isUpdateable(date?: Date): boolean {
-		if(this.immutable) return false;
-		if(date && this.modified) return (date.valueOf() === this.modified.valueOf()) && this.valid() && this.validate(this.Value);
-		else if(this.valid() && this.validate(this.Value)) return true;
+		if (this.immutable) return false;
+		if (date && this.modified) return (date.valueOf() === this.modified.valueOf()) && this.valid() && this.validate(this.Value);
+		else if (this.valid() && this.validate(this.Value)) return true;
 		else return false;
 	}
 

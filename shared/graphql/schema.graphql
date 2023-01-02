@@ -32,6 +32,7 @@ interface Common {
   id: ID!
   entityType: EntityType!
   creator: ID!
+  creatorType: EntityType!
   created: AWSDateTime!
   modified: AWSDateTime
   discontinued: Boolean!
@@ -41,6 +42,7 @@ type User implements Common {
   id: ID!
   entityType: EntityType!
   creator: ID!
+  creatorType: EntityType!
   created: AWSDateTime!
   modified: AWSDateTime
   discontinued: Boolean!
@@ -53,6 +55,7 @@ type Alarm implements Common {
   id: ID!
   entityType: EntityType!
   creator: ID!
+  creatorType: EntityType!
   created: AWSDateTime!
   modified: AWSDateTime
   discontinued: Boolean!
@@ -62,6 +65,18 @@ type Alarm implements Common {
   time: AlarmRingTime!
   snooze: AlarmSnoozeSettings!
   onceOff: Boolean
+}
+
+type Note implements Common {
+  id: ID!
+  entityType: EntityType!
+  creator: ID!
+  creatorType: EntityType!
+  created: AWSDateTime!
+  modified: AWSDateTime
+  discontinued: Boolean!
+  title: String,
+  body: String,
 }
 
 type AlarmResponse {

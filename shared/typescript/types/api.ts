@@ -39,6 +39,7 @@ export type Alarm = Common & {
   __typename?: 'Alarm';
   created: Scalars['AWSDateTime'];
   creator: Scalars['ID'];
+  creatorType: EntityType;
   days?: Maybe<Array<Scalars['Int']>>;
   discontinued: Scalars['Boolean'];
   enabled?: Maybe<Scalars['Boolean']>;
@@ -54,6 +55,7 @@ export type Alarm = Common & {
 export type Common = {
   created: Scalars['AWSDateTime'];
   creator: Scalars['ID'];
+  creatorType: EntityType;
   discontinued: Scalars['Boolean'];
   entityType: EntityType;
   id: Scalars['ID'];
@@ -100,6 +102,7 @@ export type User = Common & {
   alarms: Scalars['Int'];
   created: Scalars['AWSDateTime'];
   creator: Scalars['ID'];
+  creatorType: EntityType;
   discontinued: Scalars['Boolean'];
   email: Scalars['AWSEmail'];
   entityType: EntityType;
@@ -181,6 +184,19 @@ export type UpdateUserInput = {
   name?: InputMaybe<Scalars['String']>;
 };
 
+export type Note = Common & {
+  __typename?: 'Note';
+  body?: Maybe<Scalars['String']>;
+  created: Scalars['AWSDateTime'];
+  creator: Scalars['ID'];
+  creatorType: EntityType;
+  discontinued: Scalars['Boolean'];
+  entityType: EntityType;
+  id: Scalars['ID'];
+  modified?: Maybe<Scalars['AWSDateTime']>;
+  title?: Maybe<Scalars['String']>;
+};
+
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -253,10 +269,10 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Alarm: ResolverTypeWrapper<Alarm>;
-  Common: ResolversTypes['Alarm'] | ResolversTypes['User'];
+  Common: ResolversTypes['Alarm'] | ResolversTypes['User'] | ResolversTypes['Note'];
   AWSDateTime: ResolverTypeWrapper<Scalars['AWSDateTime']>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   EntityType: EntityType;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   String: ResolverTypeWrapper<Scalars['String']>;
   AlarmSnoozeSettings: ResolverTypeWrapper<AlarmSnoozeSettings>;
@@ -283,6 +299,7 @@ export type ResolversTypes = {
   AWSTime: ResolverTypeWrapper<Scalars['AWSTime']>;
   AWSTimestamp: ResolverTypeWrapper<Scalars['AWSTimestamp']>;
   AWSURL: ResolverTypeWrapper<Scalars['AWSURL']>;
+  Note: ResolverTypeWrapper<Note>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -290,7 +307,7 @@ export type ResolversParentTypes = {
   Query: {};
   ID: Scalars['ID'];
   Alarm: Alarm;
-  Common: ResolversParentTypes['Alarm'] | ResolversParentTypes['User'];
+  Common: ResolversParentTypes['Alarm'] | ResolversParentTypes['User'] | ResolversParentTypes['Note'];
   AWSDateTime: Scalars['AWSDateTime'];
   Boolean: Scalars['Boolean'];
   Int: Scalars['Int'];
@@ -318,6 +335,7 @@ export type ResolversParentTypes = {
   AWSTime: Scalars['AWSTime'];
   AWSTimestamp: Scalars['AWSTimestamp'];
   AWSURL: Scalars['AWSURL'];
+  Note: Note;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -328,6 +346,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 export type AlarmResolvers<ContextType = any, ParentType extends ResolversParentTypes['Alarm'] = ResolversParentTypes['Alarm']> = {
   created?: Resolver<ResolversTypes['AWSDateTime'], ParentType, ContextType>;
   creator?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  creatorType?: Resolver<ResolversTypes['EntityType'], ParentType, ContextType>;
   days?: Resolver<Maybe<Array<ResolversTypes['Int']>>, ParentType, ContextType>;
   discontinued?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   enabled?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
@@ -342,9 +361,10 @@ export type AlarmResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type CommonResolvers<ContextType = any, ParentType extends ResolversParentTypes['Common'] = ResolversParentTypes['Common']> = {
-  __resolveType: TypeResolveFn<'Alarm' | 'User', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'Alarm' | 'User' | 'Note', ParentType, ContextType>;
   created?: Resolver<ResolversTypes['AWSDateTime'], ParentType, ContextType>;
   creator?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  creatorType?: Resolver<ResolversTypes['EntityType'], ParentType, ContextType>;
   discontinued?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   entityType?: Resolver<ResolversTypes['EntityType'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -382,6 +402,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   alarms?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   created?: Resolver<ResolversTypes['AWSDateTime'], ParentType, ContextType>;
   creator?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  creatorType?: Resolver<ResolversTypes['EntityType'], ParentType, ContextType>;
   discontinued?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['AWSEmail'], ParentType, ContextType>;
   entityType?: Resolver<ResolversTypes['EntityType'], ParentType, ContextType>;
@@ -450,6 +471,19 @@ export interface AwsurlScalarConfig extends GraphQLScalarTypeConfig<ResolversTyp
   name: 'AWSURL';
 }
 
+export type NoteResolvers<ContextType = any, ParentType extends ResolversParentTypes['Note'] = ResolversParentTypes['Note']> = {
+  body?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  created?: Resolver<ResolversTypes['AWSDateTime'], ParentType, ContextType>;
+  creator?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  creatorType?: Resolver<ResolversTypes['EntityType'], ParentType, ContextType>;
+  discontinued?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  entityType?: Resolver<ResolversTypes['EntityType'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  modified?: Resolver<Maybe<ResolversTypes['AWSDateTime']>, ParentType, ContextType>;
+  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Alarm?: AlarmResolvers<ContextType>;
@@ -473,6 +507,7 @@ export type Resolvers<ContextType = any> = {
   AWSTime?: GraphQLScalarType;
   AWSTimestamp?: GraphQLScalarType;
   AWSURL?: GraphQLScalarType;
+  Note?: NoteResolvers<ContextType>;
 };
 
 
