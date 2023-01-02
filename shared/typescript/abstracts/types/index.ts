@@ -27,6 +27,7 @@ export type CommonAttributes = {
   entityType: AttributeSchema<EntityType, true>
   id: AttributeSchema<string, true>,
   creator: AttributeSchema<string, true>,
+  creatorType: AttributeSchema<EntityType, true>,
   created: AttributeSchema<string, true>,
   modified: AttributeSchema<string, true>,
   discontinued: AttributeSchema<boolean, true>

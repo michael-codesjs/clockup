@@ -27,7 +27,8 @@ class GivenUserAttributes {
 
 		const entityType = EntityType.User;
 		const id = ulid();
-		const creator = ulid();
+		const creator = id;
+		const creatorType = entityType;
 		const discontinued = false;
 		const created = chance.date().toJSON();
 		const alarms = chance.integer({ min: 0, max: 20 });
@@ -36,6 +37,7 @@ class GivenUserAttributes {
 			entityType,
 			id,
 			creator,
+			creatorType,
 			created,
 			discontinued,
 			alarms,

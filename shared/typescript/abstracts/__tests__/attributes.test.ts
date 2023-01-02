@@ -8,6 +8,8 @@ describe("Attributes", () => {
 
 	let entityType: EntityType;
 	let id: string;
+	let creator: string;
+	let creatorType: EntityType;
 	let created: string;
 	let modified: string;
 	let discontinued: boolean;
@@ -30,6 +32,8 @@ describe("Attributes", () => {
 	beforeEach(() => {
 		entityType = getRandomEntityType();
 		id = chance.fbid();
+		creator = chance.fbid();
+		creatorType = getRandomEntityType();
 		created = chance.date().toJSON();
 		modified = chance.date().toJSON();
 		discontinued = chance.bool();
@@ -47,6 +51,8 @@ describe("Attributes", () => {
 		expect(attributes.collective()).toMatchObject({
 			entityType,
 			id,
+			creator: id,
+			creatorType: entityType,
 			created,
 			modified: null,
 			discontinued: false
@@ -63,7 +69,13 @@ describe("Attributes", () => {
 		});
 
 		attributes.parse({
-			entityType, id, created, modified, discontinued,
+			entityType,
+			id,
+			creator,
+			creatorType,
+			created,
+			modified,
+			discontinued,
 			attribute,
 			attribute1,
 			attribute2
@@ -72,8 +84,10 @@ describe("Attributes", () => {
 		expect(attributes.collective()).toMatchObject({
 			entityType,
 			id,
-			created: created,
-			modified: modified,
+			creator,
+			creatorType,
+			created,
+			modified,
 			discontinued,
 			attribute,
 			attribute1,

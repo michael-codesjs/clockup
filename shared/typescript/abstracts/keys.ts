@@ -28,12 +28,13 @@ type GetGSIsReturnType = Record<
 
 export class Keys implements ISubscriber {
 
-	static readonly GSI_count: 8 = 8; // number of GSIs, including entityIndex
+	static readonly GSI_count: 8 = 8; // number of GSIs + 1
 
 	public entity: Entity;
 	/** managed keys across all entities */
 	private Primary: { PK: string, SK: string };
-	private EntityIndex: { EntityIndexPK: string, EntityIndexSK: string }; /* EntityIndex is a global secondary index we force every entity to have, it is infact GSI_0 */
+	private EntityIndex: { EntityIndexPK: string, EntityIndexSK: string };
+	private CreatorIndex: { CreatorIndexPK: string, CreatorIndexSK: string };
 	/** gsi keys */
 	private GSIs: GetGSIs<typeof Keys.GSI_count> = {} as typeof this.GSIs;
 
@@ -45,16 +46,24 @@ export class Keys implements ISubscriber {
 		this.update(); // set keys
 	}
 
-	/** sets Primary & EntityIndex keys */
+	/** sets Primary, EntityIndex & CreatorIndex keys */
 	private configureDefault() {
 
-		const entityType = this.entity.attributes.get("entityType");
-		const id = this.entity.attributes.get("id");
-		const created = this.entity.attributes.get("created");
+		const entityType = this.entity.attributes.get("entityType") || "";
+		const id = this.entity.attributes.get("id") || "";
+		const creator = this.entity.attributes.get("creator") || "";
+		const creatorType = this.entity.attributes.get("creatorType") || "";
+		const created = this.entity.attributes.get("created") || "";
 
 		const key = Keys.constructKey({
 			descriptors: [entityType],
 			values: [id]
+		});
+
+		const dateSortKey = this.constructContinuityDependantKey({
+			prefixes: [entityType],
+			descriptors: ["DATE"],
+			values: [created]
 		});
 
 		this.setPrimary({
@@ -66,10 +75,15 @@ export class Keys implements ISubscriber {
 				descriptors: [entityType],
 				values: []
 			}),
-			sort: this.constructContinuityDependantKey({
-				descriptors: [entityType],
-				values: [created]
-			})
+			sort: dateSortKey
+		});
+
+		this.setCreatorIndex({
+			creator: this.constructContinuityDependantKey({
+				descriptors: [creatorType],
+				values: [creator]
+			}),
+			sort: dateSortKey
 		});
 
 	}
@@ -101,6 +115,10 @@ export class Keys implements ISubscriber {
 		return this.EntityIndex;
 	}
 
+	creatorIndex() {
+		return this.CreatorIndex;
+	}
+
 	private setEntityIndex(params: { entity: EntityType | string, sort: string }) {
 		const { entity, sort } = params;
 		this.EntityIndex = {
@@ -109,11 +127,19 @@ export class Keys implements ISubscriber {
 		};
 	}
 
+	private setCreatorIndex(params: { creator: string, sort: string }) {
+		const { creator, sort } = params;
+		this.CreatorIndex = {
+			CreatorIndexPK: creator,
+			CreatorIndexSK: sort
+		};
+	}
+
 	private GSI_exists(gsi: keyof typeof this.GSIs) {
 		return gsi >= 1 && gsi <= (Keys.GSI_count - 1);
 	}
 	/** get GSI key */
-	getGSI<N extends keyof typeof this.GSIs>(gsi: N): GetGSIReturnType<N> {
+	getGSI<N extends keyof GetGSIs<typeof Keys.GSI_count>>(gsi: N): GetGSIReturnType<N> {
 		if (!this.GSI_exists(gsi)) throw new Error("GSI does not exist");
 		return {
 			[`GSI${gsi}_PK`]: this.GSIs[gsi]?.partition || null,
@@ -162,12 +188,13 @@ export class Keys implements ISubscriber {
 
 	static constructKey(params: CompositeKey): string {
 
-		const {
+		let {
 			descriptors,
 			values,
 			suffixes = [],
 			prefixes = [],
 		} = params;
+
 
 		let key = "";
 
@@ -195,7 +222,7 @@ export class Keys implements ISubscriber {
 	constructContinuityDependantKey(params: CompositeKey) {
 		const discontinued = this.entity.attributes.get("discontinued");
 		if (discontinued) {
-			params.prefixes = (params.prefixes || []).concat(["discontinued"]);
+			params.prefixes = ["discontinued"].concat(params.prefixes || []);
 		}
 		return Keys.constructKey(params);
 	}
