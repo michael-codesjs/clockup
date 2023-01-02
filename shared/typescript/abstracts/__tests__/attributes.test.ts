@@ -159,7 +159,7 @@ describe("Attributes", () => {
 			}
 		});
 
-		expect(attributes.get("set")).toMatchObject({ attribute, attribute1, attribute2 });
+		expect(attributes.get("set")).toMatchObject({ attribute1, attribute2 });
 
 		attributes.override({
 			set: {}

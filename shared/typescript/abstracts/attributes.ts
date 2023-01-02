@@ -1,4 +1,4 @@
-import { getEntityTypes } from "../utilities/functions";
+import { getEntityTypes, isLiteralArray, isLiteralObject } from "../utilities/functions";
 import { ulid } from "ulid";
 import { MutateImmutable } from "./errors";
 import { AttributeSchema, CommonAttributes } from "./types";
