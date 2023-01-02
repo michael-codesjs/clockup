@@ -19,10 +19,6 @@ export type SemiStateUserConstructorParams = {
   email?: string
 };
 
-export type AbsoluteStateUserConstructorParams = {
-  id?: string,
-  name: string,
-  email: string
-}
+export type AbsoluteStateUserConstructorParams = Required<SemiStateUserConstructorParams> &  { id?: string }
 
 export type AllUserConstructorParams = NullStateUserConstructorParams | SemiStateUserConstructorParams | AbsoluteStateUserConstructorParams;

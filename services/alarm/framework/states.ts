@@ -1,12 +1,12 @@
-import { Alarm } from "./";
 import { ISubscriber } from "../../../shared/typescript/abstracts/interfaces";
-import { Alarm as AlarmGraphQLEntity } from "../../../shared/typescript/types/api";
-import { InsufficientAttributeToCreateAlarm } from "./errors/insufficient-attributes-to-create-alarm";
+import { AlarmResponse as AlarmGraphQLEntity, User as UserGraphQLEntity } from "../../../shared/typescript/types/api";
+import { Alarm } from "./";
 import { AlarmNotFoundError } from "./errors/alarm-not-found";
-import { IAlarm, IAlarmState } from "./interfaces";
+import { InsufficientAttributeToCreateAlarm } from "./errors/insufficient-attributes-to-create-alarm";
+import { IAlarmState } from "./interfaces";
 import { AlarmModel } from "./model";
 
-/** State an entity is in when the only thing it knows about itself is it's ID */
+/** State an alarm is in when the only thing it knows about itself is it's ID */
 export class Null implements IAlarmState, ISubscriber {
 
   context: Alarm;
@@ -27,7 +27,7 @@ export class Null implements IAlarmState, ISubscriber {
   }
 
   async sync(): Promise<Alarm> {
-    const { Item } = await this.model.get(); // get user record from table
+    const { Item } = await this.model.get(); // get alarm record from the table
     if (!Item) throw new AlarmNotFoundError(this.context.attributes.get("id"));
     else this.context.attributes.parse(Item);
     return this.context;
@@ -38,8 +38,8 @@ export class Null implements IAlarmState, ISubscriber {
   }
 
   async graphQlEntity(): Promise<AlarmGraphQLEntity> {
-    await this.sync(); // user is in null state, sync to fetch user attributes and put user in absolute.
-    return await this.context.state.graphQlEntity(); // call the absolute states implementation of graphQlEntity method.
+    await this.sync(); // alarm is in null state, sync to fetch alarm attributes and put alarm in absolute.
+    return await this.context.state.graphQlEntity(); // call the absolute states implementation of the graphQlEntity method.
   }
 
   async discontinue(): Promise<Alarm> {
@@ -57,7 +57,7 @@ export class Null implements IAlarmState, ISubscriber {
 
 }
 
-/** State a user is in when it knows it's id and some attributes of itself but not all required. */
+/** State an alarm is in when it knows it's id and some attributes of itself but not all required. */
 export class Semi extends Null {
 
   update(): void {
@@ -73,13 +73,13 @@ export class Semi extends Null {
 
     try {
 
-      const { Attributes } = await this.model.update(); // update user details and obtain rest of attributes, some of which we already have
+      const { Attributes } = await this.model.update(); // update alamr details and obtain rest of attributes, some of which we already have
       this.context.attributes.parse(Attributes);
       return this.context;
 
     } catch (error: any) {
 
-      if (error.message === "The conditional request failed") throw new AlarmNotFoundError(); // user was never created or is discontinued
+      if (error.message === "The conditional request failed") throw new AlarmNotFoundError(); // alarm was never created or is discontinued
       else throw error; // rethrow error
 
     }
@@ -89,7 +89,7 @@ export class Semi extends Null {
 }
 
 
-/** State a user is in when it knows everything it can know about itself. */
+/** State an alarm is in when it knows everything it can know about itself. */
 export class Absolute extends Semi {
 
   update(): void {
@@ -105,9 +105,13 @@ export class Absolute extends Semi {
   }
 
   async graphQlEntity(): Promise<AlarmGraphQLEntity> {
+
+    const creatorGraphQlEntity = {} as UserGraphQLEntity; // TODO: get user GraphQL entity.
+
     return {
-      __typename: "User",
-      ...this.context.attributes.collective()
+      __typename: "AlarmResponse",
+      alarm: this.context.attributes.collective(),
+      creator: creatorGraphQlEntity
     }
   };
 

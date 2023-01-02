@@ -12,7 +12,7 @@
   },
   "include": [
     "**/*.ts",
-    "**/*.js",
+    "**/*.js", "framework/__tests__/attributes.test.tsp",
   ],
   "exclude": [
     "node_modules/**/*",

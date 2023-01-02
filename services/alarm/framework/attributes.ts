@@ -16,7 +16,7 @@ export class AlarmAttributes extends Attributes<AlarmAttributesSchemaCollection>
         hour: null,
         minute: null
       },
-      validate: ({ hour, minute }) => (hour > -1 && hour < 24) && (minute > -1 && minute <= 59),
+      validate: ({ hour, minute }) => typeof hour === "number" && typeof minute === "number" && (hour > -1 && hour < 24) && (minute > -1 && minute < 60),
       required: true,
     },
     enabled: { initial: null, required: true },
@@ -27,7 +27,7 @@ export class AlarmAttributes extends Attributes<AlarmAttributesSchemaCollection>
         interval: null,
       },
       required: true,
-      validate: value => this.SnoozeableIntervals.includes(value.interval) && this.SnoozeableDurations.includes(value.duration),
+      validate: value => AlarmAttributes.SnoozeableIntervals.includes(value.interval) && AlarmAttributes.SnoozeableDurations.includes(value.duration),
     },
   };
 

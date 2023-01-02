@@ -1,11 +1,11 @@
 import { ulid } from "ulid";
+import { Keys } from "../../../abstracts";
 import { dynamoDbOperations } from "../../../lib/dynamoDb";
 import { EntityType, User as TUser } from "../../../types/api";
 import { chance } from "../../../utilities/constants";
 import { configureEnviromentVariables } from "../../../utilities/functions";
 
 const { DYNAMO_DB_TABLE_NAME } = configureEnviromentVariables();
-
 const TableName = DYNAMO_DB_TABLE_NAME!;
 
 class GivenUserAttributes {
@@ -47,25 +47,37 @@ class GivenUserAttributes {
 	}
 
 	async byId(id: string) {
-    const PK = "USER#"+id.toLowerCase() as any;
+
+		const key = Keys.constructKey({
+			descriptors: [EntityType.User],
+			values: [id]
+		}) as any;
+
+		
 		const result = await dynamoDbOperations.get({
       TableName,
       Key: {
-        PK,
-        SK: PK
+        PK: key,
+        SK: key
       }
     });
+
     return result.Item as TUser
+	
 	}
 
 	async new(attributes: TUser = this.attributes()) {
 
-    const PK = "USER#"+attributes.id.toLowerCase();
+		const key = Keys.constructKey({
+			descriptors: [EntityType.User],
+			values: [attributes.id]
+		}) as any;
+
 		
     const Item = {
       ...attributes,
-      PK,
-      SK: PK
+      PK: key,
+      SK: key
     } as any;
     
     await dynamoDbOperations.put({
