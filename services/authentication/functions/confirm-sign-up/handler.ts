@@ -1,6 +1,6 @@
 import { PostConfirmationTriggerHandler } from "aws-lambda";
 import { withLambdaStandard } from "../../../../shared/typescript/hofs/with-lambda-standard";
-import { Topics } from "../../../../shared/typescript/lib/sns";
+import { IO } from "../../../../shared/typescript/io";
 
 const handler: PostConfirmationTriggerHandler = async event => {
 
