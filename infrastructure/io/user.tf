@@ -20,3 +20,9 @@ resource "aws_ssm_parameter" "topic_arn" {
   type  = "SecureString"
   value = aws_sns_topic.topic.arn
 }
+
+resource "aws_ssm_parameter" "create_queue_arn" {
+  name = "/clock-up/${var.stage}/user/queues/create/arn"
+  type = "SecureString"
+  value = aws_sqs_queue.create.arn
+}
