@@ -7,7 +7,8 @@ const handler: SQSHandler = async event => {
 
 	for(const record of event.Records) {
 
-		console.log("Record:", JSON.stringify(record.attributes));
+		console.log("Record:", JSON.parse(record.body));
+
 
 		/*
 		const parsed = JSON.parse(record) as Create;

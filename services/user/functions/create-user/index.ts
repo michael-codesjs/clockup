@@ -11,7 +11,10 @@ export const createUser: AWS.ServerlessLambdaFunction = {
 	events: [
 		{
 			sqs: {
-        arn: cloudImports.userCreateQueueArn
+				arn: cloudImports.userCreateQueueArn,
+				enabled: true,
+				batchSize: 10,
+				maximumBatchingWindow: 0
 			}
 		}
 	],

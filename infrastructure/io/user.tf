@@ -7,6 +7,29 @@ resource "aws_sqs_queue" "create" {
   name = "clock-up-user-${var.stage}-create"
 }
 
+resource "aws_sqs_queue_policy" "topic_listen_create" {
+
+  queue_url = aws_sqs_queue.create.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Id      = "sqspolicy"
+    Statement = [{
+      Sid       = "First"
+      Effect    = "Allow"
+      Principal = "*"
+      Action    = "sqs:SendMessage"
+      Resource  = aws_sqs_queue.create.arn
+      Condition = {
+        ArnEquals = {
+          "aws:SourceArn" = aws_sns_topic.topic.arn
+        }
+      }
+    }]
+  })
+
+}
+
 resource "aws_sns_topic_subscription" "topic_subscription_for_create_messages" {
   topic_arn           = aws_sns_topic.topic.arn
   protocol            = "sqs"
@@ -22,7 +45,7 @@ resource "aws_ssm_parameter" "topic_arn" {
 }
 
 resource "aws_ssm_parameter" "create_queue_arn" {
-  name = "/clock-up/${var.stage}/user/queues/create/arn"
-  type = "SecureString"
+  name  = "/clock-up/${var.stage}/user/queues/create/arn"
+  type  = "SecureString"
   value = aws_sqs_queue.create.arn
 }
