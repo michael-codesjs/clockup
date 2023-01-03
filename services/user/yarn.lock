@@ -10,6 +10,11 @@
     d "1"
     es5-ext "^0.10.47"
 
+"@agiledigital/serverless-sns-sqs-lambda@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@agiledigital/serverless-sns-sqs-lambda/-/serverless-sns-sqs-lambda-2.0.1.tgz#a1127e1ff5a6eb2fa6abb1bad35dc7520e4c6de9"
+  integrity sha512-+Kaxz81rLi9ax5LMx3vebiV8YnlO1gz4RsXign+uB6a33SSMBkRaO7CNQNg9jvQkc7xZRAmc0nQAF/zRxZEhUA==
+
 "@ampproject/remapping@^2.1.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@ampproject/remapping/-/remapping-2.2.0.tgz#56c133824780de3174aed5ab6834f3026790154d"

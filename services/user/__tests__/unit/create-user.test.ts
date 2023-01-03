@@ -8,7 +8,7 @@ describe("Create User", () => {
     const { id, creator, creatorType, name, email } = Given.user.attributes(); // get attributes.
     const input = { id, creator, creatorType, name, email };
 
-    await ServiceIO.user.create(input);
+    await ServiceIO.user.create(input); // send CREATE message to the user sns topic which should be received and processed by the create-user lambda function.
 
     const userRecord = await Given.user.byId(id); // get user record from the table
 

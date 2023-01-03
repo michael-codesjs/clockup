@@ -9,7 +9,8 @@ const serverlessConfiguration: AWS = {
 	frameworkVersion: "3",
 
 	plugins: [
-		...common.plugins
+		...common.plugins,
+		"@agiledigital/serverless-sns-sqs-lambda"
 	],
 
 	provider: {

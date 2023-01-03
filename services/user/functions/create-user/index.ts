@@ -14,7 +14,8 @@ export const createUser: AWS.ServerlessLambdaFunction = {
 				arn: cloudImports.userTopicArn,
 				filterPolicy: {
 					type: [Inputs.CREATE]
-				}
+				},
+				
 			}
 		}
 	],

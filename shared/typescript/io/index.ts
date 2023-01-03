@@ -1,12 +1,12 @@
 import { userServiceIO } from "./user";
 
-class ServiceIO {
+class ServiceIOCollection {
 
   private constructor() {}
-  static readonly instance = new ServiceIO;
+  static readonly instance = new ServiceIOCollection;
 
   readonly user: typeof userServiceIO = userServiceIO;
 
 }
 
-export const IO = ServiceIO.instance;
+export const ServiceIO = ServiceIOCollection.instance;
