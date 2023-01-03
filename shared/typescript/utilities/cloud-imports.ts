@@ -17,6 +17,7 @@ class CloudImports {
 	readonly graphQlApiEndpoint = "${ssm:/clock-up/${self:custom.stage}/api/graphql/endpoint}" as const;
 
 	readonly userTopicArn = "${ssm:/clock-up/${self:custom.stage}/user/topic/arn}" as const;
+	readonly userCreateQueueArn = "${ssm:/clock-up/${self:custom.stage}/user/queues/create/arn}" as const;
 
 	get common() {
 		return {

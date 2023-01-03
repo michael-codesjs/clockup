@@ -32,7 +32,7 @@ class UserServiceIO {
     const serviceObject = this.snsServiceObject;
 
     return await serviceObject.publish({
-      Message: isLiteralObject(message) || isLiteralArray(message) ? JSON.stringify(message) : message,
+      Message: JSON.stringify(message),
       MessageAttributes: {
         type: {
           DataType: "String",
