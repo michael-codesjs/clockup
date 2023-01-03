@@ -16,9 +16,10 @@ export type NullStateUserConstructorParams = {
 export type SemiStateUserConstructorParams = {
   id: string,
   name?: string,
-  email?: string
+  email?: string,
+  alarms?: 0,
 };
 
-export type AbsoluteStateUserConstructorParams = Required<SemiStateUserConstructorParams> &  { id?: string }
+export type AbsoluteStateUserConstructorParams = Required<SemiStateUserConstructorParams> & { id?: string }
 
 export type AllUserConstructorParams = NullStateUserConstructorParams | SemiStateUserConstructorParams | AbsoluteStateUserConstructorParams;

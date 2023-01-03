@@ -5,7 +5,10 @@
   "main": "serverless.ts",
   "scripts": {
     "test": "jest --verbose",
-    "test:framework": "jest ./framework/__tests__ --verbose"
+    "test:framework": "jest ./framework/__tests__ --verbose",
+    "test:unit": "jest ./__tests__/unit --verbose",
+    "test:integration": "jest ./__tests__/integration --verbose",
+    "test:e2e": "jest ./__tests__/e2e --verbose"
   },
   "engines": {
     "node": ">=14.15.0"

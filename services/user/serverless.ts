@@ -1,5 +1,5 @@
 import type { AWS } from "@serverless/typescript";
-import { common, generate } from "../../shared/typescript/utilities";
+import { cloudImports, common, generate } from "../../shared/typescript/utilities";
 import { createUser } from "./functions";
 
 const serverlessConfiguration: AWS = {
@@ -17,6 +17,7 @@ const serverlessConfiguration: AWS = {
 		environment: {
 			...common.enviromentVariables,
 			...common.enviromentResources,
+			USER_TOPIC_ARN: cloudImports.userTopicArn
 		},
 	},
 

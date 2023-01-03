@@ -8,9 +8,13 @@ const handler: SNSHandler = async event => {
 	for(const record of event.Records) {
 
 		const parsed = JSON.parse(record.Sns.Message) as Create;
-		const payload = parsed.payload;
+		const payload = {
+			...parsed.payload,
+			alarms: 0
+		};
 
 		const user = new User(payload);
+
 		await user.put(); // insert user record into the table
 		
 	}
