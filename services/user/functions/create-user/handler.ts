@@ -1,17 +1,14 @@
-import { SQSHandler } from "aws-lambda";
+import { SNSHandler, EventBridgeEvent } from "aws-lambda";
 import { withLambdaStandard } from "../../../../shared/typescript/hofs/with-lambda-standard";
 import { Create } from "../../../../shared/typescript/io/types/user";
 import { User } from "../../framework";
 
-const handler: SQSHandler = async event => {
+const handler: SNSHandler = async event => {
 
 	for(const record of event.Records) {
 
-		console.log("Record:", JSON.parse(record.body));
 
-
-		/*
-		const parsed = JSON.parse(record) as Create;
+		const parsed = JSON.parse(record.Sns.Message) as Create;
 		const payload = {
 			...parsed.payload,
 			alarms: 0
@@ -20,7 +17,6 @@ const handler: SQSHandler = async event => {
 		const user = new User(payload);
 
 		await user.put(); // insert user record into the table
-		*/
 		
 	}
 
