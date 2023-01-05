@@ -91,6 +91,7 @@ export type ErrorResponse = {
 
 export enum ErrorTypes {
   CreateFailed = 'CREATE_FAILED',
+  DeleteFailed = 'DELETE_FAILED',
   InternalError = 'INTERNAL_ERROR',
   MalfomedInput = 'MALFOMED_INPUT',
   NotFound = 'NOT_FOUND',
@@ -514,7 +515,7 @@ export type Resolvers<ContextType = any> = {
 
 export const EntityTypeSchema = yup.mixed().oneOf([EntityType.Alarm, EntityType.Note, EntityType.User]);
 
-export const ErrorTypesSchema = yup.mixed().oneOf([ErrorTypes.CreateFailed, ErrorTypes.InternalError, ErrorTypes.MalfomedInput, ErrorTypes.NotFound, ErrorTypes.UpdateFailed]);
+export const ErrorTypesSchema = yup.mixed().oneOf([ErrorTypes.CreateFailed, ErrorTypes.DeleteFailed, ErrorTypes.InternalError, ErrorTypes.MalfomedInput, ErrorTypes.NotFound, ErrorTypes.UpdateFailed]);
 
 export function CreateAlarmInputSchema(): yup.SchemaOf<CreateAlarmInput> {
   return yup.object({

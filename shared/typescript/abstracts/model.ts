@@ -89,7 +89,8 @@ export class Model {
 			Condition: {
 				PK: "attribute_exists",
 				SK: "attribute_exists",
-				discontinued: false
+				discontinued: false,
+				creator: "attribute_exists"
 			},
 			ConditionLogicalOperator: "AND"
 		});
@@ -124,11 +125,15 @@ export class Model {
 	}
 
 	async discontinue(): Promise<UpdateItemOutput | ExecuteTransactionOutput> {
-		const params = this.discontinueParams();
-		return await dynamoDbOperations.update({
-			TableName: DYNAMO_DB_TABLE_NAME,
-			...params as any
-		});
+		try {
+			const params = this.discontinueParams();
+			return await dynamoDbOperations.update({
+				TableName: DYNAMO_DB_TABLE_NAME,
+				...params as any
+			});
+		} catch (error: any) {
+			
+		}
 	}
 
 	/** deletes an entities record from the table */

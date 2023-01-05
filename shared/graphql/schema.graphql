@@ -9,6 +9,7 @@ enum ErrorTypes {
   INTERNAL_ERROR
   CREATE_FAILED
   UPDATE_FAILED
+  DELETE_FAILED
 }
 
 type ErrorResponse {

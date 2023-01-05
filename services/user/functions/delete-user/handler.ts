@@ -7,12 +7,10 @@ const handler: CommonIOHandler<Delete, string> = async event => {
 
 	for(const input of event.inputs) {
 		
-		const user = new User({ id: input.payload.id });
-		await user.sync();
+		// TODO: send DELETE input to authentication topic.
 
-		if(user.attributes.get("creator") !== input.payload.creator) throw new Error("Can not delete this user.");
-
-		await user.discontinue();
+		const user = new User(input.payload);
+		await user.discontinue()
 	
 	}
 

@@ -14,7 +14,7 @@ resource "aws_appsync_graphql_api" "api" {
 
 resource "aws_ssm_parameter" "apiId" {
   name  = "/clock-up/${var.stage}/api/graphql/id"
-  type  = "String"
+  type  = "SecureString"
   value = aws_appsync_graphql_api.api.id
 }
 
