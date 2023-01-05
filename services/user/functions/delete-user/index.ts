@@ -1,8 +1,9 @@
 import type { AWS } from "../../../../shared/typescript/types/aws";
 import { cloudImports } from "../../../../shared/typescript/utilities/cloud-imports";
 import { handlerPath } from "../../../../shared/typescript/utilities/functions";
+import { Inputs } from "../../../../shared/typescript/io/types/user";
 
-export const createUser: AWS.ServerlessLambdaFunction = {
+export const deleteUser: AWS.ServerlessLambdaFunction = {
 
 	description: "Discontinues a user.",
 	handler: `${handlerPath(__dirname)}/handler.main`,
@@ -11,7 +12,10 @@ export const createUser: AWS.ServerlessLambdaFunction = {
 		{
 			sns: {
 				arn: cloudImports.userTopicArn,
-				enabled: true
+				enabled: true,
+				filterPolicy: {
+					type: [Inputs.CREATE]
+				}
 			}
 		}
 	],

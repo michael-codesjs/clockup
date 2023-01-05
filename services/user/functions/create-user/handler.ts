@@ -1,8 +1,7 @@
-import { CommonIOHandler } from "../../../../shared/typescript/middleware/common-lambda-io/types";
-import { withLambdaStandard } from "../../../../shared/typescript/hofs/with-lambda-standard";
+import { withLambdaIOStandard } from "../../../../shared/typescript/hofs/with-lambda-io-standard";
 import { Create } from "../../../../shared/typescript/io/types/user";
+import { CommonIOHandler } from "../../../../shared/typescript/middleware/common-lambda-io/types";
 import { User } from "../../framework";
-import { commonLambdaIO } from "../../../../shared/typescript/middleware/common-lambda-io";
 
 const handler: CommonIOHandler<Create, void> = async event => {
 
@@ -14,7 +13,4 @@ const handler: CommonIOHandler<Create, void> = async event => {
 
 };
 
-export const main = (
-	withLambdaStandard(handler)
-	.use(commonLambdaIO())
-);
+export const main = withLambdaIOStandard(handler);

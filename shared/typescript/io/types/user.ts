@@ -1,5 +1,6 @@
 export enum Inputs {
-  CREATE = "CREATE"
+  CREATE = "CREATE",
+  DELETE = "DELETE"
 }
 
 export type Create = {
@@ -12,5 +13,14 @@ export type Create = {
     created?: string,
     creatorType: string,
     creator: string,
+  }
+}
+
+export type Delete = {
+  time: Date,
+  type: Inputs.DELETE,
+  payload: {
+    id: string,
+    creator: string
   }
 }

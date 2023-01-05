@@ -1,6 +1,6 @@
 import type { AWS } from "@serverless/typescript";
 import { cloudImports, common, generate } from "../../shared/typescript/utilities";
-import { createUser } from "./functions";
+import { createUser, deleteUser } from "./functions";
 
 const serverlessConfiguration: AWS = {
 
@@ -31,7 +31,8 @@ const serverlessConfiguration: AWS = {
 	},
 
 	functions: {
-		createUser
+		createUser,
+		deleteUser
 	}
 
 };
