@@ -96,7 +96,6 @@ describe("CommonLambdaIO", () => {
 
   const withMiddleware = (lambda: any) => middy(lambda).use(commonLambdaIO());
 
-  /*
   test("SNS input", () => {
 
     const sqsEvent = getSNSEvent();
@@ -111,8 +110,6 @@ describe("CommonLambdaIO", () => {
     withMiddleware(lambda)(sqsEvent, {} as Context);
 
   });
-
-  /*
 
   test("Piped SQS input from SNS", () => {
 
@@ -130,9 +127,7 @@ describe("CommonLambdaIO", () => {
     withMiddleware(lambda)(sqsEvent, {} as Context);
 
   });
-
-  */
-
+  
   test("AppSync input", async () => {
 
     const appSyncEventInput = getAppSyncEvent(true);

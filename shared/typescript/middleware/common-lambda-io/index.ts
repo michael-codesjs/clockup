@@ -2,12 +2,12 @@ import middy from "@middy/core";
 import { SNSEvent, SNSEventRecord, SQSEvent, SQSRecord, AppSyncResolverEvent, AppSyncIdentityCognito } from "aws-lambda";
 import { OperationResponse } from "../../types/api";
 import { isLiteralObject } from "../../utilities/functions";
-import { CommonIOEvent, InputSource } from "./types";
+import { AllEventType, CommonIOEvent, InputSource } from "./types";
 
 /** Provides a common interface for receiving inputs from difference sources to a lambda function */
-export const commonLambdaIO = <I extends Record<string, any>, R>(): middy.MiddlewareObj<CommonIOEvent<I>, R> => {
+export const commonLambdaIO = <I extends Record<string, any>, R>(): middy.MiddlewareObj<AllEventType<I,R>, R> => {
 
-	const before: middy.MiddlewareFn<CommonIOEvent<I>, R> = async request => {
+	const before: middy.MiddlewareFn<AllEventType<I,R>, R> = async request => {
 
 		const event = request.event as unknown as SNSEvent | SQSEvent | AppSyncResolverEvent<I, R>;
 
@@ -48,13 +48,13 @@ export const commonLambdaIO = <I extends Record<string, any>, R>(): middy.Middle
 			commonIOEvent.type = InputSource.AppSync;
 		}
 
-		request.event = commonIOEvent;
+		request.event = commonIOEvent as unknown as AllEventType<I,R>;
 
 	};
 
-	const after: middy.MiddlewareFn<CommonIOEvent<I>, R> = async request => {
+	const after: middy.MiddlewareFn<AllEventType<I,R>, R> = async request => {
 
-		switch (request.event.type) {
+		switch ((request.event as unknown as CommonIOEvent<I>).type) {
 			case InputSource.AppSync:
 				request.response = request.response && isLiteralObject(request.response) ? request.response : {
 					__typename: "OperationResponse",

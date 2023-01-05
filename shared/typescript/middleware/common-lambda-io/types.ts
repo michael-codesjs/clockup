@@ -1,4 +1,4 @@
-import { Context } from "aws-lambda";
+import { AppSyncResolverEvent, Context, SNSEvent, SQSEvent } from "aws-lambda";
 
 export enum InputSource {
   SNS = "SNS",
@@ -12,3 +12,5 @@ export type CommonIOEvent<I extends Record<string, any>> = {
 };
 
 export type CommonIOHandler<I extends Record<string, any>, R> = (event: CommonIOEvent<I>, context: Context) => Promise<R>;
+
+export type AllEventType<I,R> = SNSEvent | SQSEvent | AppSyncResolverEvent<I, R>;
