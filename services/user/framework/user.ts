@@ -42,6 +42,7 @@ export class User extends Entity implements IStateableEntity, IUser {
 
 	/** Discontinues a user. */
 	async discontinue(): Promise<User> {
+		console.log("EA:", this.attributes.collective());
 		return await this.state.discontinue();
 	}
 

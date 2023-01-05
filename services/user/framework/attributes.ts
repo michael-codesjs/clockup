@@ -6,7 +6,22 @@ import { UserAttributesSchemaCollection } from "./types";
 
 export class UserAttributes extends Attributes<UserAttributesSchemaCollection> {
 
-	private static readonly config: ToAttributeParams<Omit<UserAttributesSchemaCollection, keyof CommonAttributes>> = {
+	static CreatorTypes = [EntityType.User];
+	private static readonly config: ToAttributeParams<Omit<UserAttributesSchemaCollection, keyof Omit<CommonAttributes, "creatorType" | "entityType">>> = {
+		creatorType: {
+			initial: null,
+			required: true,
+			validate(value) {
+				return UserAttributes.CreatorTypes.includes(value);
+			},
+		},
+		entityType: {
+			initial: null,
+			required: true,
+			validate(value) {
+				return value === EntityType.User
+			}
+		},
 		name: { initial: null, required: true },
 		email: { initial: null, required: true },
 		alarms: { initial: null, required: false }

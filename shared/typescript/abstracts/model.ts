@@ -87,10 +87,9 @@ export class Model {
 			Key: this.entity.keys.primary(),
 			ReturnValues: "ALL_NEW",
 			Condition: {
-				PK: "attribute_exists",
-				SK: "attribute_exists",
+				...this.entity.keys.primary(),
 				discontinued: false,
-				creator: "attribute_exists"
+				creator: this.entity.attributes.get("creator")
 			},
 			ConditionLogicalOperator: "AND"
 		});
@@ -132,7 +131,7 @@ export class Model {
 				...params as any
 			});
 		} catch (error: any) {
-			
+			console.log("Err:", error);
 		}
 	}
 

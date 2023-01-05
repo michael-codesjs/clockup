@@ -13,9 +13,13 @@ class RepeatUtility {
 
 		const func = async (): Promise<boolean> => {
 
-			const result = await call();
+			let result: boolean;
+
+			try { result = await call(); }
+			catch (error) { result = false; }
+
 			times--;
-      
+
 			if (result) return true;
 			else if (times < 1) return false;
 			else {

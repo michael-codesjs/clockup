@@ -5,16 +5,15 @@ import { Inputs } from "../../../../shared/typescript/io/types/user";
 
 export const deleteUser: AWS.ServerlessLambdaFunction = {
 
-	description: "Discontinues a user.",
+	description: "Deletes(discontinues) a user.",
 	handler: `${handlerPath(__dirname)}/handler.main`,
 
 	events: [
 		{
 			sns: {
 				arn: cloudImports.userTopicArn,
-				enabled: true,
 				filterPolicy: {
-					type: [Inputs.CREATE]
+					type: [Inputs.DELETE]
 				}
 			}
 		}

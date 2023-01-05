@@ -1,7 +1,7 @@
 
 import { SNS } from "aws-sdk";
+import { configureEnviromentVariables } from "../utilities/functions";
 import { Create, Delete, Inputs } from "./types/user";
-import { configureEnviromentVariables, isLiteralArray, isLiteralObject } from "../utilities/functions";
 
 const {
   USER_TOPIC_ARN,

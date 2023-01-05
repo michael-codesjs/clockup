@@ -1,3 +1,7 @@
+import { EntityType } from "../../types/api"
+import yup from "yup";
+import { UserAttributes } from "../../../../services/user/framework/attributes";
+
 export enum Inputs {
   CREATE = "CREATE",
   DELETE = "DELETE"
@@ -21,6 +25,7 @@ export type Delete = {
   type: Inputs.DELETE,
   payload: {
     id: string,
-    creator: string
+    creator: string,
+    creatorType: EntityType.User // | EntityType.Organisation | EntityType.Team
   }
 }
