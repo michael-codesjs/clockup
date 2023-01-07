@@ -2,16 +2,15 @@ import dynamoDbExpression from "@tuplo/dynoexpr";
 import type { DeleteItemOutput, ExecuteTransactionOutput, GetItemOutput, PutItemOutput, UpdateItemOutput } from "aws-sdk/clients/dynamodb";
 import { Entity } from ".";
 import { dynamoDbOperations } from "../lib/dynamoDb";
-import { configureEnviromentVariables } from "../utilities/functions";
-
-const { DYNAMO_DB_TABLE_NAME } = configureEnviromentVariables();
 
 export class Model {
 
 	readonly entity: Entity;
+	readonly tableName: string;
 
-	constructor(entity: Entity) {
+	constructor(entity: Entity, tableName: string) {
 		this.entity = entity;
+		this.tableName = tableName;
 	}
 
 	/** put attributes  */
@@ -100,7 +99,7 @@ export class Model {
 	async put(): Promise<PutItemOutput | ExecuteTransactionOutput> {
 		const { item, params } = this.putParams();
 		return await dynamoDbOperations.put({
-			TableName: DYNAMO_DB_TABLE_NAME,
+			TableName: this.tableName,
 			Item: item as any,
 			...params
 		});
@@ -109,7 +108,7 @@ export class Model {
 	/** gets an entities record from the table using it's Partition and Sort key values */
 	async get(): Promise<GetItemOutput> {
 		return await dynamoDbOperations.get({
-			TableName: DYNAMO_DB_TABLE_NAME!,
+			TableName: this.tableName!,
 			Key: this.entity.keys.primary() as any,
 		});
 	}
@@ -118,7 +117,7 @@ export class Model {
 	async update(): Promise<UpdateItemOutput> {
 		const params = this.updateParams();
 		return await dynamoDbOperations.update({
-			TableName: DYNAMO_DB_TABLE_NAME!,
+			TableName: this.tableName!,
 			...params as any
 		});
 	}
@@ -127,7 +126,7 @@ export class Model {
 		try {
 			const params = this.discontinueParams();
 			return await dynamoDbOperations.update({
-				TableName: DYNAMO_DB_TABLE_NAME,
+				TableName: this.tableName,
 				...params as any
 			});
 		} catch (error: any) {
@@ -138,7 +137,7 @@ export class Model {
 	/** deletes an entities record from the table */
 	async delete(): Promise<DeleteItemOutput | ExecuteTransactionOutput> {
 		return await dynamoDbOperations.delete({
-			TableName: DYNAMO_DB_TABLE_NAME!,
+			TableName: this.tableName!,
 			Key: this.entity.keys.primary() as any
 		});
 	}

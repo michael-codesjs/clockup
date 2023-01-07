@@ -1,5 +1,5 @@
 import type { AWS } from "../../../../shared/typescript/types/aws";
-import { cloudImports } from "../../../../shared/typescript/utilities/cloud-imports";
+import { resource } from "../../../../shared/typescript/utilities";
 import { handlerPath } from "../../../../shared/typescript/utilities/functions";
 import { Inputs } from "../../../../shared/typescript/io/types/user";
 
@@ -11,7 +11,7 @@ export const deleteUser: AWS.ServerlessLambdaFunction = {
 	events: [
 		{
 			sns: {
-				arn: cloudImports.userTopicArn,
+				arn: resource.user.topicArn,
 				filterPolicy: {
 					type: [Inputs.DELETE]
 				}
@@ -23,7 +23,7 @@ export const deleteUser: AWS.ServerlessLambdaFunction = {
 		{
 			Effect: "Allow",
 			Action: ["dynamodb:UpdateItem"],
-			Resource: cloudImports.tableArn
+			Resource: resource.user.tableArn
 		}
 	]
 

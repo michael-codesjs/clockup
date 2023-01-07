@@ -4,7 +4,7 @@ import { configureEnviromentVariables } from "../../utilities/functions";
 import { Entity } from "../../utilities/testing/instanciable-abstracts";
 import { Model } from "../model";
 
-const { DYNAMO_DB_TABLE_NAME } = configureEnviromentVariables();
+const { TEST_TABLE_NAME } = configureEnviromentVariables();
 
 describe("Model", () => {
 
@@ -14,7 +14,7 @@ describe("Model", () => {
 
 	beforeAll(() => {
 		entity = new Entity();
-		model = new Model(entity);
+		model = new Model(entity, TEST_TABLE_NAME);
 		created = new Date(entity.attributes.get("created"));
 	});
 
@@ -25,7 +25,7 @@ describe("Model", () => {
 		await model.put();
 
 		const { Item } = await dynamoDbOperations.get({
-			TableName: DYNAMO_DB_TABLE_NAME,
+			TableName: TEST_TABLE_NAME,
 			Key: entity.keys.primary() as any
 		});
 
@@ -85,7 +85,7 @@ describe("Model", () => {
 	test("Model.update to update a record that does not exist fails", async () => {
 
 		const entity = new Entity({ id: chance.fbid() });
-		const model = new Model(entity);
+		const model = new Model(entity, TEST_TABLE_NAME);
 
 		try {
 			await model.update();

@@ -2,26 +2,14 @@ import { withLambdaIOStandard } from "../../../../shared/typescript/hofs/with-la
 import { Create } from "../../../../shared/typescript/io/types/user";
 import { CommonIOHandler } from "../../../../shared/typescript/middleware/common-lambda-io/types";
 import { User } from "../../framework";
-import { User as UserGraphQlEntity } from "../../../../shared/typescript/types/api";
 
-const handler: CommonIOHandler<Create, Array<UserGraphQlEntity>> = async event => {
-
-	const responses: Array<UserGraphQlEntity> = [];
+const handler: CommonIOHandler<Create, void> = async event => {
 
 	for(const input of event.inputs) {
-		
-		const payload = { ...input, alarms: 0 };
-		
+		const payload = { ...input.payload, alarms: 0 };
 		const user = new User(payload);
 		await user.put();
-		
-		const userGraphQlEntity = await user.graphQlEntity();
-
-		responses.push(userGraphQlEntity);
-
 	}
-
-	return responses;
 
 };
 

@@ -5,8 +5,7 @@ import { EntityType, User as TUser } from "../../../types/api";
 import { chance } from "../../../utilities/constants";
 import { configureEnviromentVariables } from "../../../utilities/functions";
 
-const { DYNAMO_DB_TABLE_NAME } = configureEnviromentVariables();
-const TableName = DYNAMO_DB_TABLE_NAME!;
+const { USER_TABLE_NAME } = configureEnviromentVariables();
 
 class GivenUserAttributes {
 
@@ -55,7 +54,7 @@ class GivenUserAttributes {
 
 		
 		const result = await dynamoDbOperations.get({
-      TableName,
+      TableName: USER_TABLE_NAME,
       Key: {
         PK: key,
         SK: key
@@ -81,7 +80,7 @@ class GivenUserAttributes {
     } as any;
     
     await dynamoDbOperations.put({
-      TableName,
+      TableName: USER_TABLE_NAME,
       Item
     });
 

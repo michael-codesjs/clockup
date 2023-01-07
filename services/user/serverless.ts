@@ -1,6 +1,6 @@
 import type { AWS } from "@serverless/typescript";
-import { cloudImports, common, generate } from "../../shared/typescript/utilities";
-import { createUser, deleteUser } from "./functions";
+import { common, generate, resource } from "../../shared/typescript/utilities";
+import { createUser } from "./functions";
 
 const serverlessConfiguration: AWS = {
 
@@ -17,7 +17,12 @@ const serverlessConfiguration: AWS = {
 		environment: {
 			...common.enviromentVariables,
 			...common.enviromentResources,
-			USER_TOPIC_ARN: cloudImports.userTopicArn
+			USER_TABLE_NAME: resource.user.tableName,
+			USER_TOPIC_ARN: resource.user.topicArn,
+			USER_REQUEST_QUEUE_ARN: resource.user.requestQueueArn,
+			USER_REQUEST_QUEUE_URL: resource.user.requestQueueURL,
+			USER_RESPONSE_QUEUE_ARN: resource.user.responseQueueArn,
+			USER_RESPONSE_QUEUE_URL: resource.user.responseQueueURL,
 		},
 	},
 
@@ -32,7 +37,7 @@ const serverlessConfiguration: AWS = {
 
 	functions: {
 		createUser,
-		deleteUser
+		// deleteUser
 	}
 
 };

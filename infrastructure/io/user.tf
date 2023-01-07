@@ -1,51 +1,52 @@
-resource "aws_sns_topic" "user" {
+resource "aws_sns_topic" "user_topic" {
   name         = "clock-up-user-${var.stage}"
   display_name = "clock-up users topic."
 }
 
-resource "aws_sqs_queue" "user_create" {
-  name = "clock-up-user-${var.stage}-create"
+resource "aws_sqs_queue" "user_request_queue" {
+  name                      = "clock-up-user-request-${var.stage}"
+  receive_wait_time_seconds = 20
+  tags = {
+    Environment = var.stage
+    Description = "clock-up ${var.stage} user service request queue."
+  }
 }
 
-resource "aws_sqs_queue_policy" "topic_listen_create" {
-
-  queue_url = aws_sqs_queue.user_create.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Id      = "sqspolicy"
-    Statement = [{
-      Sid       = "First"
-      Effect    = "Allow"
-      Principal = "*"
-      Action    = "sqs:SendMessage"
-      Resource  = aws_sqs_queue.user_create.arn
-      Condition = {
-        ArnEquals = {
-          "aws:SourceArn" = aws_sns_topic.user.arn
-        }
-      }
-    }]
-  })
-
-}
-
-resource "aws_sns_topic_subscription" "topic_subscription_for_create_messages" {
-  topic_arn           = aws_sns_topic.user.arn
-  protocol            = "sqs"
-  endpoint            = aws_sqs_queue.user_create.arn
-  filter_policy       = jsonencode({ type = ["CREATE"] })
-  filter_policy_scope = "MessageAttributes"
+resource "aws_sqs_queue" "user_response_queue" {
+  name                      = "clock-up-user-response-${var.stage}"
+  receive_wait_time_seconds = 20
+  tags = {
+    Environment = var.stage
+    Description = "clock-up ${var.stage} user service response queue."
+  }
 }
 
 resource "aws_ssm_parameter" "user_topic_arn" {
   name  = "/clock-up/${var.stage}/user/topic/arn"
   type  = "SecureString"
-  value = aws_sns_topic.user.arn
+  value = aws_sns_topic.user_topic.arn
 }
 
-resource "aws_ssm_parameter" "create_queue_arn" {
-  name  = "/clock-up/${var.stage}/user/queues/create/arn"
+resource "aws_ssm_parameter" "user_request_queue_arn" {
+  name  = "/clock-up/${var.stage}/user/queues/request/arn"
   type  = "SecureString"
-  value = aws_sqs_queue.user_create.arn
+  value = aws_sqs_queue.user_request_queue.arn
+}
+
+resource "aws_ssm_parameter" "user_request_queue_url" {
+  name  = "/clock-up/${var.stage}/user/queues/request/url"
+  type  = "SecureString"
+  value = aws_sqs_queue.user_request_queue.url
+}
+
+resource "aws_ssm_parameter" "user_response_queue_arn" {
+  name  = "/clock-up/${var.stage}/user/queues/response/arn"
+  type  = "SecureString"
+  value = aws_sqs_queue.user_response_queue.arn
+}
+
+resource "aws_ssm_parameter" "user_response_queue_url" {
+  name  = "/clock-up/${var.stage}/user/queues/response/url"
+  type  = "SecureString"
+  value = aws_sqs_queue.user_response_queue.url
 }

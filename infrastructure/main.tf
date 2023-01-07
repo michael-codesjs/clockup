@@ -36,7 +36,6 @@ module "authentication" {
   region = var.region
 }
 
-
 module "api" {
   source               = "./api"
   stage                = var.stage

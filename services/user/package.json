@@ -17,6 +17,8 @@
     "@middy/core": "^3.4.0",
     "@middy/http-json-body-parser": "^3.4.0",
     "@tuplo/dynoexpr": "^2.16.0",
+    "amqplib": "^0.10.3",
+    "correlation-id": "^5.0.0",
     "uuid": "^8.3.2",
     "yup": "^0.32.11"
   },

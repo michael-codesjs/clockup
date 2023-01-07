@@ -22,6 +22,7 @@
     "@middy/http-json-body-parser": "^2.5.3",
     "@middy/input-output-logger": "^3.6.2",
     "@tuplo/dynoexpr": "^2.16.0",
+    "correlation-id": "^5.0.0",
     "uuid": "^8.3.2",
     "yup": "^0.32.11"
   },

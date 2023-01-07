@@ -1,5 +1,8 @@
 import { Entity, Model } from "../../../abstracts";
 import { IEntityState, IStateableEntity } from "../../../abstracts/interfaces";
+import { configureEnviromentVariables } from "../../functions";
+
+const { TEST_TABLE_NAME } = configureEnviromentVariables();
 
 export class State implements IEntityState {
 
@@ -8,7 +11,7 @@ export class State implements IEntityState {
 
   constructor(context: Entity & IStateableEntity) {
     this.context = context;
-    this.model = new Model(context);
+    this.model = new Model(context, TEST_TABLE_NAME);
   }
 
   update(): void {

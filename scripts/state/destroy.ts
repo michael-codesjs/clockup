@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import chalk from "chalk";
 import ora from "ora";
-import { ProjectStateParams } from "scripts/types";
+import { ProjectStateParams } from "../types";
 import { execAsync, getServices } from "../../shared/typescript/utilities/functions";
 import { ProjectStateUtility } from "./utility";
 

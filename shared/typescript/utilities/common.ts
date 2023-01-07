@@ -1,6 +1,6 @@
 import { esBuildConfig } from "../configs/plugin/esbuild";
 import { AWS } from "../types/aws";
-import { cloudImports } from ".";
+import { resource } from ".";
 import { config } from "./constants";
 
 class Common {
@@ -48,9 +48,8 @@ class Common {
 
 	get enviromentResources() {
 		return {
-			DYNAMO_DB_TABLE_NAME: cloudImports.tableName,
-			GRAPHQL_API_ID: cloudImports.graphQlApiId,
-			GRAPHQL_API_ENDPOINT: cloudImports.graphQlApiEndpoint,
+			GRAPHQL_API_ID: resource.api.graphQlApiId,
+			GRAPHQL_API_ENDPOINT: resource.api.graphQlApiEndpoint,
 		} as const;
 	}
 

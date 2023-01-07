@@ -6217,6 +6217,11 @@ core-util-is@~1.0.0:
   resolved "https://registry.npmjs.org/core-util-is/-/core-util-is-1.0.3.tgz"
   integrity sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==
 
+correlation-id@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/correlation-id/-/correlation-id-5.0.0.tgz#c590114f0768c9484fc4dddce5679a9ce532ef40"
+  integrity sha512-kDC6M969j3rmUiDFgQNgNf7hzdq9wD1Co8gG8rXHdRVuxnuFVqaQMdTw/n/4IjdqSBtbfaYyyEpIP0FpFPqRlQ==
+
 cosmiconfig-toml-loader@1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/cosmiconfig-toml-loader/-/cosmiconfig-toml-loader-1.0.0.tgz"
