@@ -1,12 +1,11 @@
-import { Handler } from "aws-lambda";
-import { withErrorResponse } from "../middleware";
-import { commonLambdaIO } from "../middleware/common-lambda-io";
-import { withLambdaStandard } from "./with-lambda-standard";
+import { AppSyncResolverHandler, Context } from "aws-lambda";
+import { commonLambdaIO } from "../middleware";
+import { CommonIOInputSources } from "../middleware/common-lambda-io/types";
+import { withResolverStandard } from "./with-resolver-standard";
 
-export const withLambdaIOStandard = <H extends Handler>(handler: H) => {
+export const withLambdaIOStandard = <I, R>(handler: (event: CommonIOInputSources<I, R>, Context: Context) => any) => {
 	return (
-		withLambdaStandard(handler)
+		withResolverStandard(handler as AppSyncResolverHandler<I, R>)
 			.use(commonLambdaIO())
-			.use(withErrorResponse())
 	);
 };

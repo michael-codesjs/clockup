@@ -1,52 +1,34 @@
 import middy from "@middy/core";
+import SQS from "aws-sdk/clients/sqs"
 import { SNSEvent, SNSEventRecord, SQSEvent, Context, AppSyncResolverEvent, AppSyncIdentityCognito } from "aws-lambda";
 import { ErrorTypes } from "../../types/api";
 import { chance } from "../../utilities/constants";
+import { configureEnviromentVariables } from "../../utilities/functions";
 import { commonLambdaIO } from "../common-lambda-io";
 import { CommonIOHandler } from "../common-lambda-io/types";
-import { withErrorResponse } from "../with-error-response";
+import { errorResponse } from "../error-response";
+
+const { TEST_QUEUE_URL } = configureEnviromentVariables();
 
 describe("CommonLambdaIO", () => {
 
   let type: string;
-  let payload: {
-    stringAttribute: string,
-    numberAttribute: number,
-    booleanAttribute: boolean,
-    arrayAttribute: Array<any>,
-    objectAttribute: Record<string, any>
-  };
-
-  type Input = {
-    type: typeof type,
-    payload: typeof payload
-  };
 
   beforeEach(() => {
     type = chance.string({ alpha: true, casing: "upper", numeric: false, symbols: false });
-    payload = {
-      stringAttribute: chance.string(),
-      numberAttribute: chance.integer(),
-      booleanAttribute: chance.bool(),
-      arrayAttribute: Array(chance.integer({ min: 1, max: 10 })).fill(null).map(() => chance.string()),
-      objectAttribute: {
-        [chance.string()]: chance.string()
-      }
-    };
   });
 
   const generateInput = () => ({
-    type: chance.string({ alpha: true, casing: "upper", numeric: false, symbols: false }),
-    payload: {
-      stringAttribute: chance.string(),
-      numberAttribute: chance.integer(),
-      booleanAttribute: chance.bool(),
-      arrayAttribute: Array(chance.integer({ min: 1, max: 10 })).fill(null).map(() => chance.string()),
-      objectAttribute: {
-        [chance.string()]: chance.string()
-      }
+    stringAttribute: chance.string(),
+    numberAttribute: chance.integer(),
+    booleanAttribute: chance.bool(),
+    arrayAttribute: Array(chance.integer({ min: 1, max: 10 })).fill(null).map(() => chance.string()),
+    objectAttribute: {
+      [chance.string()]: chance.string()
     }
-  })
+  });
+
+  type Input = ReturnType<typeof generateInput>;
 
   const getSNSEvent = (): SNSEvent => ({
     Records: Array(chance.integer({ min: 1, max: 10 })).fill(null).map(() => {
@@ -57,7 +39,7 @@ describe("CommonLambdaIO", () => {
         EventSource: "aws:sns",
         Sns: {
           Message: JSON.stringify(message),
-          MessageAttributes: { type: message.type },
+          MessageAttributes: { type },
           MessageId: chance.fbid(),
           Signature: chance.string(),
         }
@@ -65,12 +47,30 @@ describe("CommonLambdaIO", () => {
     })
   });
 
-  const getSQSEvent = (replyQueue?:string): SQSEvent => ({
-    Records: Array(chance.integer({ min: 1, max: 10 })).fill(null).map(() => {
+  const getSQSEvent = (reply: boolean = false): SQSEvent => ({
+    Records: Array(chance.integer({ min: 1, max: reply ? 1 : 10 })).fill(null).map(() => {
       const input = generateInput();
+      const attributes: SQSEvent["Records"][number]["messageAttributes"] = reply ? {
+        Type: {
+          dataType: "String",
+          stringListValues: [],
+          stringValue: chance.word().toUpperCase()
+        },
+        CID: {
+          dataType: "String",
+          stringListValues: [],
+          stringValue: input.stringAttribute
+        },
+        ReplyTo: {
+          dataType: "String",
+          stringListValues: [],
+          stringValue: TEST_QUEUE_URL
+        }
+      } : {};
       return {
         messageId: chance.fbid(),
         eventSource: "aws:sqs",
+        messageAttributes: attributes,
         attributes: {},
         body: JSON.stringify(input)
       } as unknown as SQSEvent["Records"][number];
@@ -78,7 +78,7 @@ describe("CommonLambdaIO", () => {
   });
 
   const getAppSyncEvent = (inInput = true): AppSyncResolverEvent<any, any> => {
-    const input = generateInput().payload;
+    const input = generateInput();
     return {
       arguments: inInput ? { input } : input,
       info: {},
@@ -111,11 +111,61 @@ describe("CommonLambdaIO", () => {
   });
   */
 
-  test("SQS input", async () => {
+  test("SQS request", async () => {
 
     const sqsEvent = getSQSEvent();
 
-    // const lambda: CommonIOHandler
+    const lambda: CommonIOHandler<Input, Array<any>> = async event => {
+      event.inputs.forEach((input, index) => {
+        const sqsEventEquivalentInput = JSON.parse(sqsEvent.Records[index].body)
+        expect(input).toMatchObject(sqsEventEquivalentInput);
+      });
+      return event.inputs;
+    };
+
+    await withMiddleware(lambda)(sqsEvent, {} as Context);
+
+  });
+
+  test("SQS response", async () => {
+
+    const sqsEvent = getSQSEvent(true);
+
+    const lambda: CommonIOHandler<Input, Array<any>> = async event => {
+      return event.inputs;
+    };
+
+    await withMiddleware(lambda)(sqsEvent, {} as Context);
+
+    // get message which is supposed to be sent to the replyQueue(TEST_QUEUE);
+
+    const response = await new SQS({ apiVersion: '2012-11-05' })
+      .receiveMessage({
+        QueueUrl: TEST_QUEUE_URL,
+        MessageAttributeNames: ["CID", "Type"],
+        WaitTimeSeconds: 20,
+        MaxNumberOfMessages: 10
+      })
+      .promise();
+
+    const Type = sqsEvent.Records[0].messageAttributes.Type.stringValue;
+    const CID = sqsEvent.Records[0].messageAttributes.CID.stringValue;
+
+    const hasMessage = response.Messages.some(message => {
+      return Type === message.MessageAttributes.Type.StringValue && CID === message.MessageAttributes.CID.StringValue;
+    });
+
+    expect(hasMessage).toBe(true);
+
+    // delete messages
+    for (const message of response.Messages) {
+      await new SQS({ apiVersion: '2012-11-05' })
+        .deleteMessage({
+          QueueUrl: TEST_QUEUE_URL,
+          ReceiptHandle: message.ReceiptHandle
+        })
+        .promise();
+    }
 
   });
 

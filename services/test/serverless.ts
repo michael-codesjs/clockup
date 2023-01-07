@@ -22,6 +22,8 @@ const serverlessConfiguration: AWS.Service = {
       ...common.enviromentVariables,
       ...common.enviromentResources,
       TEST_TABLE_NAME: resource.test.tableName,
+      TEST_QUEUE_ARN: resource.test.queueArn,
+      TEST_QUEUE_URL: resource.test.queueURL
     }
   },
 

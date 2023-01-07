@@ -16,7 +16,11 @@ export const createUser: AWS.ServerlessLambdaFunction = {
 				batchSize: 1,
 				maximumBatchingWindow: 0,
 				filterPatterns: [{
-					type: [Inputs.CREATE]
+					messageAttributes: {
+						Type: {
+							stringValue: [Inputs.CREATE]
+						}
+					}
 				}]
 			}
 		}

@@ -7,18 +7,12 @@ export enum Inputs {
 }
 
 export type Create = {
-  time: Date,
-  type: Inputs.CREATE,
-  cid?: string,
-  replyTo?: string,
-  payload: {
-    id: string,
-    name: string,
-    email: string,
-    created?: string,
-    creatorType: string,
-    creator: string,
-  }
+  id: string,
+  name: string,
+  email: string,
+  created?: string,
+  creatorType: string,
+  creator: string,
 }
 
 export type Created = UserGraphQlEntity

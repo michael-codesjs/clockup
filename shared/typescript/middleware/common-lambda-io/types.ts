@@ -1,4 +1,5 @@
 import { AppSyncResolverEvent, Context, SNSEvent, SQSEvent } from "aws-lambda";
+import middy from "@middy/core";
 
 export enum InputSource {
   SNS = "SNS",
@@ -7,15 +8,14 @@ export enum InputSource {
 } 
 
 export type CommonIOEvent<I extends Record<string, any>> = {
-  inputs: Array<I>,
-  type: InputSource,
+  inputs: Array<I>
 };
 
 export type CommonIOHandler<I extends Record<string, any>, R> = (event: CommonIOEvent<I>, context: Context) => Promise<R>;
 
-export type AllEventTypes<I,R> = SNSEvent | SQSEvent | AppSyncResolverEvent<I, R>;
+export type CommonIOInputSources<I,R> = SNSEvent | SQSEvent | AppSyncResolverEvent<I, R>;
 
 export interface Consumer {
-  request(event: AllEventTypes<any, any>): Promise<void>;
-  response(response: Array<Record<string, any>> | Record<string, any>): Promise<void>;
+  request(request: middy.Request<CommonIOInputSources<any,any>, any, Error, Context>): Promise<void>;
+  response(request: middy.Request<CommonIOInputSources<any,any>, any, Error, Context>): Promise<void>;
 }

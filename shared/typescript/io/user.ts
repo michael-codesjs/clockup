@@ -27,33 +27,25 @@ class UserServiceIO {
     return new SQS({ apiVersion: '2012-11-05' });
   }
 
-  async create(payload: Create["payload"]) {
+  async create(payload: Create) {
 
     const cid = payload.id; // correlation id is the user id.
     const sqsServiceObject = this.sqsServiceObject;
-
-    const message: Create = {
-      time: new Date,
-      type: Inputs.CREATE,
-      cid: cid,
-      replyTo: USER_REQUEST_QUEUE_URL,
-      payload
-    };
 
     // send 'CREATE' input to the user request queue.
     return await (
       sqsServiceObject
         .sendMessage({
           MessageAttributes: {
-            type: {
+            Type: {
               DataType: "String",
               StringValue: Inputs.CREATE
             },
-            cid: {
+            CID: {
               DataType: "String",
               StringValue: cid
             },
-            replyTo: {
+            ReplyTo: {
               DataType: "String",
               StringValue: USER_RESPONSE_QUEUE_URL
             }
