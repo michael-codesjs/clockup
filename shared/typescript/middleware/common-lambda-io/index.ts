@@ -3,7 +3,7 @@ import { Consumers } from "./consumers.ts";
 import { CommonIOInputSources, Consumer } from "./types";
 
 /** Provides a common interface for receiving inputs from different sources(SQS,SNS,AppSync,API Gateway, EventBridge, MQ). */
-export const commonLambdaIO = <I extends Record<string, any>, R>(): middy.MiddlewareObj<CommonIOInputSources<I, R>, R> => {
+export const commonLambdaIO = <I, R>(): middy.MiddlewareObj<CommonIOInputSources<I, R>, R> => {
 
 	let consumer: Consumer;
 

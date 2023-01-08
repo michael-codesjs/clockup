@@ -13,7 +13,6 @@ describe("Create User", () => {
     const created = await Repeat.timedOnCondition({
       call: async () => {
         const userRecord = await Given.user.byId(id); // get user record from the table.
-        console.log("U:", userRecord);
         Then(userRecord).user({
           ...input,
           alarms: 0

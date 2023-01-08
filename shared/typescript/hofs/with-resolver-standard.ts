@@ -1,10 +1,10 @@
+import { Handler } from "aws-lambda";
 import { errorResponse } from "../middleware/error-response";
-import { AppSyncResolverHandler } from "aws-lambda";
 import { withLambdaStandard } from "./with-lambda-standard";
 
-export const withResolverStandard = <A, R>(resolver: AppSyncResolverHandler<A, R>) => {
+export const withResolverStandard = <E, R>(resolver: Handler<E, R>) => {
 	return (
 		withLambdaStandard(resolver)
-			.use(errorResponse<A,R>())
+			.use(errorResponse<E,R>())
 	);
 };

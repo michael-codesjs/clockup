@@ -9,6 +9,8 @@ class AutheenticationResources {
 	readonly userPoolArn = "${ssm:/clock-up/${self:custom.stage}/authentication/user-pool/arn}" as const;
 	readonly userPoolWebClient = "${ssm:/clock-up/${self:custom.stage}/authentication/user-pool/client/web/id}";
 
+  readonly responseQueueURL = "${ssm:/clock-up/^{self:custom.stage}/authentication/queues/response/url}";
+
 }
 
 export const authenticationResources = AutheenticationResources.instance;

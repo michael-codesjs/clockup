@@ -1,11 +1,14 @@
-import { AppSyncResolverHandler, Context } from "aws-lambda";
+import middy from "@middy/core";
+import { Context } from "aws-lambda";
 import { commonLambdaIO } from "../middleware";
-import { CommonIOInputSources } from "../middleware/common-lambda-io/types";
+import { CommonIOHandler, CommonIOInputSources } from "../middleware/common-lambda-io/types";
 import { withResolverStandard } from "./with-resolver-standard";
 
-export const withLambdaIOStandard = <I, R>(handler: (event: CommonIOInputSources<I, R>, Context: Context) => any) => {
+export const withLambdaIOStandard = <I, R>(handler: CommonIOHandler<I, R>) => {
+
 	return (
-		withResolverStandard(handler as AppSyncResolverHandler<I, R>)
+		(withResolverStandard(handler) as unknown as middy.MiddyfiedHandler<CommonIOInputSources<I, R>, R, Error, Context>)
 			.use(commonLambdaIO())
-	);
+	)
+
 };

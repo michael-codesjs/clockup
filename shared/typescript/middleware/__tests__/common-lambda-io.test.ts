@@ -143,29 +143,30 @@ describe("CommonLambdaIO", () => {
       .receiveMessage({
         QueueUrl: TEST_QUEUE_URL,
         MessageAttributeNames: ["CID", "Type"],
-        WaitTimeSeconds: 20,
-        MaxNumberOfMessages: 10
+        WaitTimeSeconds: 0,
       })
       .promise();
 
     const Type = sqsEvent.Records[0].messageAttributes.Type.stringValue;
     const CID = sqsEvent.Records[0].messageAttributes.CID.stringValue;
 
-    const hasMessage = response.Messages.some(message => {
-      return Type === message.MessageAttributes.Type.StringValue && CID === message.MessageAttributes.CID.StringValue;
-    });
-
-    expect(hasMessage).toBe(true);
+    let hasMessage: boolean;
 
     // delete messages
     for (const message of response.Messages) {
-      await new SQS({ apiVersion: '2012-11-05' })
-        .deleteMessage({
-          QueueUrl: TEST_QUEUE_URL,
-          ReceiptHandle: message.ReceiptHandle
-        })
-        .promise();
+      hasMessage = Type === message.MessageAttributes.Type.StringValue && CID === message.MessageAttributes.CID.StringValue;
+      if (hasMessage) {
+        await new SQS({ apiVersion: '2012-11-05' })
+          .deleteMessage({
+            QueueUrl: TEST_QUEUE_URL,
+            ReceiptHandle: message.ReceiptHandle
+          })
+          .promise()
+        break;
+      }
     }
+
+    expect(hasMessage).toBe(true);
 
   });
 

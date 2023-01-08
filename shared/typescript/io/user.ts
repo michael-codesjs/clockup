@@ -6,7 +6,7 @@ import { Create, Delete, Inputs } from "./types/user";
 const {
   USER_TOPIC_ARN,
   USER_REQUEST_QUEUE_URL,
-  USER_RESPONSE_QUEUE_URL,
+  AUTHENTICATION_RESPONSE_QUEUE_URL,
   REGION
 } = configureEnviromentVariables();
 
@@ -47,7 +47,7 @@ class UserServiceIO {
             },
             ReplyTo: {
               DataType: "String",
-              StringValue: USER_RESPONSE_QUEUE_URL
+              StringValue: AUTHENTICATION_RESPONSE_QUEUE_URL
             }
           },
           MessageBody: JSON.stringify(payload),

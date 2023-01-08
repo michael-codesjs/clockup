@@ -21,8 +21,9 @@ const serverlessConfiguration: AWS = {
 			USER_TOPIC_ARN: resource.user.topicArn,
 			USER_REQUEST_QUEUE_ARN: resource.user.requestQueueArn,
 			USER_REQUEST_QUEUE_URL: resource.user.requestQueueURL,
-			USER_RESPONSE_QUEUE_ARN: resource.user.responseQueueArn,
-			USER_RESPONSE_QUEUE_URL: resource.user.responseQueueURL,
+			AUTHENTICATION_RESPONSE_QUEUE_URL: resource.authentication.userPoolWebClient
+			// USER_RESPONSE_QUEUE_ARN: resource.user.responseQueueArn,
+			// USER_RESPONSE_QUEUE_URL: resource.user.responseQueueURL,
 		},
 	},
 
