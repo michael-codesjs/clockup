@@ -1,7 +1,7 @@
-import { api } from "@lib/amplify";
-import * as queries from "@client/graphql/queries";
-import * as mutations from "@client/graphql/mutations";
-import * as types from "@client/types/api";
+import { api } from "../../../lib/amplify";
+import * as queries from "../../../utilities/client/queries";
+import * as mutations from "../../../utilities/client/mutations";
+import * as types from "../../../utilities/client/types";
 
 type Query<T> = Promise<{ data: T }>;
 

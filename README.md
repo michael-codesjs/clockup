@@ -15,7 +15,7 @@ Our infrastructure is defined and deployed to AWS using HashiCorp's **Terraform*
 
 You should have an AWS Account and your credentials set on your local machine. I like to do so via the shared credentials file, you can do so too by following [**these**](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html) instructions. These credentials are used by Terraform and The Serverless Framework to deploy the infrastructure and microservices to your AWS account.
 
-To deploy and destroy the infrastructure and/or microservices, run the commands **`yarn deploy`** and **`yarn destroy`** respectively and let the scripts I wrote handle the long process of deploying/destroying the backend for you. The scripts will ask you a few questions before deploying.
+To deploy and destroy the infrastructure and/or microservices, run the commands **`yarn deploy`** and **`yarn destroy`** respectively and let the scripts I wrote handle the long process of deploying/destroying the backend for you. The scripts will ask you a few questions before deploying. **Note**: these scripts require you to install dependencies of every microservice.
 
 ## **Testing**
 

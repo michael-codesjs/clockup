@@ -1,6 +1,6 @@
 import type { AWS } from "../../shared/typescript/types/aws";
-import { cloudImports, common, generate } from "../../shared/typescript/utilities";
-import { confirmSignUp } from "./functions";
+import { resource, common, generate } from "../../shared/typescript/utilities";
+import { confirmSignUp, preSignUp } from "./functions";
 
 const serverlessConfiguration: AWS.Service = {
 
@@ -16,8 +16,7 @@ const serverlessConfiguration: AWS.Service = {
 		...common.providerSettings,
 		environment: {
 			...common.enviromentVariables,
-			...cloudImports.topics,
-			DYNAMO_DB_TABLE_NAME: common.enviromentResources.DYNAMO_DB_TABLE_NAME
+			USER_TOPIC_ARN: resource.user.topicArn,
 		},
 	},
 
@@ -31,7 +30,8 @@ const serverlessConfiguration: AWS.Service = {
 	},
 
 	functions: {
-		confirmSignUp
+		confirmSignUp,
+		preSignUp
 	},
 
 };

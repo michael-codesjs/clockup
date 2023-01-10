@@ -1,7 +1,6 @@
 import middy from "@middy/core";
-import { AppSyncResolverEvent, Handler } from "aws-lambda";
-import { ErrorResponse } from "../abstracts/errors";
-import { ErrorResponse as ErrorResponseGraphQLEntity } from "../types/api";
+import { ErrorResponse } from "../../abstracts/errors";
+import { ErrorResponse as ErrorResponseGraphQLEntity } from "../../types/api";
 
 /** Returns proper error response when a lambda fails */
 export const errorResponse = <E, R>(): middy.MiddlewareObj<E, R | ErrorResponseGraphQLEntity> => {

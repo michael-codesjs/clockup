@@ -14,17 +14,17 @@ export function generateServicePath(serviceName: string) {
 	return `services/${serviceName}`;
 }
 
-export function createMappingTemplate({ field, type, source }: { field: string, type: string, source: string }) {
+export function createMappingTemplate({ field, type, source, request, response }: { field: string, type: string, source: string, request?: string, response?: string }) {
 	return {
 		type,
 		field,
 		dataSource: source,
-		request: false,
-		response: false,
+		request: request || false,
+		response: request || false,
 	};
 }
 
-export function createDataSource(name: string) {
+export function createLambdaDataSource(name: string) {
 	return {
 		type: "AWS_LAMBDA",
 		name,
@@ -32,6 +32,32 @@ export function createDataSource(name: string) {
 			functionName: name,
 		}
 	};
+}
+
+export function createStateMachineDataSource(name: string) {
+	return {
+		type: "HTTP",
+		name,
+		config: {
+			endpoint: {
+				"Fn::Sub": "https://states.${self:custom.region}.amazonaws.com/"
+			},
+			authorizationConfig: {
+				authorizationType: "AWS_IAM",
+				iamRoleStatements: [{
+					Effect: "Allow",
+					Action: "states:StartExecution",
+					Resource: {
+						"Fn::GetAtt": [name, "arn"]
+					}
+				}],
+				awsIamConfig: {
+					signingRegion: "${self:custom.region",
+					signingServiceName: "states",
+				}
+			}
+		}
+	}
 }
 
 
@@ -118,22 +144,22 @@ export const handlerPath = (context: string) => {
 
 /** picks and returns random attributes from an object, attributes returned are less than the total number of attributes and at least one attribute is returned. */
 export const pickRandomAttributesFromObject = <T extends Record<string, any>>(obj: T): Partial<T> => {
-	
+
 	const final: T = {} as T;
-	
+
 	const entries = Object.entries(obj);
 	const maxAttributes = chance.integer({ min: 1, max: entries.length - 1 });
-	
+
 	for (let x = 0; x < maxAttributes; x++) {
-		
+
 		let attribute: (typeof entries)[number];
-		
+
 		do {
 			attribute = entries[chance.integer({ min: 0, max: maxAttributes })];
 		} while (attribute[0] in final); // while key in final
-		
+
 		final[attribute[0] as keyof T] = attribute[1];
-	
+
 	}
 
 	return final;

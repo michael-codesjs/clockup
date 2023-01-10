@@ -4,6 +4,7 @@ import { dynamoDbOperations } from "../../../lib/dynamoDb";
 import { EntityType, User as TUser } from "../../../types/api";
 import { chance } from "../../../utilities/constants";
 import { configureEnviromentVariables } from "../../../utilities/functions";
+import { Authentication } from "../when/authentication";
 
 const { USER_TABLE_NAME } = configureEnviromentVariables();
 
@@ -87,6 +88,25 @@ class GivenUserAttributes {
     return Item as TUser;
 	
   }
+
+	async authenticated() {
+
+		const attributes = {
+			...this.input(),
+			password: chance.string({ symbols: true, numeric: true, alpha: true, length: 20 })
+		};
+
+		const { id } = await Authentication.signUp(attributes); // sign up user
+
+		await Authentication.signIn({
+			username: attributes.email,
+			password: attributes.password
+		}); // sign in user
+
+		return await this.byId(id);
+
+	}
+
 	/*
 
 	async byId(id: string) {
@@ -117,28 +137,6 @@ class GivenUserAttributes {
 
 	absoluteEntity(input = this.input()) {
 		return Entities.User(input);
-	}
-
-	async authenticated() {
-
-		const attributes = {
-			...this.input(),
-			password: chance.string({ symbols: true, numeric: true, alpha: true, length: 20 })
-		};
-
-		const { id } = await Authentication.signUp(attributes); // sign up user
-
-		await Authentication.signIn({
-			username: attributes.email,
-			password: attributes.password
-		}); // sign in user
-
-		return {
-			...attributes,
-			id,
-			alarms: 0
-		};
-
 	}
 
 	async authenticatedInstance() {

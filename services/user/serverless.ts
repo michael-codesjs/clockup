@@ -1,15 +1,19 @@
-import type { AWS } from "@serverless/typescript";
+import { AWS } from "../../shared/typescript/types/aws";
 import { common, generate, resource } from "../../shared/typescript/utilities";
-import { createUser } from "./functions";
+import { createLambdaDataSource, createMappingTemplate, createStateMachineDataSource } from "../../shared/typescript/utilities/functions";
+import { createUser, discontinueUser } from "./functions";
+import { deleteUser } from "./state-machines";
 
-const serverlessConfiguration: AWS = {
+const serverlessConfiguration: AWS.Service = {
 
 	service: generate.serviceName("user"),
 
 	frameworkVersion: "3",
 
 	plugins: [
-		...common.plugins
+		...common.plugins,
+		"serverless-step-functions",
+		"serverless-appsync-plugin"
 	],
 
 	provider: {
@@ -21,9 +25,10 @@ const serverlessConfiguration: AWS = {
 			USER_TOPIC_ARN: resource.user.topicArn,
 			USER_REQUEST_QUEUE_ARN: resource.user.requestQueueArn,
 			USER_REQUEST_QUEUE_URL: resource.user.requestQueueURL,
-			AUTHENTICATION_RESPONSE_QUEUE_URL: resource.authentication.userPoolWebClient
+			AUTHENTICATION_RESPONSE_QUEUE_URL: resource.authentication.userPoolWebClient,
+			COGNITO_USER_POOL_ID: resource.authentication.userPoolId,
+			COGNITO_CLIENT_ID: resource.authentication.userPoolWebClient,
 			// USER_RESPONSE_QUEUE_ARN: resource.user.responseQueueArn,
-			// USER_RESPONSE_QUEUE_URL: resource.user.responseQueueURL,
 		},
 	},
 
@@ -33,13 +38,53 @@ const serverlessConfiguration: AWS = {
 
 	custom: {
 		...common.pluginConfigs,
-		...common.custom
+		...common.custom,
+		appSync: {
+			apiId: resource.api.graphQlApiId,
+			schema: "../../shared/graphql/schema.graphql",
+			mappingTemplates: [
+				/*
+				createMappingTemplate({
+					field: "getProfile",
+					type: "Query",
+					source: "getProfile",
+				}),
+				createMappingTemplate({
+					field: "updateUser",
+					type: "Mutation",
+					source: "updateUser",
+				}),
+				*/
+				createMappingTemplate({
+					field: "deleteUser",
+					type: "Mutation",
+					source: "deleteUser",
+					request: "request.deleteUser.vtl"
+				})
+			],
+			dataSources: [
+				// createDataSource("getProfile"),
+				// createDataSource("updateUser"),
+				createStateMachineDataSource("deleteUser")
+			]
+		},
+
 	},
 
 	functions: {
 		createUser,
-		// deleteUser
-	}
+		discontinueUser
+	},
+
+	...({
+		stepFunctions: {
+			stateMachines: {
+				deleteUser
+			}
+		}
+	})
+
+
 
 };
 

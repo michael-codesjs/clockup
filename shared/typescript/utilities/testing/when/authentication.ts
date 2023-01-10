@@ -1,6 +1,16 @@
-import { EntityType } from "shared/types/api";
-import { SignInCredentials, SignUpCredentials } from "shared/types/index";
+import { EntityType } from "../../../types/api";
 import { auth } from "../../../lib/amplify";
+
+type SignInCredentials = {
+	username: string,
+	password: string
+}
+
+type SignUpCredentials = {
+	name: string,
+	email: string,
+	password: string
+};
 
 class AuthenticationUtility {
 
