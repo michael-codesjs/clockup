@@ -1,10 +1,16 @@
 import { ErrorResponse } from "../../abstracts/errors";
+import { ErrorResponse as ErrorResponseGraphQLEntity } from "../../types/api";
 
-export const withErrorResponse = async <R>(call: () => R): Promise<(R extends Promise<any> ? Awaited<R> : R) | ReturnType<ErrorResponse["graphQlEntity"]>> => {
+export const withErrorResponse = async <R>(call: () => R): Promise<R | ErrorResponseGraphQLEntity> => {
+  
+  let result: R | ErrorResponseGraphQLEntity;
+  
   try {
-    let result = call();
-    if (result instanceof Promise) result = await result;
+    result = await call();
   } catch (error: any) {
-    return new ErrorResponse(error).graphQlEntity();
+    result = new ErrorResponse(error).graphQlEntity();
   }
+
+  return result;
+
 }

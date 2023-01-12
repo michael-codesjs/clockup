@@ -31,6 +31,11 @@ export const createUser: AWS.ServerlessLambdaFunction = {
 			Effect: "Allow",
 			Action: ["dynamodb:PutItem"],
 			Resource: resource.user.tableArn
+		},
+		{
+			Effect: "Allow",
+			Resource: resource.authentication.responseQueueArn,
+			Action: ["sqs:SendMessage"]
 		}
 	]
 

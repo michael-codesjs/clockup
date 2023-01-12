@@ -1,6 +1,7 @@
 import { PostConfirmationTriggerHandler } from "aws-lambda";
 import { withLambdaStandard } from "../../../../shared/typescript/hofs/with-lambda-standard";
-import { IO } from "../../../../shared/typescript/io";
+import { ServiceIO } from "../../../../shared/typescript/io";
+import { EntityType } from "../../../../shared/typescript/types/api";
 
 const handler: PostConfirmationTriggerHandler = async event => {
 
@@ -9,7 +10,9 @@ const handler: PostConfirmationTriggerHandler = async event => {
 	const id = event.userName;
 
 	// send CREATE message to user topic.
-	await Topics.user.create({ id, email, name });
+	await ServiceIO.user.create({ id, email, name, creatorType: EntityType.User, creator: id });
+
+	return event;
 
 };
 

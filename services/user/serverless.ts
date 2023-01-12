@@ -1,6 +1,6 @@
 import { AWS } from "../../shared/typescript/types/aws";
 import { common, generate, resource } from "../../shared/typescript/utilities";
-import { createLambdaDataSource, createMappingTemplate, createStateMachineDataSource } from "../../shared/typescript/utilities/functions";
+import { createMappingTemplate, createStateMachineDataSource } from "../../shared/typescript/utilities/functions";
 import { createUser, discontinueUser } from "./functions";
 import { deleteUser } from "./state-machines";
 
@@ -42,6 +42,10 @@ const serverlessConfiguration: AWS.Service = {
 		appSync: {
 			apiId: resource.api.graphQlApiId,
 			schema: "../../shared/graphql/schema.graphql",
+			substitutions: {
+				deleteUserStateMachineArn: "${self:resources.Outputs.DeleteUserStateMachineARN.Value}",
+				deleteUserStateMachineName: generate.stateMachineName("DeleteUser")
+			},
 			mappingTemplates: [
 				/*
 				createMappingTemplate({
@@ -82,9 +86,16 @@ const serverlessConfiguration: AWS.Service = {
 				deleteUser
 			}
 		}
-	})
+	}),
 
-
+	resources: {
+		Outputs: {
+			DeleteUserStateMachineARN: {
+				Description: "The ARN of the deleteUser state machine",
+				Value: { Ref: generate.stateMachineName("DeleteUser") }
+			}
+		}
+	}
 
 };
 

@@ -1,7 +1,3 @@
-// the user pool is gonna be created using cloud formation.
-// reason being, we can not provide a lambda name as a value in the lambda config using tf
-// but we can do so using cloud formation.
-
 resource "aws_cognito_user_pool" "user_pool" {
 
   name                = "clock-up-user-pool-${var.stage}"
@@ -24,6 +20,12 @@ resource "aws_cognito_user_pool" "user_pool" {
       min_length = 1
       max_length = 256
     }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      lambda_config
+    ]
   }
 
 }

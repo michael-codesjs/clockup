@@ -1,5 +1,6 @@
 
 import { SNS, SQS } from "aws-sdk";
+import correlator from "correlation-id";
 import { configureEnviromentVariables } from "../utilities/functions";
 import { Create, Delete, Inputs } from "./types/user";
 
@@ -10,7 +11,7 @@ const {
   REGION
 } = configureEnviromentVariables();
 
-/** Utility class for sending messages to the user service. */
+/** Utility class for sending inputs to the user service. */
 class UserServiceIO {
 
   private constructor() { }
@@ -27,6 +28,7 @@ class UserServiceIO {
     return new SQS({ apiVersion: '2012-11-05' });
   }
 
+  /** Sends a 'CREATE' input to the user service via the user service request SQS queue. */
   async create(payload: Create) {
 
     const cid = payload.id; // correlation id is the user id.

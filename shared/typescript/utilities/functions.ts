@@ -42,6 +42,7 @@ export function createStateMachineDataSource(name: string) {
 			endpoint: {
 				"Fn::Sub": "https://states.${self:custom.region}.amazonaws.com/"
 			},
+			/*
 			authorizationConfig: {
 				authorizationType: "AWS_IAM",
 				iamRoleStatements: [{
@@ -52,14 +53,14 @@ export function createStateMachineDataSource(name: string) {
 					}
 				}],
 				awsIamConfig: {
-					signingRegion: "${self:custom.region",
+					signingRegion: "${self:custom.region}",
 					signingServiceName: "states",
 				}
 			}
+			*/
 		}
 	}
 }
-
 
 export function importCloudFormationParam(args: { name: config.serviceName | string, stack: stacks, stage: string, output: string }) {
 	const { name, stage, stack, output } = args;

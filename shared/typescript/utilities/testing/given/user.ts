@@ -22,6 +22,9 @@ class GivenUserAttributes {
 
 	}
 
+	password() {
+		return chance.string({ length: 20, alpha: true, numeric: true, symbols: true });
+	}
 
 	attributes(): TUser {
 

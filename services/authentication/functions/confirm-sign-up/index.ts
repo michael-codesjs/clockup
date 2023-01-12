@@ -1,4 +1,5 @@
 import type { AWS } from "../../../../shared/typescript/types/aws";
+import { resource } from "../../../../shared/typescript/utilities";
 import { handlerPath } from "../../../../shared/typescript/utilities/functions";
 
 export const confirmSignUp: AWS.ServerlessLambdaFunction = {
@@ -12,6 +13,13 @@ export const confirmSignUp: AWS.ServerlessLambdaFunction = {
 				existing: true,
 				trigger: "PostConfirmation"
 			}
+		}
+	],
+	iamRoleStatements: [
+		{
+			Effect: "Allow",
+			Resource: resource.user.requestQueueArn,
+			Action: ["sqs:SendMessage"]
 		}
 	]
 };

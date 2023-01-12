@@ -1,4 +1,4 @@
-import { apiResources } from "./apt";
+import { apiResources } from "./api";
 import { authenticationResources } from "./authentication";
 import { testResources } from "./test";
 import { userResources } from "./user";

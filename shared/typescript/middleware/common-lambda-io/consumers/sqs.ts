@@ -1,6 +1,6 @@
 import middy from "@middy/core";
-import { SQS } from "aws-sdk";
 import { Context, SQSEvent } from "aws-lambda";
+import { SQS } from "aws-sdk";
 import { CommonIOEvent, Consumer } from "../types";
 
 export class CommonIoSQSConsumer implements Consumer {
@@ -65,7 +65,7 @@ export class CommonIoSQSConsumer implements Consumer {
 
       }
     }
-    
+
     request.response = null;
 
   }

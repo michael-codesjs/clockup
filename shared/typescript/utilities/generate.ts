@@ -5,9 +5,14 @@ class Generate {
 	private constructor() { }
 	static readonly instance = new Generate;
 
-	serviceName(name: string) {
-		return config.serviceName + "-" + name;
+	serviceName<T extends string>(name: T): `clock-up-${T}` {
+		return `${config.serviceName}-${name}`;;
 	}
+
+	stateMachineName<T extends string>(name: T): `ClockUp${T}\$\{self:custom.stage\}` {
+		return `ClockUp${name}$\{self:custom.stage\}`;
+	}
+	
 
 }
 

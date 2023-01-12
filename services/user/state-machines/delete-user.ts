@@ -1,6 +1,8 @@
+import { generate } from "../../../shared/typescript/utilities";
+
 /** deleteUser state machine. */
 export const deleteUser = {
-  name: "ClockUpDeleteUser(${self:custom.stage})",
+  name: generate.stateMachineName("DeleteUser"),
   events: [
     /*
       {

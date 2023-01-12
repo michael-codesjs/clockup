@@ -3,7 +3,7 @@
 Welcome, this repository contains everything that makes up the clock-up platform.
 The backend comprised of several serverless microservices, web clients comprised of several micro front-ends and a cross platform native app.
 This project is very experimental and far from done. 
-* **[Figma Design Project](https://www.figma.com/files/project/63897376/clock-up?fuid=1075770680965640589)**
+* **[Figma Design Project](https://www.figma.com/files/project/63897376/clock-up?fuid=1075770680965640589)**. You can also just view the [**Prototype**](https://www.figma.com/proto/8fY3z6IapqSPoycTo2vKZM/The-Prototype-%26-Wireframes?page-id=0%3A1&node-id=101%3A4&viewport=575%2C416%2C0.25&scaling=scale-down&starting-point-node-id=101%3A4).
 
 ## **Dependencies & Installation**
 

@@ -16,7 +16,12 @@ const serverlessConfiguration: AWS.Service = {
 		...common.providerSettings,
 		environment: {
 			...common.enviromentVariables,
+			COGNITO_USER_POOL_ID: resource.authentication.userPoolId,
+			COGNITO_CLIENT_ID: resource.authentication.userPoolWebClient,
 			USER_TOPIC_ARN: resource.user.topicArn,
+			USER_REQUEST_QUEUE_URL: resource.user.requestQueueURL,
+			AUTHENTICATION_RESPONSE_QUEUE_URL: resource.authentication.responseQueueURL,
+			USER_TABLE_NAME: resource.user.tableName // TODO: find a better way to export enviroment variables, user table should not be in scope in any way in this service
 		},
 	},
 

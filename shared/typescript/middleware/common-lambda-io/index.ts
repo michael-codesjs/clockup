@@ -1,5 +1,5 @@
 import middy from "@middy/core";
-import { Consumers } from "./consumers.ts";
+import { Consumers } from "./consumers";
 import { CommonIOInputSources, Consumer } from "./types";
 
 /** Provides a common interface for receiving inputs from different sources(SQS,SNS,AppSync,API Gateway, EventBridge, MQ). */

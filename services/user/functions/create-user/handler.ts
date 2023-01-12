@@ -13,9 +13,12 @@ const handler: CommonIOHandler<Create, Array<UserGraphQlEntity | ErrorResponseGr
 
 		const response = await withErrorResponse(async () => {
 			const payload = { ...input, alarms: 0 };
+			console.log("CRU Payload:", payload);
 			const user = new User(payload);
 			await user.put();
-			return await user.graphQlEntity();
+			const graphQlEntity = await user.graphQlEntity();
+			console.log("CRU GRQLE:", graphQlEntity);
+			return graphQlEntity;
 		});
 
 		responses.push(response);

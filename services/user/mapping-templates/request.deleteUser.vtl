@@ -8,7 +8,8 @@
       "x-amz-target": "AWSStepFunctions.StartSyncExecution"
     },
     "body": {
-      "stateMachineArn": { "Fn::GetAtt": ["deleteUser", "Arn"] }
+      "stateMachineArn": "${deleteUserStateMachineArn}",
+      "name": "${deleteUserStateMachineName}"
     }
   }
 }
