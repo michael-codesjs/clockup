@@ -10,12 +10,12 @@ Config files for stuff like jest, jsdoc, eslint and many more.
 
 ### **Infrastructure**
 
-**HCL** source files where we define our infrastructure. Our infrastructure is split into 4 modules, these are the:
+**HCL** source files where we define our global infrastructure that's known by all microservices. Our global infrastructure is split into the following modules:
 
 - **api** infrastructure, eg: AppSync GraphQL API.
 - **authentication** infrastructure, eg: Cognito User Pool, Cognito Clients.
 - **io** infrastructure for communication between our microservices, eg: SNS topics, SQS queues and EventBridge event buses.
-- **storage** infrastructure, eg: DynamoDB table and S3 buckets.
+- **storage** infrastructure, eg: DynamoDB tables and S3 buckets.
 
 
 ### **Scripts**

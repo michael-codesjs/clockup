@@ -11,7 +11,7 @@ export type CommonIOEvent<I extends Record<string, any>> = {
   inputs: Array<I>
 };
 
-export type CommonIOHandler<I extends Record<string, any>, R> = (event: CommonIOEvent<I>, context: Context) => Promise<R>;
+export type CommonIOHandler<I extends Record<string, any>, R> = (event: CommonIOEvent<I>, context?: Context) => Promise<Array<R>>;
 
 export type CommonIOInputSources<I,R> = SNSEvent | SQSEvent | AppSyncResolverEvent<I, R>;
 

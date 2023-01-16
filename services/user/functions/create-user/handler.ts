@@ -2,31 +2,20 @@ import { withLambdaIOStandard } from "../../../../shared/typescript/hofs/with-la
 import { Create } from "../../../../shared/typescript/io/types/user";
 import { CommonIOHandler } from "../../../../shared/typescript/middleware/common-lambda-io/types";
 import { withErrorResponse } from "../../../../shared/typescript/middleware/error-response/with-error-response";
+import { withCommonInput } from "../../../../shared/typescript/hofs";
 import { User as UserGraphQlEntity, ErrorResponse as ErrorResponseGraphQLEntity } from "../../../../shared/typescript/types/api";
 import { User } from "../../framework";
 
-const handler: CommonIOHandler<Create, Array<UserGraphQlEntity | ErrorResponseGraphQLEntity>> = async event => {
-
-	const responses: Array<UserGraphQlEntity | ErrorResponseGraphQLEntity> = [];
-
-	for (const input of event.inputs) {
-
-		const response = await withErrorResponse(async () => {
-			const payload = { ...input, alarms: 0 };
-			console.log("CRU Payload:", payload);
-			const user = new User(payload);
-			await user.put();
-			const graphQlEntity = await user.graphQlEntity();
-			console.log("CRU GRQLE:", graphQlEntity);
-			return graphQlEntity;
+/** handler for the 'createUser' lambda function. */
+const handler: CommonIOHandler<Create, UserGraphQlEntity | ErrorResponseGraphQLEntity> = (
+	withCommonInput(async input => {
+		return await withErrorResponse(async () => {
+			const user = new User({ ...input, alarms: 0 }); // instanciate instance of User with inputs from event + { alarms: 0 }
+			await user.put(); // insert user record into the 'User' entity table.
+			return await user.graphQlEntity(); // return the created users GraphQL Entity.
 		});
+	})
+);
 
-		responses.push(response);
-
-	}
-
-	return responses;
-
-};
-
+/** 'createUser' lambda function handler wrapped in it's required middleware. */
 export const main = withLambdaIOStandard(handler);
