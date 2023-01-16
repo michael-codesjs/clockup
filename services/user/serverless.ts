@@ -43,7 +43,7 @@ const serverlessConfiguration: AWS.Service = {
 			apiId: resource.api.graphQlApiId,
 			schema: "../../shared/graphql/schema.graphql",
 			substitutions: {
-				deleteUserStateMachineArn: "${self:resources.Outputs.DeleteUserStateMachineARN.Value}",
+				deleteUserStateMachineArn: "${self:resources.Outputs.DeleteUserStateMachineArn.Value}",
 				deleteUserStateMachineName: generate.stateMachineName("DeleteUser")
 			},
 			mappingTemplates: [
@@ -63,13 +63,18 @@ const serverlessConfiguration: AWS.Service = {
 					field: "deleteUser",
 					type: "Mutation",
 					source: "deleteUser",
-					request: "request.deleteUser.vtl"
+					request: "request.deleteUser.vtl",
+					response: "response.deleteUser.vtl"
 				})
 			],
 			dataSources: [
 				// createDataSource("getProfile"),
 				// createDataSource("updateUser"),
-				createStateMachineDataSource("deleteUser")
+				createStateMachineDataSource({
+					name: "deleteUser",
+					sync: true,
+					stateMachineArn: "${self:resources.Outputs.DeleteUserStateMachineArn.Value}"
+				})
 			]
 		},
 
@@ -90,8 +95,8 @@ const serverlessConfiguration: AWS.Service = {
 
 	resources: {
 		Outputs: {
-			DeleteUserStateMachineARN: {
-				Description: "The ARN of the deleteUser state machine",
+			DeleteUserStateMachineArn: {
+				Description: "ARN for the deleteUser state machine.",
 				Value: { Ref: generate.stateMachineName("DeleteUser") }
 			}
 		}

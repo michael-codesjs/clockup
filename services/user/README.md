@@ -1,11 +1,15 @@
-Serverless user microservice for the **clock-up** platform.
+## **User** service.
+This folder and it's decendants contain everything that makes up the user service of the clock-up platform backend. 
 
 ## **Dependencies & Installation**
 This microservice is a **Node/Typescript** component, so install dependencies by running **`yarn install`** in the component root folder(services/user).
+Our infrastructure is defined and deployed to AWS using HashiCorp's **Terraform**. To install the Terraform CLI, follow [**these**](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) instructions.
 
 ## **Deploying & Destroying**
 
-You should have an AWS Account and your credentials set on your local machine. I like to do so via the shared credentials file, you can do so too by following [**these**](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html) instructions. These credentials are used by The Serverless Framework to deploy the microservice to your AWS account.
+You should have an AWS Account and your credentials set on your local machine. I like to do so via the shared credentials file, you can do so too by following [**these**](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html) instructions. These credentials are used by Terraform and The Serverless Framework to deploy the microservice and its infrastructure to your AWS account.
+
+To deploy the infrastructure, navigate to the infrastructure folder and run **`terraform init`** and then **`terraform apply`**.
 
 To deploy and destroy the microservice, run **`npx sls deploy`** and **`npx sls remove`** respectively in the component root folder.
 

@@ -7,6 +7,9 @@ import { User } from "../../framework";
 
 const handler: CommonIOHandler<Delete, Array<ErrorResponse | string>> = async event => {
 
+	console.log("Event:", event);
+	/*
+
 	const responses: Array<ErrorResponse | string> = [];
 
 	for (const input of event.inputs) {
@@ -22,6 +25,10 @@ const handler: CommonIOHandler<Delete, Array<ErrorResponse | string>> = async ev
 	}
 
 	return responses;
+
+	*/
+
+	return [] as any;
 
 };
 

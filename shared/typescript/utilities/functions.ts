@@ -34,30 +34,36 @@ export function createLambdaDataSource(name: string) {
 	};
 }
 
-export function createStateMachineDataSource(name: string) {
+type CreateStateMachineDataSourceParams = {
+	name: string,
+	sync: boolean,
+	stateMachineArn: string
+}
+
+export function createStateMachineDataSource(params: CreateStateMachineDataSourceParams) {
+	// SOME USEFUL RESOURCES:
+	// https://aws.amazon.com/blogs/mobile/invoke-aws-services-directly-from-aws-appsync/
+	// https://confix.medium.com/aws-appsync-start-sync-step-function-express-workflow-d01bab650061
+	const { name, sync, stateMachineArn } = params;
 	return {
 		type: "HTTP",
 		name,
 		config: {
 			endpoint: {
-				"Fn::Sub": "https://states.${self:custom.region}.amazonaws.com/"
+				"Fn::Sub": `https://${sync ? "sync-" : ""}states.\${self:custom.region}.amazonaws.com/`
 			},
-			/*
 			authorizationConfig: {
 				authorizationType: "AWS_IAM",
-				iamRoleStatements: [{
-					Effect: "Allow",
-					Action: "states:StartExecution",
-					Resource: {
-						"Fn::GetAtt": [name, "arn"]
-					}
-				}],
 				awsIamConfig: {
 					signingRegion: "${self:custom.region}",
-					signingServiceName: "states",
+					signingServiceName: "states"
 				}
-			}
-			*/
+			},
+			iamRoleStatements: [{
+				Effect: "Allow",
+				Action: [sync ? "states:StartSyncExecution" : "states:StartExecution"],
+				Resource: [stateMachineArn]
+			}]
 		}
 	}
 }
