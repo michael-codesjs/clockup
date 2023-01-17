@@ -88,7 +88,8 @@ export class Model {
 			Condition: {
 				...this.entity.keys.primary(),
 				discontinued: false,
-				creator: this.entity.attributes.get("creator")
+				creator: this.entity.attributes.get("creator"),
+				creatorType: this.entity.attributes.get("creatorType")
 			},
 			ConditionLogicalOperator: "AND"
 		});
@@ -123,15 +124,11 @@ export class Model {
 	}
 
 	async discontinue(): Promise<UpdateItemOutput | ExecuteTransactionOutput> {
-		try {
-			const params = this.discontinueParams();
-			return await dynamoDbOperations.update({
-				TableName: this.tableName,
-				...params as any
-			});
-		} catch (error: any) {
-			console.log("Err:", error);
-		}
+		const params = this.discontinueParams();
+		return await dynamoDbOperations.update({
+			TableName: this.tableName,
+			...params as any
+		});
 	}
 
 	/** deletes an entities record from the table */

@@ -1,4 +1,11 @@
+import { StateMachineEvent } from "../../../shared/typescript/middleware/common-lambda-io/types";
 import { generate } from "../../../shared/typescript/utilities";
+
+type Input = {
+  id: string,
+  creator: string,
+  creatorType: string
+}
 
 /** deleteUser state machine. */
 export const deleteUser = {
@@ -18,11 +25,14 @@ export const deleteUser = {
       DiscontinueUser: {
         Type: "Task",
         Resource: { "Fn::GetAtt": ["discontinueUser", "Arn"] },
-        Parameters: {
-          source: "StepFunction",
-          type: "CREATE",
-          "payload.$": "$.payload"
-        },
+        Parameters: ((): StateMachineEvent<Input> => ({
+          source: "StateMachine",
+          attributes: {
+            Type: "DELETE",
+            ["CID.$" as "CID"]: "$.CID",
+          },
+          ["payload.$" as "payload"]: "$.payload" as unknown as Array<Input>
+        }))(),
         ResultPath: "$",
         End: true
       }

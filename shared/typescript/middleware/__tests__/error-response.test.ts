@@ -1,7 +1,7 @@
 import middy from "@middy/core";
 import { chance } from "../../utilities/constants";
 import { errorResponse } from "../error-response";
-import { withErrorResponse } from "../error-response/with-error-response";
+import { withErrorResponse } from "../../hofs/with-output-response";
 
 describe("Error Response", () => {
 

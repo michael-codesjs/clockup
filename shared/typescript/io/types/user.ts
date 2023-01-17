@@ -18,13 +18,9 @@ export type Create = {
 export type Created = UserGraphQlEntity
 
 export type Delete = {
-  time: Date,
-  type: Inputs.DELETE,
-  payload: {
-    id: string,
-    creator: string,
-    creatorType: EntityType.User // | EntityType.Organisation | EntityType.Team
-  }
+  id: string,
+  creator: string,
+  creatorType: EntityType.User // | EntityType.Organisation | EntityType.Team
 };
 
 export type Get = {
