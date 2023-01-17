@@ -10,6 +10,7 @@ $util.qr($ctx.stash.put("CID", $util.autoId()))
     },
     "body": {
       "stateMachineArn": "${deleteUserStateMachineArn}",
+      "input": "{ \"inputs\": [{ \"id\": \"$ctx.identity.sub\", \"creator\": \"$ctx.identity.sub\", \"creatorType\": \"USER\" }] }"
     }
   }
 }

@@ -1,12 +1,10 @@
 import middy from "@middy/core";
-import SQS from "aws-sdk/clients/sqs"
-import { SNSEvent, SNSEventRecord, SQSEvent, Context, AppSyncResolverEvent, AppSyncIdentityCognito } from "aws-lambda";
-import { ErrorTypes } from "../../types/api";
+import { AppSyncResolverEvent, Context, SNSEvent, SNSEventRecord, SQSEvent } from "aws-lambda";
+import SQS from "aws-sdk/clients/sqs";
 import { chance } from "../../utilities/constants";
 import { configureEnviromentVariables } from "../../utilities/functions";
 import { commonLambdaIO } from "../common-lambda-io";
-import { CommonIOHandler } from "../common-lambda-io/types";
-import { errorResponse } from "../error-response";
+import { CommonIOHandler, StateMachineEvent } from "../common-lambda-io/types";
 
 const { TEST_QUEUE_URL } = configureEnviromentVariables();
 
@@ -77,6 +75,19 @@ describe("CommonLambdaIO", () => {
     })
   });
 
+  const getStateMachineEvent = (): StateMachineEvent<Input> => ({
+    source: "StateMachine",
+    attributes: {
+      Type: "CREATE",
+      CID: chance.fbid()
+    },
+    payload: (
+      Array(chance.integer({ min: 1, max: 10 }))
+        .fill(null)
+        .map(() => generateInput())
+    )
+  });
+
   const getAppSyncEvent = (inInput = true): AppSyncResolverEvent<any, any> => {
     const input = generateInput();
     return {
@@ -110,12 +121,12 @@ describe("CommonLambdaIO", () => {
 
   });
   */
-
+ 
   test("SQS request", async () => {
 
     const sqsEvent = getSQSEvent();
 
-    const lambda: CommonIOHandler<Input, Array<any>> = async event => {
+    const lambda: CommonIOHandler<Input, any> = async event => {
       event.inputs.forEach((input, index) => {
         const sqsEventEquivalentInput = JSON.parse(sqsEvent.Records[index].body)
         expect(input).toMatchObject(sqsEventEquivalentInput);
@@ -131,7 +142,7 @@ describe("CommonLambdaIO", () => {
 
     const sqsEvent = getSQSEvent(true);
 
-    const lambda: CommonIOHandler<Input, Array<any>> = async event => {
+    const lambda: CommonIOHandler<Input, any> = async event => {
       return event.inputs;
     };
 
@@ -167,6 +178,38 @@ describe("CommonLambdaIO", () => {
     }
 
     expect(hasMessage).toBe(true);
+
+  });
+
+  test("StateMachine request", async () => {
+
+    const stateMachineEvent = getStateMachineEvent();
+
+    const lambda: CommonIOHandler<Input, any> = async event => {
+      event.inputs.forEach((input, index) => {
+        const stateMachineEventEquivalentInput = stateMachineEvent.payload[index];
+        expect(input).toMatchObject(stateMachineEventEquivalentInput);
+      });
+      return event.inputs;
+    };
+
+    await withMiddleware(lambda)(stateMachineEvent, {} as Context);
+
+  });
+
+  test("StateMachine response", async () => {
+
+    const stateMachineEvent = getStateMachineEvent();
+
+    const lambda: CommonIOHandler<Input, Input> = async event => {
+      return event.inputs;
+    };
+
+    const response = await withMiddleware(lambda)(stateMachineEvent, {} as Context);
+
+    response.forEach((input: Input, index: number) => {
+      expect(input).toMatchObject(stateMachineEvent.payload[index]);
+    });
 
   });
 

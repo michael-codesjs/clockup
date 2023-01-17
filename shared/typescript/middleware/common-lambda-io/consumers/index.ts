@@ -1,6 +1,7 @@
 import { AppSyncResolverEvent, SNSEvent, SQSEvent } from "aws-lambda";
-import { CommonIOInputSources, Consumer } from "../types";
+import { CommonIOInputSources, Consumer, StateMachineEvent } from "../types";
 import { CommonIoSQSConsumer } from "./sqs";
+import { CommonIoStateMachineConsumer } from "./state-machine";
 
 class ConsumerFactory {
 
@@ -23,10 +24,15 @@ class ConsumerFactory {
     return ["arguments", "prev", "stash", "identity", "source"].every(key => Boolean(event[key]));
   }
 
+  private isStateMachineEvent(event: CommonIOInputSources<any, any>): event is StateMachineEvent {
+    return "source" in event && event.source === "StateMachine";
+  }
+
   consumer(event: CommonIOInputSources<any, any>): Consumer {
     if(this.isSQSEvent(event)) return new CommonIoSQSConsumer();
     // else if(this.isSNSEvent(event)) return;
     // else if(this.isAppSyncEvent(event)) return;
+    else if (this.isStateMachineEvent(event)) return new CommonIoStateMachineConsumer();
     else throw new Error("Unrecognized event. Can not generate consumer.");
   }
 

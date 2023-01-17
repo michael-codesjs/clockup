@@ -18,6 +18,11 @@ export const deleteUser = {
       DiscontinueUser: {
         Type: "Task",
         Resource: { "Fn::GetAtt": ["discontinueUser", "Arn"] },
+        Parameters: {
+          source: "StepFunction",
+          type: "CREATE",
+          "payload.$": "$.payload"
+        },
         ResultPath: "$",
         End: true
       }
