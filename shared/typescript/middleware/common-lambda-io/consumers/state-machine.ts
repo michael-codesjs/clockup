@@ -1,5 +1,6 @@
 import middy from "@middy/core";
 import { Context, SQSEvent } from "aws-lambda";
+import { ErrorResponse } from "../../../types/api";
 import { CommonIOEvent, Consumer, StateMachineEvent } from "../types";
 
 export class CommonIoStateMachineConsumer implements Consumer {
@@ -7,7 +8,7 @@ export class CommonIoStateMachineConsumer implements Consumer {
   async request(request: middy.Request<StateMachineEvent, any, Error, Context>): Promise<void> {
 
     let event: CommonIOEvent<any> = {
-      inputs: Array.from(request.event.payload)
+      inputs: [request.event.payload]
     }
 
     request.internal = {
@@ -18,8 +19,12 @@ export class CommonIoStateMachineConsumer implements Consumer {
 
   }
 
-  async response(request: middy.Request<SQSEvent, Array<Record<string, any>>, Error, Context>): Promise<void> {
-
+  async response(request: middy.Request<SQSEvent, Record<string, any>, Error, Context>): Promise<void> {
+    const response = request.response[0] as ErrorResponse;
+    if (response && response.__typename === "ErrorResponse") {
+      throw response;
+    }
+    request.response = request.response[0];
   }
 
 }

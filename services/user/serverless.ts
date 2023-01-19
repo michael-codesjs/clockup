@@ -1,7 +1,7 @@
 import { AWS } from "../../shared/typescript/types/aws";
 import { common, generate, resource } from "../../shared/typescript/utilities";
 import { createMappingTemplate, createStateMachineDataSource } from "../../shared/typescript/utilities/functions";
-import { createUser, discontinueUser } from "./functions";
+import { continueUser, createUser, discontinueUser, handleDeleteCognitoUserTaskToken } from "./functions";
 import { deleteUser } from "./state-machines";
 
 const serverlessConfiguration: AWS.Service = {
@@ -72,7 +72,7 @@ const serverlessConfiguration: AWS.Service = {
 				// createDataSource("updateUser"),
 				createStateMachineDataSource({
 					name: "deleteUser",
-					sync: true,
+					sync: false,
 					stateMachineArn: "${self:resources.Outputs.DeleteUserStateMachineArn.Value}"
 				})
 			]
@@ -82,7 +82,9 @@ const serverlessConfiguration: AWS.Service = {
 
 	functions: {
 		createUser,
-		discontinueUser
+		discontinueUser,
+		continueUser,
+		handleDeleteCognitoUserTaskToken
 	},
 
 	...({

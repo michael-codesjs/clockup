@@ -1,6 +1,6 @@
 import type { AWS } from "../../shared/typescript/types/aws";
 import { resource, common, generate } from "../../shared/typescript/utilities";
-import { confirmSignUp, preSignUp } from "./functions";
+import { confirmSignUp, preSignUp, deleteCognitoUser } from "./functions";
 
 const serverlessConfiguration: AWS.Service = {
 
@@ -20,6 +20,8 @@ const serverlessConfiguration: AWS.Service = {
 			COGNITO_CLIENT_ID: resource.authentication.userPoolWebClient,
 			USER_TOPIC_ARN: resource.user.topicArn,
 			USER_REQUEST_QUEUE_URL: resource.user.requestQueueURL,
+			USER_RESPONSE_QUEUE_URL: resource.user.responseQueueURL,
+			AUTHENTICATION_REQUEST_QUEUE_URL: resource.authentication.requestQueueURL,
 			AUTHENTICATION_RESPONSE_QUEUE_URL: resource.authentication.responseQueueURL,
 			USER_TABLE_NAME: resource.user.tableName // TODO: find a better way to export enviroment variables, user table should not be in scope in any way in this service
 		},
@@ -36,7 +38,8 @@ const serverlessConfiguration: AWS.Service = {
 
 	functions: {
 		confirmSignUp,
-		preSignUp
+		preSignUp,
+		deleteCognitoUser
 	},
 
 };

@@ -12,7 +12,8 @@ export interface IEntityState {
   context: Entity & IStateableEntity,
   sync(): Promise<Entity>,
   put(): Promise<Entity>,
-  discontinue(): Promise<Entity>
+  discontinue(): Promise<Entity>,
+  continue(): Promise<Entity>,
   graphQlEntity(): Promise<Record<string, any>>
 }
 

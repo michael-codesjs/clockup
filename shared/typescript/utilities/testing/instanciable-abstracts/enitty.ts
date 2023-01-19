@@ -45,6 +45,10 @@ export class Entity extends AbstractEntity implements IStateableEntity {
 		return this;
 	}
 
+	async continue(): Promise<AbstractEntity> {
+		return this;
+	}
+
 	async graphQlEntity(): Promise<Record<string, any>> {
 		return this.attributes.collective();
 	}

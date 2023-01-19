@@ -12,6 +12,12 @@ enum ErrorTypes {
   DELETE_FAILED
 }
 
+enum AsyncOperationStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
 type ErrorResponse {
   type: ErrorTypes!
   message: String
@@ -21,6 +27,11 @@ type ErrorResponse {
 type OperationResponse {
   success: Boolean!
   message: String
+}
+
+type AsyncOperationResponse {
+  status: AsyncOperationStatus!
+  cid: ID!
 }
 
 enum EntityType {
@@ -130,6 +141,7 @@ input CreateAlarmInput {
 }
 
 union OperationOutput = OperationResponse | ErrorResponse
+union AsyncOperationOutput = AsyncOperationResponse | ErrorResponse
 union UserOutput = User | ErrorResponse
 union AlarmOutput = AlarmResponse | ErrorResponse
 
@@ -140,7 +152,7 @@ type Query {
 
 type Mutation {
   updateUser(input: UpdateUserInput!): UserOutput! @aws_cognito_user_pools
-  deleteUser: OperationOutput! @aws_cognito_user_pools
+  deleteUser: AsyncOperationOutput! @aws_cognito_user_pools
   createAlarm(input: CreateAlarmInput!): AlarmOutput! @aws_cognito_user_pools
   updateAlarm(input: UpdateAlarmInput!): AlarmOutput! @aws_cognito_user_pools
 }

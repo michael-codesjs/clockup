@@ -8,6 +8,8 @@ export const updateUser = /* GraphQL */ `
       ... on User {
         id
         entityType
+        creator
+        creatorType
         created
         modified
         discontinued
@@ -26,9 +28,9 @@ export const updateUser = /* GraphQL */ `
 export const deleteUser = /* GraphQL */ `
   mutation DeleteUser {
     deleteUser {
-      ... on OperationResponse {
-        success
-        message
+      ... on AsyncOperationResponse {
+        status
+        cid
       }
       ... on ErrorResponse {
         type
@@ -45,10 +47,11 @@ export const createAlarm = /* GraphQL */ `
         alarm {
           id
           entityType
+          creator
+          creatorType
           created
           modified
           discontinued
-          creator
           name
           enabled
           days
@@ -65,6 +68,8 @@ export const createAlarm = /* GraphQL */ `
         creator {
           id
           entityType
+          creator
+          creatorType
           created
           modified
           discontinued
@@ -88,10 +93,11 @@ export const updateAlarm = /* GraphQL */ `
         alarm {
           id
           entityType
+          creator
+          creatorType
           created
           modified
           discontinued
-          creator
           name
           enabled
           days
@@ -108,6 +114,8 @@ export const updateAlarm = /* GraphQL */ `
         creator {
           id
           entityType
+          creator
+          creatorType
           created
           modified
           discontinued

@@ -70,26 +70,27 @@ export class Model {
 	}
 
 	/** attributes to be updated when discontinuing an entity */
-	protected discontinueAttributes() {
+	protected continuityAttributes(discontinue:boolean) {
 		return {
 			...this.entity.keys.nonPrimary(),
 			modified: this.entity.attributes.get("modified") || new Date().toJSON(),
-			discontinued: true
+			discontinued: discontinue
 		};
 	}
 
 	/** discontinue an entity */
-	protected discontinueParams() {
+	protected continuityParams(discontinue = true) {
 
 		return dynamoDbExpression({
-			Update: this.discontinueAttributes(),
+			Update: this.continuityAttributes(discontinue),
 			Key: this.entity.keys.primary(),
 			ReturnValues: "ALL_NEW",
 			Condition: {
-				...this.entity.keys.primary(),
-				discontinued: false,
-				creator: this.entity.attributes.get("creator"),
-				creatorType: this.entity.attributes.get("creatorType")
+				PK: "attribute_exists",
+				SK: "attribute_exists",
+				discontinued: !discontinue,
+				creator: "attribute_exists",
+				creatorType: "attribute_exists"
 			},
 			ConditionLogicalOperator: "AND"
 		});
@@ -123,8 +124,18 @@ export class Model {
 		});
 	}
 
+	/** discontinues an entity */
 	async discontinue(): Promise<UpdateItemOutput | ExecuteTransactionOutput> {
-		const params = this.discontinueParams();
+		const params = this.continuityParams(true);
+		return await dynamoDbOperations.update({
+			TableName: this.tableName,
+			...params as any
+		});
+	}
+
+	/** continues an entity */
+	async continue(): Promise<UpdateItemOutput | ExecuteTransactionOutput> {
+		const params = this.continuityParams(false);
 		return await dynamoDbOperations.update({
 			TableName: this.tableName,
 			...params as any

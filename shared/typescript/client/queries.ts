@@ -8,6 +8,8 @@ export const getProfile = /* GraphQL */ `
       ... on User {
         id
         entityType
+        creator
+        creatorType
         created
         modified
         discontinued
@@ -28,10 +30,11 @@ export const getAlarm = /* GraphQL */ `
     getAlarm(id: $id) {
       id
       entityType
+      creator
+      creatorType
       created
       modified
       discontinued
-      creator
       name
       enabled
       days

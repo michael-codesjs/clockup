@@ -32,6 +32,9 @@ export abstract class Entity implements IGraphQlEntity, IEntity {
 
 	/** Discontinues an entity */
 	abstract discontinue(): Promise<Entity>;
+	
+	/** Continues a discontinued entity */
+	abstract continue(): Promise<Entity>;
 
 	composable(): boolean {
 		return !this.attributes.get("discontinued");

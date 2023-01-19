@@ -13,7 +13,7 @@ export class ErrorResponse implements IGraphQlEntity {
 	}
 
 	private getErrorFromGenericError(error: any) {
-		if (error.name === "ValidationError") {
+		if (error && error.name === "ValidationError") {
 			return new MalformedInput(error.errors);
 		} else {
 			return new Error("Something went wrong.");

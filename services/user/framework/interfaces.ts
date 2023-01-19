@@ -8,7 +8,8 @@ export interface IUserState extends IEntityState {
   context: User,
   sync(): Promise<User>,
   put(): Promise<User>,
-  discontinue(): Promise<User>
+  discontinue(): Promise<User>,
+  continue(): Promise<User>,
   graphQlEntity(): Promise<UserGraphQLEntity>
 }
 

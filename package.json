@@ -12,6 +12,7 @@
     "test": "jest --verbose",
     "test:shared": "jest --verbose shared/ --config ./jest.config.js",
     "test:abstracts": "jest shared/typescript/abstracts/__tests__ --verbose --config ./jest.config.js",
+    "test:hofs": "jest ../shared/typescript/hofs/__tests__ --verbose --config ./jest.config.js",
     "test:middleware": "jest ../shared/typescript/middleware/__tests__ --verbose --config ./jest.config.js"
   },
   "engines": {

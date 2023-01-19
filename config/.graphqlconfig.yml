@@ -2,14 +2,14 @@ projects:
   Codegen Project:
     schemaPath: schema.graphql
     includes:
-      - "../../shared/typescript/client/**/*.ts"
+      - "../shared/typescript/client/**/*.ts"
     excludes:
       - ./amplify/**
     extensions:
       amplify:
         codeGenTarget: typescript
-        generatedFileName: "../../shared/typescript/client/types.ts"
-        docsFilePath: "../../shared/typescript/client"
+        generatedFileName: "../shared/typescript/client/types.ts"
+        docsFilePath: "../shared/typescript/client"
         region: us-east-1
         apiId: null
         frontend: javascript

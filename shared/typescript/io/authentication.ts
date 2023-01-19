@@ -1,10 +1,11 @@
 
-import { SNS } from "aws-sdk";
+import { SNS, SQS } from "aws-sdk";
 import { configureEnviromentVariables } from "../utilities/functions";
 import { Delete, Inputs } from "./types/authentication";
 
 const {
-  AUTHENTICATION_TOPIC_ARN,
+  AUTHENTICATION_REQUEST_QUEUE_URL,
+  USER_RESPONSE_QUEUE_URL,
   REGION
 } = configureEnviromentVariables();
 
@@ -14,32 +15,38 @@ class AuthenticationServiceIO {
   private constructor() { }
   static readonly instance = new AuthenticationServiceIO();
 
-  get snsServiceObject() {
+  private get snsServiceObject() {
     return new SNS({
       apiVersion: "2010-03-32",
       region: REGION
     });
   }
 
-  async delete(params: Delete["payload"]) {
+  private get sqsServiceObject() {
+    return new SQS({ apiVersion: '2012-11-05' });
+  }
 
-    const message: Delete = {
-      time: new Date(),
-      type: Inputs.DELETE,
-      payload: params
-    };
+  async delete(message: Delete) {
 
-    const serviceObject = this.snsServiceObject;
-
-    return await serviceObject.publish({
-      Message: JSON.stringify(message),
+    const serviceObject = this.sqsServiceObject;
+    
+    return await serviceObject.sendMessage({
+      MessageBody: JSON.stringify(message),
       MessageAttributes: {
-        type: {
+        Type: {
           DataType: "String",
           StringValue: Inputs.DELETE
+        },
+        CID: {
+          DataType: "String",
+          StringValue: message.id
+        },
+        ReplyTo: {
+          DataType: "String",
+          StringValue: USER_RESPONSE_QUEUE_URL
         }
       },
-      TopicArn: AUTHENTICATION_TOPIC_ARN,
+      QueueUrl: AUTHENTICATION_REQUEST_QUEUE_URL,
     }).promise();
 
   }

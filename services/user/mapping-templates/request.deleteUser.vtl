@@ -6,11 +6,11 @@ $util.qr($ctx.stash.put("CID", $util.autoId()))
   "params": {
     "headers": {
       "content-type": "application/x-amz-json-1.0",
-      "x-amz-target": "AWSStepFunctions.StartSyncExecution"
+      "x-amz-target": "AWSStepFunctions.StartExecution"
     },
     "body": {
       "stateMachineArn": "${deleteUserStateMachineArn}",
-      "input": "{ \"CID\": \"$ctx.stash.CID\", \"payload\": [{ \"id\": \"$ctx.identity.sub\", \"creator\": \"$ctx.identity.sub\", \"creatorType\": \"USER\" }] }"
+      "input": "{ \"CID\": \"$ctx.stash.CID\", \"payload\": { \"id\": \"$ctx.identity.sub\", \"creator\": \"$ctx.identity.sub\", \"creatorType\": \"USER\" } }"
     }
   }
 }

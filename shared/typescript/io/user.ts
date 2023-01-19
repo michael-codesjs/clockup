@@ -60,29 +60,6 @@ class UserServiceIO {
 
   }
 
-  async delete(params: Delete["payload"]) {
-
-    const message: Delete = {
-      time: new Date(),
-      type: Inputs.DELETE,
-      payload: params
-    };
-
-    const serviceObject = this.snsServiceObject;
-
-    return await serviceObject.publish({
-      Message: JSON.stringify(message),
-      MessageAttributes: {
-        type: {
-          DataType: "String",
-          StringValue: Inputs.DELETE
-        }
-      },
-      TopicArn: USER_TOPIC_ARN,
-    }).promise();
-
-  }
-
 }
 
 export const userServiceIO = UserServiceIO.instance;

@@ -10,17 +10,18 @@ export function configureEnviromentVariables() {
 	return process.env;
 }
 
-export function generateServicePath(serviceName: string) {
+export function generateServicePath<S extends string>(serviceName: S): `services/${S}` {
 	return `services/${serviceName}`;
 }
 
-export function createMappingTemplate({ field, type, source, request, response }: { field: string, type: string, source: string, request?: string, response?: string }) {
+export function createMappingTemplate(params: { field: string, type: string, source: string, request?: string, response?: string }) {
+	const { field, type, source, request, response } = params;
 	return {
 		type,
 		field,
 		dataSource: source,
 		request: request || false,
-		response: request || false,
+		response: response || false,
 	};
 }
 
@@ -41,7 +42,6 @@ type CreateStateMachineDataSourceParams = {
 }
 
 export function createStateMachineDataSource(params: CreateStateMachineDataSourceParams) {
-	// SOME USEFUL RESOURCES:
 	// https://aws.amazon.com/blogs/mobile/invoke-aws-services-directly-from-aws-appsync/
 	// https://confix.medium.com/aws-appsync-start-sync-step-function-express-workflow-d01bab650061
 	const { name, sync, stateMachineArn } = params;
@@ -86,8 +86,8 @@ export function importResourceArn(args: { service: string, region: string, resou
 	return "arn:aws:" + service + ":${aws:" + region + "}:${aws:accountId}:" + resourceType + "/${self:service}-" + resourceName + "-${sls:stage}";
 }
 
-export function generateServiceName(name: string) {
-	return config.serviceName + "-" + name;
+export function generateServiceName<N extends string>(name: N): `${config.serviceName}-${N}` {
+	return `${config.serviceName}-${name}`
 }
 
 export function generateLogicalResourcelName(name: string) {
@@ -141,7 +141,7 @@ export const isLiteralObject = (obj: any): obj is Object => {
 	return (!!obj) && (obj.constructor === Object);
 };
 
-export const isLiteralArray = <T>(arr: T[]): arr is T[] => {
+export const isLiteralArray = <T>(arr: Array<T>): arr is Array<T> => {
 	return Array.isArray(arr);
 };
 

@@ -26,6 +26,10 @@ export class State implements IEntityState {
     return this.context;
   }
 
+  async continue(): Promise<Entity> {
+    return this.context;
+  }
+
   async put(): Promise<Entity> {
     return this.context;
   }

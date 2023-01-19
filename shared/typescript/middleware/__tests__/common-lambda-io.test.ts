@@ -1,6 +1,7 @@
 import middy from "@middy/core";
 import { AppSyncResolverEvent, Context, SNSEvent, SNSEventRecord, SQSEvent } from "aws-lambda";
 import SQS from "aws-sdk/clients/sqs";
+import { ErrorResponse, ErrorTypes } from "../../types/api";
 import { chance } from "../../utilities/constants";
 import { configureEnviromentVariables } from "../../utilities/functions";
 import { commonLambdaIO } from "../common-lambda-io";
@@ -81,11 +82,7 @@ describe("CommonLambdaIO", () => {
       Type: "CREATE",
       CID: chance.fbid()
     },
-    payload: (
-      Array(chance.integer({ min: 1, max: 10 }))
-        .fill(null)
-        .map(() => generateInput())
-    )
+    payload: generateInput()
   });
 
   const getAppSyncEvent = (inInput = true): AppSyncResolverEvent<any, any> => {
@@ -186,10 +183,7 @@ describe("CommonLambdaIO", () => {
     const stateMachineEvent = getStateMachineEvent();
 
     const lambda: CommonIOHandler<Input, any> = async event => {
-      event.inputs.forEach((input, index) => {
-        const stateMachineEventEquivalentInput = stateMachineEvent.payload[index];
-        expect(input).toMatchObject(stateMachineEventEquivalentInput);
-      });
+      expect(event.inputs[0]).toMatchObject(stateMachineEvent.payload);
       return event.inputs;
     };
 
@@ -206,10 +200,30 @@ describe("CommonLambdaIO", () => {
     };
 
     const response = await withMiddleware(lambda)(stateMachineEvent, {} as Context);
+    expect(response[0]).toMatchObject(stateMachineEvent.payload);
 
-    response.forEach((input: Input, index: number) => {
-      expect(input).toMatchObject(stateMachineEvent.payload[index]);
-    });
+  });
+
+  test("StateMachine error response", async () => {
+
+    const stateMachineEvent = getStateMachineEvent();
+    const errorMessage = chance.sentence();
+
+    const lambda: CommonIOHandler<Input, ErrorResponse> = async (event) => {
+      return [{
+        __typename: "ErrorResponse",
+        type: ErrorTypes.InternalError,
+        message: errorMessage,
+        code: chance.integer({ min: 100, max: 1000 })
+      }];
+    };
+
+    try {
+      await withMiddleware(lambda)(stateMachineEvent, {} as Context);
+      throw new Error("Expeting state machine consumer to re-throw the ErrorResponse graphql entity.");
+    } catch (error: any) {
+      expect(error.__typename).toBe("ErrorResponse")
+    }
 
   });
 

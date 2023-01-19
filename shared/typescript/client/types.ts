@@ -14,6 +14,8 @@ export type User = {
   __typename: "User",
   id: string,
   entityType: EntityType,
+  creator: string,
+  creatorType: EntityType,
   created: string,
   modified?: string | null,
   discontinued: boolean,
@@ -22,10 +24,12 @@ export type User = {
   alarms: number,
 };
 
-export type ICommon = {
-  __typename: "ICommon",
+export type Common = {
+  __typename: "Common",
   id: string,
   entityType: EntityType,
+  creator: string,
+  creatorType: EntityType,
   created: string,
   modified?: string | null,
   discontinued: boolean,
@@ -35,10 +39,11 @@ export type Alarm = {
   __typename: "Alarm",
   id: string,
   entityType: EntityType,
+  creator: string,
+  creatorType: EntityType,
   created: string,
   modified?: string | null,
   discontinued: boolean,
-  creator: string,
   name?: string | null,
   enabled?: boolean | null,
   days?: Array< number > | null,
@@ -47,14 +52,10 @@ export type Alarm = {
   onceOff?: boolean | null,
 };
 
-export type ICreatable = {
-  __typename: "ICreatable",
-  creator: string,
-};
-
 export enum EntityType {
   USER = "USER",
   ALARM = "ALARM",
+  NOTE = "NOTE",
 }
 
 
@@ -70,6 +71,19 @@ export type AlarmSnoozeSettings = {
   interval: number,
 };
 
+export type Note = {
+  __typename: "Note",
+  id: string,
+  entityType: EntityType,
+  creator: string,
+  creatorType: EntityType,
+  created: string,
+  modified?: string | null,
+  discontinued: boolean,
+  title?: string | null,
+  body?: string | null,
+};
+
 export type ErrorResponse = {
   __typename: "ErrorResponse",
   type: ErrorTypes,
@@ -83,17 +97,25 @@ export enum ErrorTypes {
   INTERNAL_ERROR = "INTERNAL_ERROR",
   CREATE_FAILED = "CREATE_FAILED",
   UPDATE_FAILED = "UPDATE_FAILED",
+  DELETE_FAILED = "DELETE_FAILED",
 }
 
 
-export type OperationOutput = OperationResponse | ErrorResponse
+export type AsyncOperationOutput = AsyncOperationResponse | ErrorResponse
 
 
-export type OperationResponse = {
-  __typename: "OperationResponse",
-  success: boolean,
-  message?: string | null,
+export type AsyncOperationResponse = {
+  __typename: "AsyncOperationResponse",
+  status: AsyncOperationStatus,
+  cid: string,
 };
+
+export enum AsyncOperationStatus {
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
+  FAILED = "FAILED",
+}
+
 
 export type CreateAlarmInput = {
   name?: string | null,
@@ -142,6 +164,8 @@ export type UpdateUserMutation = {
       __typename: "User",
       id: string,
       entityType: EntityType,
+      creator: string,
+      creatorType: EntityType,
       created: string,
       modified?: string | null,
       discontinued: boolean,
@@ -159,9 +183,9 @@ export type UpdateUserMutation = {
 
 export type DeleteUserMutation = {
   deleteUser: ( {
-      __typename: "OperationResponse",
-      success: boolean,
-      message?: string | null,
+      __typename: "AsyncOperationResponse",
+      status: AsyncOperationStatus,
+      cid: string,
     } | {
       __typename: "ErrorResponse",
       type: ErrorTypes,
@@ -182,10 +206,11 @@ export type CreateAlarmMutation = {
         __typename: string,
         id: string,
         entityType: EntityType,
+        creator: string,
+        creatorType: EntityType,
         created: string,
         modified?: string | null,
         discontinued: boolean,
-        creator: string,
         name?: string | null,
         enabled?: boolean | null,
         days?: Array< number > | null,
@@ -205,6 +230,8 @@ export type CreateAlarmMutation = {
         __typename: string,
         id: string,
         entityType: EntityType,
+        creator: string,
+        creatorType: EntityType,
         created: string,
         modified?: string | null,
         discontinued: boolean,
@@ -232,10 +259,11 @@ export type UpdateAlarmMutation = {
         __typename: string,
         id: string,
         entityType: EntityType,
+        creator: string,
+        creatorType: EntityType,
         created: string,
         modified?: string | null,
         discontinued: boolean,
-        creator: string,
         name?: string | null,
         enabled?: boolean | null,
         days?: Array< number > | null,
@@ -255,6 +283,8 @@ export type UpdateAlarmMutation = {
         __typename: string,
         id: string,
         entityType: EntityType,
+        creator: string,
+        creatorType: EntityType,
         created: string,
         modified?: string | null,
         discontinued: boolean,
@@ -276,6 +306,8 @@ export type GetProfileQuery = {
       __typename: "User",
       id: string,
       entityType: EntityType,
+      creator: string,
+      creatorType: EntityType,
       created: string,
       modified?: string | null,
       discontinued: boolean,
@@ -300,10 +332,11 @@ export type GetAlarmQuery = {
     __typename: "Alarm",
     id: string,
     entityType: EntityType,
+    creator: string,
+    creatorType: EntityType,
     created: string,
     modified?: string | null,
     discontinued: boolean,
-    creator: string,
     name?: string | null,
     enabled?: boolean | null,
     days?: Array< number > | null,

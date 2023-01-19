@@ -26,5 +26,5 @@ export type StateMachineEvent<P extends Record<string, any> = Record<string, any
     Type: string,
     CID?: string,
   }
-  payload: Array<P>
+  payload: P
 }

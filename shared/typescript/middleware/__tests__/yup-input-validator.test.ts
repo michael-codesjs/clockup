@@ -4,12 +4,7 @@ import { yupInputValidator } from "../yup-input-validator";
 import { chance } from "../../utilities/constants";
 import * as yup from "yup";
 
-/*
- * we are not going to test each and every input validator we generate using graphql codegen.
- * we are just going to test that our middleware works.
- */
-
-describe("With Zod Input Validator", () => {
+describe("With Yup Input Validator", () => {
 
   type input = {
     attribute: string,

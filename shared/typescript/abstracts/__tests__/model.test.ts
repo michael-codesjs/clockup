@@ -18,6 +18,8 @@ describe("Model", () => {
 		created = new Date(entity.attributes.get("created"));
 	});
 
+	// TODO: decouple tests.
+
 	test("Model.put to insert record into the table", async () => {
 
 		entity.attributes.set({ attribute1: "string value", attribute2: "string value 2", attribute3: 10 });
@@ -99,6 +101,7 @@ describe("Model", () => {
 	test("Model.discontinue to discontinue an entity", async () => {
 
 		await model.discontinue();
+
 		const { Item } = await model.get();
 		expect(Item.discontinued).toBe(true);
 
@@ -112,6 +115,14 @@ describe("Model", () => {
 		} catch (error: any) {
 			expect(error.message).toBe("The conditional request failed");
 		}
+
+	});
+
+	test("Model.continue to continue a discontinued entity.", async () => {
+
+		await model.continue();
+		const { Item } = await model.get();
+		expect(Item.discontinued).toBe(false);
 
 	});
 

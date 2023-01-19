@@ -3,9 +3,5 @@ export enum Inputs {
 }
 
 export type Delete = {
-  time: Date,
-  type: Inputs.DELETE,
-  payload: {
-    id: string,
-  }
+  id: string
 }

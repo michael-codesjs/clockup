@@ -55,6 +55,19 @@ export class Null implements IUserState, ISubscriber {
 
   }
 
+  async continue(): Promise<User> {
+    
+    this.context.attributes.parse({
+      ...this.context.attributes.valid(),
+      discontinued: false
+    });
+
+    await this.model.continue();
+
+    return this.context;
+
+  }
+
 }
 
 /** State a user is in when it knows it's id and some attributes of itself but not all required. */

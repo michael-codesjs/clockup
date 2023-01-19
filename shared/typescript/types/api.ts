@@ -115,7 +115,7 @@ export type User = Common & {
 export type Mutation = {
   __typename?: 'Mutation';
   createAlarm: AlarmOutput;
-  deleteUser: OperationOutput;
+  deleteUser: AsyncOperationOutput;
   updateAlarm: AlarmOutput;
   updateUser: UserOutput;
 };
@@ -162,13 +162,19 @@ export type AlarmResponse = {
   creator: User;
 };
 
-export type OperationOutput = ErrorResponse | OperationResponse;
+export type AsyncOperationOutput = AsyncOperationResponse | ErrorResponse;
 
-export type OperationResponse = {
-  __typename?: 'OperationResponse';
-  message?: Maybe<Scalars['String']>;
-  success: Scalars['Boolean'];
+export type AsyncOperationResponse = {
+  __typename?: 'AsyncOperationResponse';
+  cid: Scalars['ID'];
+  status: AsyncOperationStatus;
 };
+
+export enum AsyncOperationStatus {
+  Completed = 'COMPLETED',
+  Failed = 'FAILED',
+  Pending = 'PENDING'
+}
 
 export type UpdateAlarmInput = {
   days?: InputMaybe<Array<Scalars['Int']>>;
@@ -196,6 +202,14 @@ export type Note = Common & {
   id: Scalars['ID'];
   modified?: Maybe<Scalars['AWSDateTime']>;
   title?: Maybe<Scalars['String']>;
+};
+
+export type OperationOutput = ErrorResponse | OperationResponse;
+
+export type OperationResponse = {
+  __typename?: 'OperationResponse';
+  message?: Maybe<Scalars['String']>;
+  success: Scalars['Boolean'];
 };
 
 
@@ -289,8 +303,9 @@ export type ResolversTypes = {
   AlarmRingTimeInput: AlarmRingTimeInput;
   AlarmOutput: ResolversTypes['AlarmResponse'] | ResolversTypes['ErrorResponse'];
   AlarmResponse: ResolverTypeWrapper<AlarmResponse>;
-  OperationOutput: ResolversTypes['ErrorResponse'] | ResolversTypes['OperationResponse'];
-  OperationResponse: ResolverTypeWrapper<OperationResponse>;
+  AsyncOperationOutput: ResolversTypes['AsyncOperationResponse'] | ResolversTypes['ErrorResponse'];
+  AsyncOperationResponse: ResolverTypeWrapper<AsyncOperationResponse>;
+  AsyncOperationStatus: AsyncOperationStatus;
   UpdateAlarmInput: UpdateAlarmInput;
   UpdateUserInput: UpdateUserInput;
   AWSDate: ResolverTypeWrapper<Scalars['AWSDate']>;
@@ -301,6 +316,8 @@ export type ResolversTypes = {
   AWSTimestamp: ResolverTypeWrapper<Scalars['AWSTimestamp']>;
   AWSURL: ResolverTypeWrapper<Scalars['AWSURL']>;
   Note: ResolverTypeWrapper<Note>;
+  OperationOutput: ResolversTypes['ErrorResponse'] | ResolversTypes['OperationResponse'];
+  OperationResponse: ResolverTypeWrapper<OperationResponse>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -325,8 +342,8 @@ export type ResolversParentTypes = {
   AlarmRingTimeInput: AlarmRingTimeInput;
   AlarmOutput: ResolversParentTypes['AlarmResponse'] | ResolversParentTypes['ErrorResponse'];
   AlarmResponse: AlarmResponse;
-  OperationOutput: ResolversParentTypes['ErrorResponse'] | ResolversParentTypes['OperationResponse'];
-  OperationResponse: OperationResponse;
+  AsyncOperationOutput: ResolversParentTypes['AsyncOperationResponse'] | ResolversParentTypes['ErrorResponse'];
+  AsyncOperationResponse: AsyncOperationResponse;
   UpdateAlarmInput: UpdateAlarmInput;
   UpdateUserInput: UpdateUserInput;
   AWSDate: Scalars['AWSDate'];
@@ -337,6 +354,8 @@ export type ResolversParentTypes = {
   AWSTimestamp: Scalars['AWSTimestamp'];
   AWSURL: Scalars['AWSURL'];
   Note: Note;
+  OperationOutput: ResolversParentTypes['ErrorResponse'] | ResolversParentTypes['OperationResponse'];
+  OperationResponse: OperationResponse;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -419,7 +438,7 @@ export interface AwsEmailScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createAlarm?: Resolver<ResolversTypes['AlarmOutput'], ParentType, ContextType, RequireFields<MutationCreateAlarmArgs, 'input'>>;
-  deleteUser?: Resolver<ResolversTypes['OperationOutput'], ParentType, ContextType>;
+  deleteUser?: Resolver<ResolversTypes['AsyncOperationOutput'], ParentType, ContextType>;
   updateAlarm?: Resolver<ResolversTypes['AlarmOutput'], ParentType, ContextType, RequireFields<MutationUpdateAlarmArgs, 'input'>>;
   updateUser?: Resolver<ResolversTypes['UserOutput'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'input'>>;
 };
@@ -434,13 +453,13 @@ export type AlarmResponseResolvers<ContextType = any, ParentType extends Resolve
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type OperationOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['OperationOutput'] = ResolversParentTypes['OperationOutput']> = {
-  __resolveType: TypeResolveFn<'ErrorResponse' | 'OperationResponse', ParentType, ContextType>;
+export type AsyncOperationOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['AsyncOperationOutput'] = ResolversParentTypes['AsyncOperationOutput']> = {
+  __resolveType: TypeResolveFn<'AsyncOperationResponse' | 'ErrorResponse', ParentType, ContextType>;
 };
 
-export type OperationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['OperationResponse'] = ResolversParentTypes['OperationResponse']> = {
-  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+export type AsyncOperationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AsyncOperationResponse'] = ResolversParentTypes['AsyncOperationResponse']> = {
+  cid?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['AsyncOperationStatus'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -485,6 +504,16 @@ export type NoteResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type OperationOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['OperationOutput'] = ResolversParentTypes['OperationOutput']> = {
+  __resolveType: TypeResolveFn<'ErrorResponse' | 'OperationResponse', ParentType, ContextType>;
+};
+
+export type OperationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['OperationResponse'] = ResolversParentTypes['OperationResponse']> = {
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Alarm?: AlarmResolvers<ContextType>;
@@ -499,8 +528,8 @@ export type Resolvers<ContextType = any> = {
   Mutation?: MutationResolvers<ContextType>;
   AlarmOutput?: AlarmOutputResolvers<ContextType>;
   AlarmResponse?: AlarmResponseResolvers<ContextType>;
-  OperationOutput?: OperationOutputResolvers<ContextType>;
-  OperationResponse?: OperationResponseResolvers<ContextType>;
+  AsyncOperationOutput?: AsyncOperationOutputResolvers<ContextType>;
+  AsyncOperationResponse?: AsyncOperationResponseResolvers<ContextType>;
   AWSDate?: GraphQLScalarType;
   AWSIPAddress?: GraphQLScalarType;
   AWSJSON?: GraphQLScalarType;
@@ -509,6 +538,8 @@ export type Resolvers<ContextType = any> = {
   AWSTimestamp?: GraphQLScalarType;
   AWSURL?: GraphQLScalarType;
   Note?: NoteResolvers<ContextType>;
+  OperationOutput?: OperationOutputResolvers<ContextType>;
+  OperationResponse?: OperationResponseResolvers<ContextType>;
 };
 
 
@@ -541,6 +572,8 @@ export function AlarmRingTimeInputSchema(): yup.SchemaOf<AlarmRingTimeInput> {
     minute: yup.number().defined()
   })
 }
+
+export const AsyncOperationStatusSchema = yup.mixed().oneOf([AsyncOperationStatus.Completed, AsyncOperationStatus.Failed, AsyncOperationStatus.Pending]);
 
 export function UpdateAlarmInputSchema(): yup.SchemaOf<UpdateAlarmInput> {
   return yup.object({
