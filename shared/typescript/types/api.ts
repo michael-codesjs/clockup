@@ -166,7 +166,7 @@ export type AsyncOperationOutput = AsyncOperationResponse | ErrorResponse;
 
 export type AsyncOperationResponse = {
   __typename?: 'AsyncOperationResponse';
-  cid: Scalars['ID'];
+  CID: Scalars['ID'];
   status: AsyncOperationStatus;
 };
 
@@ -458,7 +458,7 @@ export type AsyncOperationOutputResolvers<ContextType = any, ParentType extends 
 };
 
 export type AsyncOperationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AsyncOperationResponse'] = ResolversParentTypes['AsyncOperationResponse']> = {
-  cid?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  CID?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['AsyncOperationStatus'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

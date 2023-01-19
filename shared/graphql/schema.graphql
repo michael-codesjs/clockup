@@ -31,7 +31,7 @@ type OperationResponse {
 
 type AsyncOperationResponse {
   status: AsyncOperationStatus!
-  cid: ID!
+  CID: ID!
 }
 
 enum EntityType {

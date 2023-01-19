@@ -31,7 +31,7 @@ class UserServiceIO {
   /** Sends a 'CREATE' input to the user service via the user service request SQS queue. */
   async create(payload: Create) {
 
-    const cid = payload.id; // correlation id is the user id.
+    const CID = payload.id; // correlation id is the user id.
     const sqsServiceObject = this.sqsServiceObject;
 
     // send 'CREATE' input to the user request queue.
@@ -45,7 +45,7 @@ class UserServiceIO {
             },
             CID: {
               DataType: "String",
-              StringValue: cid
+              StringValue: CID
             },
             ReplyTo: {
               DataType: "String",

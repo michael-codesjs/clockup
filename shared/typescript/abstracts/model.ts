@@ -86,11 +86,9 @@ export class Model {
 			Key: this.entity.keys.primary(),
 			ReturnValues: "ALL_NEW",
 			Condition: {
-				PK: "attribute_exists",
-				SK: "attribute_exists",
 				discontinued: !discontinue,
-				creator: "attribute_exists",
-				creatorType: "attribute_exists"
+				creator: this.entity.attributes.get("creator"),
+				creatorType: this.entity.attributes.get("creatorType")
 			},
 			ConditionLogicalOperator: "AND"
 		});

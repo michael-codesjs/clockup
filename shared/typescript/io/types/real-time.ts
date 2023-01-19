@@ -5,7 +5,7 @@ export enum Inputs {
 
 export type ASYNC_OPERATION_RESULT = {
   success: boolean,
-  cid: string,
+  CID: string,
   title: string,
   message?: string
 }

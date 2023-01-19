@@ -107,7 +107,7 @@ export type AsyncOperationOutput = AsyncOperationResponse | ErrorResponse
 export type AsyncOperationResponse = {
   __typename: "AsyncOperationResponse",
   status: AsyncOperationStatus,
-  cid: string,
+  CID: string,
 };
 
 export enum AsyncOperationStatus {
@@ -185,7 +185,7 @@ export type DeleteUserMutation = {
   deleteUser: ( {
       __typename: "AsyncOperationResponse",
       status: AsyncOperationStatus,
-      cid: string,
+      CID: string,
     } | {
       __typename: "ErrorResponse",
       type: ErrorTypes,

@@ -30,7 +30,7 @@ export const deleteUser = /* GraphQL */ `
     deleteUser {
       ... on AsyncOperationResponse {
         status
-        cid
+        CID
       }
       ... on ErrorResponse {
         type

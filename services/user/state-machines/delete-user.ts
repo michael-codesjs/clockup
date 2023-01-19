@@ -104,7 +104,7 @@ export const deleteUser = {
           TopicArn: resource.realTime.topicArn,
           Message: ((): ASYNC_OPERATION_RESULT => ({
             success: true,
-            ["cid.$" as "cid"]: "$.CID",
+            ["CID.$" as "CID"]: "$.CID",
             title: "User deleted successfully.",
             ["message" as "message"]: "User($.payload.id) and all their assets were deleted successfully."
           }))(),
@@ -129,7 +129,7 @@ export const deleteUser = {
           QueueUrl: resource.realTime.requestQueueURL,
           MessageBody: ((): ASYNC_OPERATION_RESULT => ({
             success: true,
-            ["cid.$" as "cid"]: "$.CID",
+            ["CID.$" as "CID"]: "$.CID",
             title: "User deletion failed.",
             ["message" as "message"]: "Something went wrong while deleting user($.payload.id)."
           }))(),

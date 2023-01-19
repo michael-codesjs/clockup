@@ -1,9 +1,6 @@
-import { AsyncOperationResponse, AsyncOperationStatus } from "../../../../shared/typescript/types/api"
-import { Given, Repeat, When } from "../../../../shared/typescript/utilities/testing";
-import { cognitoProvider } from "../../../../shared/typescript/lib/cognito";
-import { configureEnviromentVariables } from "../../../../shared/typescript/utilities/functions";
-
-const { COGNITO_USER_POOL_ID } = configureEnviromentVariables();
+import { AsyncOperationResponse, AsyncOperationStatus } from "../../../../shared/typescript/types/api";
+import { Given, When } from "../../../../shared/typescript/utilities/testing";
+import { wasUserDeleted } from "../utilities/was-user-deleted";
 
 describe("Delete User", () => {
 
@@ -11,31 +8,10 @@ describe("Delete User", () => {
 
 		const user = await Given.user.authenticated();
 
-		const deleteResult = await When.user.delete() as unknown as AsyncOperationResponse; // delete user e2e;
-
+		const deleteResult = await When.user.delete() as unknown as AsyncOperationResponse; // delete user via the 'deleteUser' mutation;
 		expect(deleteResult.status).toBe(AsyncOperationStatus.Pending);
 
-		const wasDeleted = await Repeat.timedOnCondition({
-			times: 10,
-			duration: 200,
-			call: async () => {
-				const postDeleteDbRecord = await Given.user.byId(user.id);
-				expect(postDeleteDbRecord.discontinued).toBe(true);
-				try {
-					await cognitoProvider()
-						.adminGetUser({
-							Username: user.id,
-							UserPoolId: COGNITO_USER_POOL_ID
-						})
-						.promise();
-					throw new Error("User was not deleted from cognito.");
-				} catch (error: any) {
-					expect(error.code).toBe("UserNotFoundException");
-				}
-				return true;
-			}
-		});
-
+		const wasDeleted = await wasUserDeleted(user.id);
 		expect(wasDeleted).toBe(true);
 
 	});

@@ -28,6 +28,7 @@ const serverlessConfiguration: AWS.Service = {
 			AUTHENTICATION_RESPONSE_QUEUE_URL: resource.authentication.userPoolWebClient,
 			COGNITO_USER_POOL_ID: resource.authentication.userPoolId,
 			COGNITO_CLIENT_ID: resource.authentication.userPoolWebClient,
+			// DELETE_USER_STATE_MACHINE_ARN: "${self:resources.Outputs.DeleteUserStateMachineArn.Value}"
 			// USER_RESPONSE_QUEUE_ARN: resource.user.responseQueueArn,
 		},
 	},
@@ -96,12 +97,28 @@ const serverlessConfiguration: AWS.Service = {
 	}),
 
 	resources: {
+
+		Resources: {
+			DeleteUserStateMachineArnSSMParameter: {
+				Type: "AWS::SSM::Parameter",
+				Properties: {
+					Name: "/clock-up/user/${self:custom.stage}/state-machines/delete-user/arn",
+					Type: "String",
+					Value: { Ref: generate.stateMachineName("DeleteUser") },
+					Tags: {
+						Environment: "${self:custom.stage}"
+					}
+				}
+			}
+		},
+
 		Outputs: {
 			DeleteUserStateMachineArn: {
 				Description: "ARN for the deleteUser state machine.",
 				Value: { Ref: generate.stateMachineName("DeleteUser") }
 			}
 		}
+
 	}
 
 };
