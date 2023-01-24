@@ -1,6 +1,6 @@
 resource "aws_dynamodb_table" "test_dynamoDb_table" {
 
-  name = "clock-up-test-table-${var.stage}"
+  name = "clockup-test-table-${var.stage}"
 
   tags = {
     Description = "Primary table for testing abstract entities."
@@ -88,19 +88,13 @@ resource "aws_dynamodb_table" "test_dynamoDb_table" {
 }
 
 resource "aws_ssm_parameter" "test_table_name" {
-  name  = "/clock-up/${var.stage}/test/storage/table/name"
+  name  = "/clockup/${var.stage}/test/storage/table/name"
   type  = "String"
   value = aws_dynamodb_table.test_dynamoDb_table.name
 }
 
 resource "aws_ssm_parameter" "test_table_arn" {
-  name  = "/clock-up/${var.stage}/test/storage/table/arn"
+  name  = "/clockup/${var.stage}/test/storage/table/arn"
   type  = "String"
   value = aws_dynamodb_table.test_dynamoDb_table.arn
-}
-
-resource "aws_ssm_parameter" "test_table_stream_arn" {
-  name  = "/clock-up/${var.stage}/test/storage/table/stream/arn"
-  type  = "String"
-  value = aws_dynamodb_table.test_dynamoDb_table.stream_arn
 }

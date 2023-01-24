@@ -2,7 +2,7 @@
 
 ### **Clients**
 
-Source projects for clock-up clents(web micro front-ends & native apps).
+Source projects for clockup clents(web micro front-ends & native apps).
 
 ### **Config**
 

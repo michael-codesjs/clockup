@@ -23,7 +23,6 @@ variable "region" {
   description = "Region the infrastructure is created in."
 }
 
-
 module "storage" {
   source = "./storage"
   stage  = var.stage
@@ -46,4 +45,13 @@ module "io" {
   source = "./io"
   stage  = var.stage
   region = var.region
+  vpc_id = module.network.vpc_id
+  vpc_arn = module.network.vpc_arn
 }
+
+module "network" {
+  source = "./network"
+  stage  = var.stage
+  region = var.region
+}
+

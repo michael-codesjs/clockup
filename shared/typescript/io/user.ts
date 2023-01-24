@@ -2,7 +2,7 @@
 import { SNS, SQS } from "aws-sdk";
 import correlator from "correlation-id";
 import { configureEnviromentVariables } from "../utilities/functions";
-import { Create, Delete, Inputs } from "./types/user";
+import { Create, Inputs } from "./types/user";
 
 const {
   USER_TOPIC_ARN,

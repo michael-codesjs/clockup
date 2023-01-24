@@ -7,7 +7,7 @@ resource "aws_cognito_user_pool_client" "user_pool_web_client" {
 }
 
 resource "aws_ssm_parameter" "userPoolWebClientId" {
-  name  = "/clock-up/${var.stage}/authentication/user-pool/client/web/id"
+  name  = "/clockup/${var.stage}/authentication/user-pool/client/web/id"
   type  = "String"
   value = aws_cognito_user_pool_client.user_pool_web_client.id
 }

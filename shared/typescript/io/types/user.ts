@@ -2,6 +2,7 @@ import { EntityType, User as UserGraphQlEntity } from "../../types/api";
 
 export enum Inputs {
   CREATE = "CREATE",
+  UPDATE = "UPDATE",
   CONTINUE = "CONTINUE",
   DISCONTINUE = "DISCONTINUE",
   DELETE = "DELETE",
@@ -15,7 +16,11 @@ export type Create = {
   created?: string,
   creatorType: string,
   creator: string,
-}
+};
+
+export type Get = {
+  id: string
+};
 
 export type Created = UserGraphQlEntity
 
@@ -26,11 +31,3 @@ export type Discontinue = {
 };
 
 export type Continue = Discontinue;
-
-export type Get = {
-  time: Date,
-  type: Inputs.GET,
-  payload: {
-    id: string
-  }
-};

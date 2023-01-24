@@ -4,8 +4,7 @@ import { EntityType } from "../../../shared/typescript/types/api";
 export type UserAttributesSchemaCollection = CommonAttributes & {
   entityType: AttributeSchema<EntityType.User, true>,
   name: AttributeSchema<string>,
-  email: AttributeSchema<string>,
-  alarms: AttributeSchema<number, true>
+  email: AttributeSchema<string>
 };
 
 

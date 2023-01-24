@@ -19,7 +19,7 @@ export const deleteUser = {
     level: "ALL",
     includeExecutionData: true,
     destinations: [
-      "${ssm:/clock-up/${self:custom.stage}/user/log-groups/delete-user/arn}:*"
+      "${ssm:/clockup/${self:custom.stage}/user/log-groups/delete-user/arn}:*"
     ]
   },
 

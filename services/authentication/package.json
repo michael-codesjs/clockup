@@ -1,7 +1,7 @@
 {
   "name": "authentication",
   "version": "1.0.0",
-  "description": "clock-up authentication service.",
+  "description": "clockup authentication service.",
   "main": "serverless.ts",
   "scripts": {
     "test": "jest --verbose",

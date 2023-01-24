@@ -1,6 +1,6 @@
 resource "aws_dynamodb_table" "user_dynamoDb_table" {
 
-  name = "clock-up-user-table-${var.stage}"
+  name = "clockup-user-table-${var.stage}"
 
   tags = {
     Description = "Primary table for the user service."
@@ -95,19 +95,19 @@ resource "aws_dynamodb_table" "user_dynamoDb_table" {
 }
 
 resource "aws_ssm_parameter" "user_table_name" {
-  name  = "/clock-up/${var.stage}/user/storage/table/name"
+  name  = "/clockup/${var.stage}/user/storage/table/name"
   type  = "String"
   value = aws_dynamodb_table.user_dynamoDb_table.name
 }
 
 resource "aws_ssm_parameter" "user_table_arn" {
-  name  = "/clock-up/${var.stage}/user/storage/table/arn"
+  name  = "/clockup/${var.stage}/user/storage/table/arn"
   type  = "String"
   value = aws_dynamodb_table.user_dynamoDb_table.arn
 }
 
 resource "aws_ssm_parameter" "user_table_stream_arn" {
-  name  = "/clock-up/${var.stage}/user/storage/table/stream/arn"
+  name  = "/clockup/${var.stage}/user/storage/table/stream/arn"
   type  = "String"
   value = aws_dynamodb_table.user_dynamoDb_table.stream_arn
 }

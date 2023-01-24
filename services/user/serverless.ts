@@ -102,7 +102,7 @@ const serverlessConfiguration: AWS.Service = {
 			DeleteUserStateMachineArnSSMParameter: {
 				Type: "AWS::SSM::Parameter",
 				Properties: {
-					Name: "/clock-up/user/${self:custom.stage}/state-machines/delete-user/arn",
+					Name: "/clockup/user/${self:custom.stage}/state-machines/delete-user/arn",
 					Type: "String",
 					Value: { Ref: generate.stateMachineName("DeleteUser") },
 					Tags: {

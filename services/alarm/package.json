@@ -1,7 +1,7 @@
 {
   "name": "alarm",
   "version": "1.0.0",
-  "description": "Alarm service for the clock-up backend.",
+  "description": "Alarm service for the clockup backend.",
   "main": "serverless.ts",
   "scripts": {
     "test": "jest --verbose",

@@ -5,7 +5,7 @@ class Generate {
 	private constructor() { }
 	static readonly instance = new Generate;
 
-	serviceName<T extends string>(name: T): `clock-up-${T}` {
+	serviceName<T extends string>(name: T): `clockup-${T}` {
 		return `${config.serviceName}-${name}`;;
 	}
 

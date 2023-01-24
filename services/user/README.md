@@ -1,5 +1,5 @@
 ## **User** service.
-This folder and it's decendants contain everything that makes up the user service of the clock-up platform backend. 
+This folder and it's decendants contain everything that makes up the user service of the clockup platform backend. 
 
 ## **Dependencies & Installation**
 This microservice is a **Node/Typescript** component, so install dependencies by running **`yarn install`** in the component root folder(services/user).

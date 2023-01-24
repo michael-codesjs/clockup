@@ -24,7 +24,6 @@ export class UserAttributes extends Attributes<UserAttributesSchemaCollection> {
 		},
 		name: { initial: null, required: true },
 		email: { initial: null, required: true },
-		alarms: { initial: null, required: false }
 	};
 
 	constructor() {

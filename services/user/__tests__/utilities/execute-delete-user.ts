@@ -16,7 +16,7 @@ type Params = {
 export const executeDeleteUser = async (params: Params) => {
 
   const { Parameter } = await new SSM({ region: REGION }) // get DeleteUser state machine arn from ssm.
-    .getParameter({ Name: `/clock-up/user/${STAGE}/state-machines/delete-user/arn` })
+    .getParameter({ Name: `/clockup/user/${STAGE}/state-machines/delete-user/arn` })
     .promise();
 
   return await stepFunctions()

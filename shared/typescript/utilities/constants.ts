@@ -3,7 +3,7 @@ import { Chance } from "chance";
 export const chance = new Chance();
 
 export enum config {
-  serviceName = "clock-up",
+  serviceName = "clockup",
   provider = "aws",
   region = "eu-central-1",
   stage = "dev",

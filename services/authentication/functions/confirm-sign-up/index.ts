@@ -9,7 +9,7 @@ export const confirmSignUp: AWS.ServerlessLambdaFunction = {
 	events: [
 		{
 			cognitoUserPool: {
-				pool: "clock-up-user-pool-${self:custom.stage}",
+				pool: "clockup-user-pool-${self:custom.stage}",
 				existing: true,
 				trigger: "PostConfirmation"
 			}

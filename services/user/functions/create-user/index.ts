@@ -5,7 +5,7 @@ import { handlerPath } from "../../../../shared/typescript/utilities/functions";
 
 export const createUser: AWS.ServerlessLambdaFunction = {
 
-	description: "Creates a user and sends the response to the user response queue.",
+	description: "Gets a user GraphQL entity.",
 	handler: `${handlerPath(__dirname)}/handler.main`,
 
 	events: [
@@ -29,7 +29,7 @@ export const createUser: AWS.ServerlessLambdaFunction = {
 	iamRoleStatements: [
 		{
 			Effect: "Allow",
-			Action: ["dynamodb:PutItem"],
+			Action: ["dynamodb:GetItem"],
 			Resource: resource.user.tableArn
 		},
 		{
