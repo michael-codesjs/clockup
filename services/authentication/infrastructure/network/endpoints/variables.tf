@@ -22,3 +22,16 @@ variable "subnet_id" {
   description = "clockup authentication service subnet id."
 }
 
+variable "security_group_id" {
+  type        = string
+  nullable    = false
+  description = "clockup authentication subnet security_group id."
+}
+
+data "aws_ssm_parameter" "user_sqs_request_queue_arn" {
+  name = "/clockup/${var.stage}/user/queues/request/arn"
+}
+
+data "aws_ssm_parameter" "user_sqs_request_queue_url" {
+  name = "/clockup/${var.stage}/user/queues/request/url"
+}
