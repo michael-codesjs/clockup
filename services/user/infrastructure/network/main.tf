@@ -16,17 +16,15 @@ variable "vpc_id" {
   description = "Clockup vpc id."
 }
 
-variable "internet_gateway_id" {
-  type        = string
-  nullable    = false
-  description = "Clockup internet gateway id."
+data "aws_ssm_parameter" "user_sqs_request_queue_arn" {
+  name = "/clockup/${var.stage}/user/queues/request/arn"
 }
 
-module "endpoints" {
-  source            = "./endpoints"
-  stage             = var.stage
-  region            = var.region
-  vpc_id            = var.vpc_id
-  subnet_id         = aws_subnet.subnet.id
-  security_group_id = aws_security_group.security_group.id
+data "aws_ssm_parameter" "user_sqs_request_queue_url" {
+  name = "/clockup/${var.stage}/user/queues/request/url"
+}
+
+data "aws_vpc_endpoint" "sqs_endpoint" {
+  vpc_id       = var.vpc_id
+  service_name = "com.amazonaws.${var.region}.sqs"
 }

@@ -8,7 +8,7 @@ resource "aws_dynamodb_table" "user_dynamoDb_table" {
     Application = "clockup"
     Service     = "user"
     Stage       = var.stage
-    Description = "clockup user service DynamoDB table in ${var.stage}."
+    Description = "clockup user service DynamoDB table."
   }
 
   billing_mode   = "PROVISIONED"

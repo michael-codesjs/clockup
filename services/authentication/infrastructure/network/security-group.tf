@@ -1,15 +1,15 @@
 resource "aws_security_group" "security_group" {
 
-  name        = "clockup-authentication"
-  description = "clockup authentication service security group ${var.stage}."
+  name        = "clockup-authentication-${var.stage}"
+  description = "clockup authentication service security group."
   vpc_id      = var.vpc_id
 
   tags = {
-    Name        = "clockup-${var.stage}-authentication"
-    Application = "clockup-${var.stage}"
-    Service     = "authentiction"
+    Name        = "clockup-authentication"
+    Application = "clockup"
+    Service = "authentication"
     Stage       = var.stage
-    Description = "clockup authentication service security group ${var.stage}."
+    Description = "clockup"
   }
 
   ingress {
@@ -33,6 +33,11 @@ resource "aws_security_group" "security_group" {
     to_port           = 0
   }
 
+}
+
+resource "aws_vpc_endpoint_security_group_association" "sqs_endpoint_security_group_association" {
+  vpc_endpoint_id   = data.aws_vpc_endpoint.sqs_endpoint.id
+  security_group_id = aws_security_group.security_group.id
 }
 
 resource "aws_ssm_parameter" "security_group_id" {

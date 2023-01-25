@@ -27,16 +27,11 @@ data "aws_ssm_parameter" "vpc_id" {
   name = "/clockup/${var.stage}/network/vpc/id"
 }
 
-data "aws_ssm_parameter" "internet_gateway_id" {
-  name = "/clockup/${var.stage}/network/internet-gateway/id"
-}
-
 module "network" {
   source              = "./network"
   stage               = var.stage
   region              = var.region
   vpc_id              = data.aws_ssm_parameter.vpc_id.value
-  internet_gateway_id = data.aws_ssm_parameter.internet_gateway_id.value
 }
 
 module "miscellanous" {

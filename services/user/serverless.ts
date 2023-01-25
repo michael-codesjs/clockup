@@ -7,7 +7,6 @@ import { deleteUser } from "./state-machines";
 const serverlessConfiguration: AWS.Service = {
 
 	service: generate.serviceName("user"),
-
 	frameworkVersion: "3",
 
 	plugins: [
@@ -17,6 +16,11 @@ const serverlessConfiguration: AWS.Service = {
 	],
 
 	provider: {
+		
+		vpc: {
+			subnetIds: [resource.network.subnetId],
+			securityGroupIds: [resource.user.securityGroupId]
+		},
 		...common.providerSettings,
 		environment: {
 			...common.enviromentVariables,

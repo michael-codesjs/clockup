@@ -15,11 +15,6 @@ const serverlessConfiguration: AWS.Service = {
 	provider: {
 
 		...common.providerSettings,
-		
-		vpc: {
-			securityGroupIds: [resource.authentication.securityGroupId],
-			subnetIds: [resource.authentication.subnetId]
-		},
 
 		environment: {
 			...common.enviromentVariables,

@@ -5,6 +5,9 @@ class UserResources {
   private constructor() {}
   static readonly instance = new UserResources;
 
+  readonly subnetId = "${ssm:/clockup/${self:custom.stage}/user/network/subnet/id}" as const;
+  readonly securityGroupId = "${ssm:/clockup/${self:custom.stage}/user/network/security-group/id}" as const;
+
   readonly tableName = "${ssm:/clockup/${self:custom.stage}/user/storage/table/name}" as const;
 	readonly tableArn = "${ssm:/clockup/${self:custom.stage}/user/storage/table/arn}" as const;
 	readonly tableStreamArn = "${ssm:/clockup/${self:custom.stage}/user/storage/table/stream/arn}" as const;
