@@ -12,6 +12,27 @@ resource "aws_security_group" "security_group" {
     Description = "clockup authentication service security group ${var.stage}."
   }
 
+  ingress {
+    from_port         = 0
+    to_port           = 0
+    protocol          = "-1"
+    cidr_blocks       = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port         = 22
+    to_port           = 22
+    protocol          = "tcp"
+    cidr_blocks       = ["0.0.0.0/0"]
+  }
+
+  egress {
+    cidr_blocks       = ["0.0.0.0/0"]
+    protocol          = -1
+    from_port         = 0
+    to_port           = 0
+  }
+
 }
 
 resource "aws_ssm_parameter" "security_group_id" {
