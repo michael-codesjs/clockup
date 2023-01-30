@@ -1,9 +1,9 @@
 import { exec } from "child_process";
-import { readdirSync } from "fs";
-import { chance, config, stacks } from "./constants";
 import { config as dotenvConfig } from "dotenv";
-import { ValidationError } from "yup";
-import { EntityType, ErrorResponse, ErrorTypes } from "../types/api";
+import { readdirSync } from "fs";
+import { EntityType } from "../types/api";
+import { chance, config, stacks } from "./constants";
+import { SignatureV4 } from '@aws-sdk/signature-v4';
 
 export function configureEnviromentVariables() {
 	dotenvConfig();
@@ -102,15 +102,6 @@ export const capitalizeFirstLetter = (str: string) => {
 	return str[0].toUpperCase() + str.slice(1);
 };
 
-export const getErrorResponse = (error: ValidationError | Error, type: ErrorTypes, code = 0,): ErrorResponse => {
-	return {
-		__typename: "ErrorResponse",
-		type,
-		message: error.message,
-		code
-	};
-};
-
 export const getEntityTypes = () => Object.values(EntityType);
 
 export const getRandomEntityType = () => {
@@ -141,7 +132,7 @@ export const isLiteralObject = (obj: any): obj is Object => {
 	return (!!obj) && (obj.constructor === Object);
 };
 
-export const isLiteralArray = <T>(arr: Array<T>): arr is Array<T> => {
+export const isLiteralArray = <T = any>(arr: any): arr is Array<T> => {
 	return Array.isArray(arr);
 };
 

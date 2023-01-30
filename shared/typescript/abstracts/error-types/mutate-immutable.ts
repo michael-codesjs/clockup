@@ -1,4 +1,4 @@
-import { EntityErrorMessages } from "../../types/index";
+import { EntityErrorMessages } from "../types/index";
 import { Error } from "../error";
 
 export class MutateImmutable extends Error {

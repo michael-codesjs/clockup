@@ -6,17 +6,16 @@ describe("Create User", () => {
   it("Creates a user", async () => {
 
     const { id, creator, creatorType, name, email } = Given.user.attributes(); // get attributes.
-    const input = { id, creator, creatorType, name, email };
+    const payload = { id, creator, creatorType, name, email };
 
-    await ServiceIO.user.create(input); // send CREATE message to the user request queue.
-    
+    const result = await ServiceIO.user.create({ cid: id, payload }); // send a 'CREATE' input to the user service.
+
+    expect(result.payload).toMatchObject(payload);
+
     const created = await Repeat.timedOnCondition({
       call: async () => {
         const userRecord = await Given.user.byId(id); // get user record from the table.
-        Then(userRecord).user({
-          ...input,
-          alarms: 0
-        });
+        Then(userRecord).user(payload);
         return true;
       },
       times: 10,

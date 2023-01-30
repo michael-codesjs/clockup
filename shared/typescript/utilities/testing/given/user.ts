@@ -34,7 +34,6 @@ class GivenUserAttributes {
 		const creatorType = entityType;
 		const discontinued = false;
 		const created = chance.date().toJSON();
-		const alarms = chance.integer({ min: 0, max: 20 });
 
 		return {
 			entityType,
@@ -43,7 +42,6 @@ class GivenUserAttributes {
 			creatorType,
 			created,
 			discontinued,
-			alarms,
 			...this.input(),
 		};
 
@@ -100,6 +98,8 @@ class GivenUserAttributes {
 		};
 
 		const { id } = await Authentication.signUp(attributes); // sign up user
+
+		console.log("ID:", id);
 
 		await Authentication.signIn({
 			username: attributes.email,

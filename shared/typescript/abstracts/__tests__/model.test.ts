@@ -24,7 +24,7 @@ describe("Model", () => {
 
 		entity.attributes.set({ attribute1: "string value", attribute2: "string value 2", attribute3: 10 });
 
-		await model.put();
+		const res = await model.put();
 
 		const { Item } = await dynamoDbOperations.get({
 			TableName: TEST_TABLE_NAME,
@@ -50,8 +50,8 @@ describe("Model", () => {
 	});
 
 	test("Model.get to get a record from the table", async () => {
-		const { Item } = await model.get();
-		expect(Item).toMatchObject({
+		const item = await model.get();
+		expect(item).toMatchObject({
 			...entity.attributes.putable(),
 			...entity.keys.all()
 		});
@@ -60,7 +60,7 @@ describe("Model", () => {
 	test("Model.update to update a record in the table", async () => {
 		entity.attributes.set({ attribute1: "value 1 mutated", attribute2: "value 2 mutated" });
 		const result = await model.update();
-		expect(result.Attributes).toMatchObject({
+		expect(result).toMatchObject({
 			...entity.attributes.updateable(),
 			...entity.keys.all()
 		});
@@ -74,10 +74,10 @@ describe("Model", () => {
 			created: new Date().toJSON()
 		});
 
-		const { Attributes } = await model.update();
+		const result = await model.update();
 
-		const postUpdateCreated = new Date((Attributes as any).created);
-		const postUpdateDiscontinued = Attributes.discontinued;
+		const postUpdateCreated = new Date((result as any).created);
+		const postUpdateDiscontinued = result.discontinued;
 
 		expect(postUpdateCreated.valueOf()).toBe(created.valueOf());
 		expect(postUpdateDiscontinued).toBe(false);
@@ -102,8 +102,8 @@ describe("Model", () => {
 
 		await model.discontinue();
 
-		const { Item } = await model.get();
-		expect(Item.discontinued).toBe(true);
+		const item = await model.get();
+		expect(item.discontinued).toBe(true);
 
 	});
 
@@ -121,8 +121,8 @@ describe("Model", () => {
 	test("Model.continue to continue a discontinued entity.", async () => {
 
 		await model.continue();
-		const { Item } = await model.get();
-		expect(Item.discontinued).toBe(false);
+		const item = await model.get();
+		expect(item.discontinued).toBe(false);
 
 	});
 

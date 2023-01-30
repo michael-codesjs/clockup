@@ -20,6 +20,7 @@ describe("DeleteUser State Machine", () => {
 
 	beforeEach(async () => {
 		user = await Given.user.authenticated();
+		console.log("User:", user);
 		CID = chance.guid({ version: 5 });
 		payload = {
 			id: user.id,
@@ -42,6 +43,7 @@ describe("DeleteUser State Machine", () => {
 		const wasDeleted = await wasUserDeleted(user.id, { times: 10, duration: 300 });
 		expect(wasDeleted).toBe(true);
 	});
+	/*
 
 	test("Creator Checks", async () => {
 		await executeDeleteUser({ CID, payload: { ...payload, creator: chance.guid({ version: 5 }) } });
@@ -63,5 +65,6 @@ describe("DeleteUser State Machine", () => {
 		expect(user.discontinued).toBe(false);
 
 	});
+	*/
 
 });

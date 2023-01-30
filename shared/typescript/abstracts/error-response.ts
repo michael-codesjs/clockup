@@ -1,11 +1,11 @@
-import { IGraphQlEntity } from "../interfaces";
-import { ErrorResponse as TErrorResponse } from "../../types/api";
-import { MalformedInput } from "./types/malformed-input";
+import { IGraphQlEntity } from "./interfaces";
+import { ErrorResponse as TErrorResponse } from "../types/api";
+import { MalformedInput } from "./error-types/malformed-input";
 import { Error } from "./error";
 
 export class ErrorResponse implements IGraphQlEntity {
 
-	private error: Error;
+	public readonly error: Error;
 
 	constructor(error: any) {
 		error = error instanceof Error ? error : this.getErrorFromGenericError(error);
@@ -23,8 +23,9 @@ export class ErrorResponse implements IGraphQlEntity {
 	graphQlEntity(): TErrorResponse {
 		return {
 			__typename: "ErrorResponse",
-			type: this.error.type,
-			message: this.error.message
+			type: this.error.name,
+			message: this.error.message,
+			cause: this.error.cause
 		};
 	}
 

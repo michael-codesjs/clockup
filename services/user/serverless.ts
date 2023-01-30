@@ -16,16 +16,17 @@ const serverlessConfiguration: AWS.Service = {
 	],
 
 	provider: {
-		
-		vpc: {
-			subnetIds: [resource.network.subnetId],
-			securityGroupIds: [resource.user.securityGroupId]
-		},
 		...common.providerSettings,
+		apiGateway: {
+			restApiId: resource.user.apiId,
+			restApiRootResourceId: resource.user.apiRootResourceId,
+			
+		},
 		environment: {
 			...common.enviromentVariables,
 			...common.enviromentResources,
 			USER_TABLE_NAME: resource.user.tableName,
+			USER_API_URL: resource.user.apiUrl,
 			USER_TOPIC_ARN: resource.user.topicArn,
 			USER_REQUEST_QUEUE_ARN: resource.user.requestQueueArn,
 			USER_REQUEST_QUEUE_URL: resource.user.requestQueueURL,

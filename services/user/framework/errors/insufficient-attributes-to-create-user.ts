@@ -1,5 +1,5 @@
 import { ErrorTypes } from "../../../../shared/typescript/types/api";
-import { Error } from "./../../../../shared/typescript/abstracts/errors/error";
+import { Error } from "../../../../shared/typescript/abstracts/error";
 
 export class InsufficientAttributeToCreateUser extends Error {
 

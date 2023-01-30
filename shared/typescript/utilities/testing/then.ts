@@ -13,9 +13,9 @@ export class ThenUtility {
 
 	/** tests one object against the other for user attributes */
 	user(object:any) {
-		const { id, name, email, alarms } = object;
+		const { id, name, email } = object;
 		expect(this.operand).toMatchObject({
-			id, name, email, alarms,
+			id, name, email,
 			entityType: types.EntityType.User,
 		});
 	}

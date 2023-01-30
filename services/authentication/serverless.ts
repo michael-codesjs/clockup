@@ -25,7 +25,6 @@ const serverlessConfiguration: AWS.Service = {
 			USER_RESPONSE_QUEUE_URL: resource.user.responseQueueURL,
 			AUTHENTICATION_REQUEST_QUEUE_URL: resource.authentication.requestQueueURL,
 			AUTHENTICATION_RESPONSE_QUEUE_URL: resource.authentication.responseQueueURL,
-			USER_TABLE_NAME: resource.user.tableName // TODO: find a better way to export enviroment variables, user table should not be in scope in any way in this service
 		},
 	},
 

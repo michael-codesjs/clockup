@@ -20,8 +20,9 @@ enum AsyncOperationStatus {
 
 type ErrorResponse {
   type: ErrorTypes!
-  message: String
-  code: Int
+  code: Int!
+  message: String!
+  cause: String
 }
 
 type OperationResponse {
@@ -60,7 +61,6 @@ type User implements Common {
   discontinued: Boolean!
   email: AWSEmail!
   name: String!
-  alarms: Int!
 }
 
 type Alarm implements Common {

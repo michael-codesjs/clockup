@@ -6,9 +6,9 @@ import { withLambdaStandard } from "./with-lambda-standard";
 
 export const withLambdaIOStandard = <I, R>(handler: CommonIOHandler<I, R>) => {
 
-	return (
-		(withLambdaStandard(handler) as unknown as middy.MiddyfiedHandler<CommonIOInputSources<I, R>, R, Error, Context>)
-			.use(commonLambdaIO())
-	)
+	const handlerWithStandard = withLambdaStandard(handler) as unknown as middy.MiddyfiedHandler<CommonIOInputSources<I, R>, R, Error, Context>;
+	const handlerWithCommonIO = handlerWithStandard.use(commonLambdaIO());
+
+	return handlerWithCommonIO;
 
 };

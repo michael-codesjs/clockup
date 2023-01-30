@@ -1,5 +1,5 @@
 import middy from "@middy/core";
-import { ErrorResponse } from "../../abstracts/errors";
+import { ErrorResponse } from "../../abstracts/error-types";
 import { ErrorResponse as ErrorResponseGraphQLEntity } from "../../types/api";
 
 /** Returns proper error response when a lambda fails */

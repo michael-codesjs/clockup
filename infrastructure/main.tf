@@ -41,17 +41,8 @@ module "api" {
   cognito_user_pool_id = module.authentication.cognito_user_pool_id
 }
 
-module "io" {
-  source = "./io"
-  stage  = var.stage
-  region = var.region
-  vpc_id = module.network.vpc_id
-  vpc_arn = module.network.vpc_arn
-}
-
-module "network" {
-  source = "./network"
+module "service_io" {
+  source = "./service-io"
   stage  = var.stage
   region = var.region
 }
-

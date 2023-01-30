@@ -11,7 +11,6 @@ describe("Confirm Sign Up", () => {
 
 	it("Sends 'CREATE' input to the user service which then creates the user.", async () => {
 
-		const attributes = Given.user.attributes(); // get random user attributes
 		const { event, context } = HandlerArguments.cognito.confirmSignUp(attributes); // event payload for confirmUserSignUp lambda handler
 
 		await main(event, context); // call lambda
@@ -20,8 +19,7 @@ describe("Confirm Sign Up", () => {
 			times: 20,
 			duration: 200,
 			call: async () => { // check if the user was created in table.
-				// get user item
-				const user = await Given.user.byId(attributes.id);
+				const user = await Given.user.byId(attributes.id); // get user item
 				return user !== null || user !== undefined;
 			}
 		});

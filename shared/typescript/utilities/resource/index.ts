@@ -1,6 +1,6 @@
 import { apiResources } from "./api";
 import { authenticationResources } from "./authentication";
-import { testResources } from "./test";
+import { testResources } from "./test-resources";
 import { userResources } from "./user";
 import { realTimeResources } from "./real-time";
 import { networkResources } from "./network";

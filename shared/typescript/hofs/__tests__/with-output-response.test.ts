@@ -1,4 +1,4 @@
-import { Error as CustomError } from "../../abstracts/errors/error";
+import { Error as CustomError } from "../../abstracts/error";
 import { ErrorTypes } from "../../types/api";
 import { chance } from "../../utilities/constants";
 import { withOutputResponse } from "../with-output-response";
@@ -18,12 +18,12 @@ describe("withOutputResponse", () => {
 		expect(response).toMatchObject(expectedResponse);
 	});
 
-	test("Rethrows Error as ErrorResponse", async () => {
+	test("Rethrows Error", async () => {
 		try {
 			await withOutputResponse(async () => { throw new Error("error") }, { rethrow: true });
 			throw new Error("Expecting withOutputResponse to rethrow a new ErrorResponse.");
 		} catch (error: any) {
-			expect(error.type).toBe(ErrorTypes.InternalError);
+			expect(error.name).toBe(ErrorTypes.InternalError);
 			expect(error.message).toBe("Something went wrong.");
 		}
 	});
@@ -33,7 +33,7 @@ describe("withOutputResponse", () => {
 			await withOutputResponse(async () => { throw new CustomError("CustomError.") }, { rethrow: true });
 			throw new Error("Expecting withOutputResponse to rethrow the ErrorResponse.");
 		} catch (error: any) {
-			expect(error.type).toBe(ErrorTypes.InternalError);
+			expect(error.name).toBe(ErrorTypes.InternalError);
 			expect(error.message).toBe("CustomError.");
 		}
 	});

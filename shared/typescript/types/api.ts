@@ -84,8 +84,8 @@ export type UserOutput = ErrorResponse | User;
 
 export type ErrorResponse = {
   __typename?: 'ErrorResponse';
-  code?: Maybe<Scalars['Int']>;
-  message?: Maybe<Scalars['String']>;
+  cause?: Maybe<Scalars['String']>;
+  message: Scalars['String'];
   type: ErrorTypes;
 };
 
@@ -100,7 +100,6 @@ export enum ErrorTypes {
 
 export type User = Common & {
   __typename?: 'User';
-  alarms: Scalars['Int'];
   created: Scalars['AWSDateTime'];
   creator: Scalars['ID'];
   creatorType: EntityType;
@@ -412,14 +411,13 @@ export type UserOutputResolvers<ContextType = any, ParentType extends ResolversP
 };
 
 export type ErrorResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ErrorResponse'] = ResolversParentTypes['ErrorResponse']> = {
-  code?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  cause?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['ErrorTypes'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
-  alarms?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   created?: Resolver<ResolversTypes['AWSDateTime'], ParentType, ContextType>;
   creator?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   creatorType?: Resolver<ResolversTypes['EntityType'], ParentType, ContextType>;

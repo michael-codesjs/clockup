@@ -1,7 +1,8 @@
 import dynamoDbExpression from "@tuplo/dynoexpr";
-import type { DeleteItemOutput, ExecuteTransactionOutput, GetItemOutput, PutItemOutput, UpdateItemOutput } from "aws-sdk/clients/dynamodb";
+import type { DeleteItemOutput, ExecuteTransactionOutput, PutItemOutput, UpdateItemOutput } from "aws-sdk/clients/dynamodb";
 import { Entity } from ".";
 import { dynamoDbOperations } from "../lib/dynamoDb";
+import { isLiteralObject } from "../utilities/functions";
 
 export class Model {
 
@@ -11,6 +12,14 @@ export class Model {
 	constructor(entity: Entity, tableName: string) {
 		this.entity = entity;
 		this.tableName = tableName;
+	}
+
+	protected parseItemAttributes<I extends Record<string, any>>(Item: I): I {
+		return Object.entries(Item)
+			.reduce((cumulative, [key, value]) => {
+				cumulative[key as keyof I] = isLiteralObject(value) && "wrapperName" in value && value.wrapperName === "Set" ? value.values : value;
+				return cumulative;
+			}, {} as I)
 	}
 
 	/** put attributes  */
@@ -70,7 +79,7 @@ export class Model {
 	}
 
 	/** attributes to be updated when discontinuing an entity */
-	protected continuityAttributes(discontinue:boolean) {
+	protected continuityAttributes(discontinue: boolean) {
 		return {
 			...this.entity.keys.nonPrimary(),
 			modified: this.entity.attributes.get("modified") || new Date().toJSON(),
@@ -106,20 +115,28 @@ export class Model {
 	}
 
 	/** gets an entities record from the table using it's Partition and Sort key values */
-	async get(): Promise<GetItemOutput> {
-		return await dynamoDbOperations.get({
+	async get<T extends Record<string, any>>(): Promise<T> {
+
+		const { Item } = await dynamoDbOperations.get({
 			TableName: this.tableName!,
 			Key: this.entity.keys.primary() as any,
 		});
+
+		return Item ? this.parseItemAttributes(Item as T) : null;
+
 	}
 
 	/** updates an entities record in the table */
-	async update(): Promise<UpdateItemOutput> {
+	async update<T extends Record<string, any>>(): Promise<T> {
+		
 		const params = this.updateParams();
-		return await dynamoDbOperations.update({
+		const { Attributes } = await dynamoDbOperations.update({
 			TableName: this.tableName!,
 			...params as any
 		});
+
+		return this.parseItemAttributes(Attributes as T);
+
 	}
 
 	/** discontinues an entity */

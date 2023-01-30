@@ -2,6 +2,7 @@ resource "aws_cognito_user_pool" "user_pool" {
 
   name                = "clockup-user-pool-${var.stage}"
   username_attributes = ["email"]
+  deletion_protection = var.stage == "prod" ? "ACTIVE" : "INACTIVE"
 
   password_policy {
     minimum_length    = 7

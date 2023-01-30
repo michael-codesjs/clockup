@@ -32,7 +32,6 @@ export class UserAttributes extends Attributes<UserAttributesSchemaCollection> {
 
 	parse(attributes: Partial<EntriesFromAttributesSchema<UserAttributesSchemaCollection>>): void {
 		super.parse({
-			alarms: 0,
 			...attributes,
 			entityType: EntityType.User
 		});

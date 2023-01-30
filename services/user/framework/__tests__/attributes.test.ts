@@ -19,11 +19,11 @@ describe("UserAttribtues", () => {
 
 	test("UserAttributes.parse && UserAttributes.collective", () => {
 
-		const id = "ID", name = "name", email = "email", alarms = 10;
-		attributes.parse({ ...attributes.valid(), id, name, email, alarms });
+		const id = "ID", name = "name", email = "email";
+		attributes.parse({ ...attributes.valid(), id, name, email });
 
 		expect(attributes.collective()).toMatchObject({
-			id, name, email, alarms, entityType: EntityType.User
+			id, name, email, entityType: EntityType.User
 		});
     
 	});

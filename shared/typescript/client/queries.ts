@@ -15,12 +15,11 @@ export const getProfile = /* GraphQL */ `
         discontinued
         email
         name
-        alarms
       }
       ... on ErrorResponse {
         type
         message
-        code
+        cause
       }
     }
   }

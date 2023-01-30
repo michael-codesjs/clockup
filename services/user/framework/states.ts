@@ -5,8 +5,9 @@ import { InsufficientAttributeToCreateUser } from "./errors/insufficient-attribu
 import { UserNotFoundError } from "./errors/user-not-found";
 import { IUserState } from "./interfaces";
 import { UserModel } from "./model";
+import { UserDynamoDbItem } from "./types";
 
-/** State an entity is in when the only thing it knows about itself is it's ID */
+/** State a user entity is in when the only thing it knows about itself is it's ID */
 export class Null implements IUserState, ISubscriber {
 
   context: User;
@@ -27,9 +28,9 @@ export class Null implements IUserState, ISubscriber {
   }
 
   async sync(): Promise<User> {
-    const { Item } = await this.model.get(); // get user record from table
-    if (!Item) throw new UserNotFoundError(this.context.attributes.get("id"));
-    else this.context.attributes.parse(Item);
+    const item = await this.model.get<UserDynamoDbItem>(); // get user record from table
+    if (!item) throw new UserNotFoundError(this.context.attributes.get("id"));
+    else this.context.attributes.parse(item as Omit<typeof item, "entityType">);
     return this.context;
   }
 
@@ -86,8 +87,8 @@ export class Semi extends Null {
 
     try {
 
-      const { Attributes } = await this.model.update(); // update user details and obtain rest of attributes, some of which we already have
-      this.context.attributes.parse(Attributes);
+      const item = await this.model.update<UserDynamoDbItem>(); // update user details and obtain rest of attributes, some of which we already have
+      this.context.attributes.parse(item as Omit<typeof item, "entityType">);
       return this.context;
 
     } catch (error: any) {

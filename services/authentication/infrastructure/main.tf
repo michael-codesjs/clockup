@@ -22,14 +22,3 @@ variable "region" {
   default     = "eu-central-1"
   description = "Region the user service infrastructure is created in."
 }
-
-data "aws_ssm_parameter" "vpc_id" {
-  name = "/clockup/${var.stage}/network/vpc/id"
-}
-
-module "network" {
-  source              = "./network"
-  stage               = var.stage
-  region              = var.region
-  vpc_id              = data.aws_ssm_parameter.vpc_id.value
-}

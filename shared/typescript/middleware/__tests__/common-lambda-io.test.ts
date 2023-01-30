@@ -1,5 +1,5 @@
 import middy from "@middy/core";
-import { AppSyncResolverEvent, Context, SNSEvent, SNSEventRecord, SQSEvent } from "aws-lambda";
+import { AppSyncResolverEvent, Context, SNSEvent, SNSEventRecord, SQSEvent, APIGatewayProxyEvent } from "aws-lambda";
 import SQS from "aws-sdk/clients/sqs";
 import { ErrorResponse, ErrorTypes } from "../../types/api";
 import { chance } from "../../utilities/constants";
@@ -84,6 +84,16 @@ describe("CommonLambdaIO", () => {
     },
     payload: generateInput()
   });
+
+  const getApiGatewayEvent = (): APIGatewayProxyEvent => {
+    const input = generateInput();
+    return {
+      body: JSON.stringify(input),
+      httpMethod: "GET",
+      headers: {},
+      path: "/"
+    } as APIGatewayProxyEvent;
+  }
 
   const getAppSyncEvent = (inInput = true): AppSyncResolverEvent<any, any> => {
     const input = generateInput();
@@ -200,9 +210,10 @@ describe("CommonLambdaIO", () => {
     };
 
     const response = await withMiddleware(lambda)(stateMachineEvent, {} as Context);
-    expect(response[0]).toMatchObject(stateMachineEvent.payload);
+    expect(response).toMatchObject(stateMachineEvent.payload);
 
   });
+
 
   test("StateMachine error response", async () => {
 
@@ -224,6 +235,32 @@ describe("CommonLambdaIO", () => {
     } catch (error: any) {
       expect(error.__typename).toBe("ErrorResponse")
     }
+
+  });
+
+  test("ApiGateway request", async () => {
+
+    const apiGatewayEvent = getApiGatewayEvent();
+    
+    const lambda: CommonIOHandler<Input, null> = async event => {
+      expect(event.inputs[0]).toBe(apiGatewayEvent.body);
+      return null;
+    };
+
+    await withMiddleware(lambda)(apiGatewayEvent, {} as Context);
+
+  });
+
+  test("ApiGateway response", async () => {
+
+    const apiGatewayEvent = getApiGatewayEvent();
+
+    const lambda: CommonIOHandler<Input, Input> = async event => {
+      return event.inputs;
+    }
+
+    const response = await withMiddleware(lambda)(apiGatewayEvent, {} as Context);
+    expect(response[0]).toBe(apiGatewayEvent.body);
 
   });
 

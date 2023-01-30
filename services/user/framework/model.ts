@@ -10,10 +10,4 @@ export class UserModel extends Model {
 		super(entity, USER_TABLE_NAME);
 	}
 
-	updateAttributes() {
-		const attributes = super.updateAttributes();
-		delete (attributes as any).alarms;
-		return attributes;
-	}
-
 }

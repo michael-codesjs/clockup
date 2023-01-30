@@ -1,11 +1,11 @@
-import { getEntityTypes, isLiteralArray, isLiteralObject } from "../utilities/functions";
 import { ulid } from "ulid";
-import { MutateImmutable } from "./errors";
-import { AttributeSchema, CommonAttributes } from "./types";
-import { EntriesFromAttributesSchema, GetSetMutableAttributes, GetSetSetsFromAttributeSchema, RefinedToAttributeParams, ToAttributeRecord } from "./types/utility";
+import { getEntityTypes } from "../utilities/functions";
 import { Attribute } from "./attribute";
+import { MutateImmutable } from "./error-types";
 import { IPutable, IUpdateable } from "./interfaces";
 import { Publisher } from "./publisher";
+import { AttributeSchema, CommonAttributes } from "./types";
+import { EntriesFromAttributesSchema, GetSetMutableAttributes, GetSetSetsFromAttributeSchema, RefinedToAttributeParams, ToAttributeRecord } from "./types/utility";
 
 type CommonAttributesPlusOthers = CommonAttributes & Record<string, AttributeSchema<any, boolean>>;
 

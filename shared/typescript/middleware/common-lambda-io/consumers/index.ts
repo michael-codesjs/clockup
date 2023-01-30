@@ -1,7 +1,8 @@
-import { AppSyncResolverEvent, SNSEvent, SQSEvent } from "aws-lambda";
+import { AppSyncResolverEvent, SNSEvent, SQSEvent, APIGatewayProxyEvent } from "aws-lambda";
 import { CommonIOInputSources, Consumer, StateMachineEvent } from "../types";
 import { CommonIoSQSConsumer } from "./sqs";
 import { CommonIoStateMachineConsumer } from "./state-machine";
+import { CommonIoApiGatewayConsumer } from "./api-gateway";
 
 class ConsumerFactory {
 
@@ -10,6 +11,10 @@ class ConsumerFactory {
 
   private hasRecords(event: CommonIOInputSources<any, any>): event is SNSEvent | SQSEvent {
     return "Records" in event && Boolean(event.Records);
+  }
+
+  private isApiGatewayEvent(event: CommonIOInputSources<any, any>): event is APIGatewayProxyEvent {
+    return ["body", "headers", "httpMethod", "path"].every(key => key in event);
   }
 
   private isSQSEvent(event: CommonIOInputSources<any, any>): event is SQSEvent {
@@ -21,7 +26,7 @@ class ConsumerFactory {
   }
 
   private isAppSyncEvent(event: CommonIOInputSources<any, any>): event is AppSyncResolverEvent<any, any> {
-    return ["arguments", "prev", "stash", "identity", "source"].every(key => Boolean(event[key]));
+    return ["arguments", "prev", "stash", "identity", "source"].every(key => key in event);
   }
 
   private isStateMachineEvent(event: CommonIOInputSources<any, any>): event is StateMachineEvent {
@@ -32,6 +37,7 @@ class ConsumerFactory {
     if(this.isSQSEvent(event)) return new CommonIoSQSConsumer();
     // else if(this.isSNSEvent(event)) return;
     // else if(this.isAppSyncEvent(event)) return;
+    else if (this.isApiGatewayEvent(event)) return new CommonIoApiGatewayConsumer();
     else if (this.isStateMachineEvent(event)) return new CommonIoStateMachineConsumer();
     else throw new Error("Unrecognized event. Can not generate consumer.");
   }

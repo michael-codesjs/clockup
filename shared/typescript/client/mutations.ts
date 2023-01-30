@@ -15,12 +15,11 @@ export const updateUser = /* GraphQL */ `
         discontinued
         email
         name
-        alarms
       }
       ... on ErrorResponse {
         type
         message
-        code
+        cause
       }
     }
   }
@@ -35,7 +34,7 @@ export const deleteUser = /* GraphQL */ `
       ... on ErrorResponse {
         type
         message
-        code
+        cause
       }
     }
   }
@@ -75,13 +74,12 @@ export const createAlarm = /* GraphQL */ `
           discontinued
           email
           name
-          alarms
         }
       }
       ... on ErrorResponse {
         type
         message
-        code
+        cause
       }
     }
   }
@@ -121,13 +119,12 @@ export const updateAlarm = /* GraphQL */ `
           discontinued
           email
           name
-          alarms
         }
       }
       ... on ErrorResponse {
         type
         message
-        code
+        cause
       }
     }
   }

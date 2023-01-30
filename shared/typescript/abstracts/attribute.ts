@@ -1,7 +1,8 @@
-import { isLiteralObject } from "../utilities/functions";
-import { AttributeParams } from "./types";
+import { dynamoDbClient } from "../lib/dynamoDb";
+import { isLiteralArray } from "../utilities/functions";
+import { InvalidAttribute } from "./error-types";
 import { IPutable, IUpdateable } from "./interfaces";
-import { InvalidAttributeAttribute } from "./errors";
+import { AttributeParams } from "./types";
 
 export class Attribute<T = any, I = false> implements IPutable, IUpdateable {
 
@@ -22,13 +23,13 @@ export class Attribute<T = any, I = false> implements IPutable, IUpdateable {
 	get value() { return this.Value; }
 
 	setValue(value: T, modified: Date = new Date()) {
-		if (!this.validate(value)) throw new InvalidAttributeAttribute(value as string);
+		if (!this.validate(value)) throw new InvalidAttribute(value as string);
 		this.Value = value;
 		this.setModified(modified);
 	}
 
 	override(value: T, modified: Date = new Date()) {
-		if (!this.validate(value)) throw new InvalidAttributeAttribute(value as string);
+		if (!this.validate(value)) throw new InvalidAttribute(value as string);
 		this.Value = value;
 		this.setModified(modified);
 	}
@@ -51,6 +52,7 @@ export class Attribute<T = any, I = false> implements IPutable, IUpdateable {
 	/** return version/structure/state of attribute that can be written to the table, example: Date to Date.toJSON() */
 	putable() {
 		if (this.Value instanceof Date) return this.Value.toJSON();
+		if(isLiteralArray(this.Value)) return dynamoDbClient.createSet(Array.from(this.Value));
 		return this.Value;
 	}
 

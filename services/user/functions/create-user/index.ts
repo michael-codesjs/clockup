@@ -5,10 +5,18 @@ import { handlerPath } from "../../../../shared/typescript/utilities/functions";
 
 export const createUser: AWS.ServerlessLambdaFunction = {
 
-	description: "Gets a user GraphQL entity.",
+	description: "Creates a user entity.",
 	handler: `${handlerPath(__dirname)}/handler.main`,
 
 	events: [
+		{
+			http: {
+				path: "/",
+				method: "POST",
+				cors: true,
+				authorizer: "AWS_IAM",
+			}
+		},
 		{
 			sqs: {
 				arn: resource.user.requestQueueArn,
@@ -29,7 +37,7 @@ export const createUser: AWS.ServerlessLambdaFunction = {
 	iamRoleStatements: [
 		{
 			Effect: "Allow",
-			Action: ["dynamodb:GetItem"],
+			Action: ["dynamodb:PutItem"],
 			Resource: resource.user.tableArn
 		},
 		{

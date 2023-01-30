@@ -1,5 +1,5 @@
 import { AttributeSchema, CommonAttributes } from "../../../shared/typescript/abstracts/types";
-import { EntityType } from "../../../shared/typescript/types/api";
+import { EntityType, User as UserGraphQlEntity } from "../../../shared/typescript/types/api";
 
 export type UserAttributesSchemaCollection = CommonAttributes & {
   entityType: AttributeSchema<EntityType.User, true>,
@@ -7,6 +7,7 @@ export type UserAttributesSchemaCollection = CommonAttributes & {
   email: AttributeSchema<string>
 };
 
+export type UserDynamoDbItem = Omit<UserGraphQlEntity, "__typename">
 
 export type NullStateUserConstructorParams = {
   id: string,
@@ -16,7 +17,6 @@ export type SemiStateUserConstructorParams = {
   id: string,
   name?: string,
   email?: string,
-  alarms?: 0,
 };
 
 export type AbsoluteStateUserConstructorParams = Required<SemiStateUserConstructorParams> & { id?: string }

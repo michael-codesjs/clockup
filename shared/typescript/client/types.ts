@@ -21,7 +21,6 @@ export type User = {
   discontinued: boolean,
   email: string,
   name: string,
-  alarms: number,
 };
 
 export type Common = {
@@ -87,8 +86,8 @@ export type Note = {
 export type ErrorResponse = {
   __typename: "ErrorResponse",
   type: ErrorTypes,
-  message?: string | null,
-  code?: number | null,
+  message: string,
+  cause?: string | null,
 };
 
 export enum ErrorTypes {
@@ -171,12 +170,11 @@ export type UpdateUserMutation = {
       discontinued: boolean,
       email: string,
       name: string,
-      alarms: number,
     } | {
       __typename: "ErrorResponse",
       type: ErrorTypes,
-      message?: string | null,
-      code?: number | null,
+      message: string,
+      cause?: string | null,
     }
   ),
 };
@@ -189,8 +187,8 @@ export type DeleteUserMutation = {
     } | {
       __typename: "ErrorResponse",
       type: ErrorTypes,
-      message?: string | null,
-      code?: number | null,
+      message: string,
+      cause?: string | null,
     }
   ),
 };
@@ -237,13 +235,12 @@ export type CreateAlarmMutation = {
         discontinued: boolean,
         email: string,
         name: string,
-        alarms: number,
       },
     } | {
       __typename: "ErrorResponse",
       type: ErrorTypes,
-      message?: string | null,
-      code?: number | null,
+      message: string,
+      cause?: string | null,
     }
   ),
 };
@@ -290,13 +287,12 @@ export type UpdateAlarmMutation = {
         discontinued: boolean,
         email: string,
         name: string,
-        alarms: number,
       },
     } | {
       __typename: "ErrorResponse",
       type: ErrorTypes,
-      message?: string | null,
-      code?: number | null,
+      message: string,
+      cause?: string | null,
     }
   ),
 };
@@ -313,12 +309,11 @@ export type GetProfileQuery = {
       discontinued: boolean,
       email: string,
       name: string,
-      alarms: number,
     } | {
       __typename: "ErrorResponse",
       type: ErrorTypes,
-      message?: string | null,
-      code?: number | null,
+      message: string,
+      cause?: string | null,
     }
   ),
 };
