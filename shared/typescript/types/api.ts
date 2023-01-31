@@ -85,6 +85,7 @@ export type UserOutput = ErrorResponse | User;
 export type ErrorResponse = {
   __typename?: 'ErrorResponse';
   cause?: Maybe<Scalars['String']>;
+  code: Scalars['Int'];
   message: Scalars['String'];
   type: ErrorTypes;
 };
@@ -412,6 +413,7 @@ export type UserOutputResolvers<ContextType = any, ParentType extends ResolversP
 
 export type ErrorResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ErrorResponse'] = ResolversParentTypes['ErrorResponse']> = {
   cause?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['ErrorTypes'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

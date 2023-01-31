@@ -18,6 +18,7 @@ export const getProfile = /* GraphQL */ `
       }
       ... on ErrorResponse {
         type
+        code
         message
         cause
       }

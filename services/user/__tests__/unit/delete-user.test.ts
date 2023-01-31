@@ -20,7 +20,6 @@ describe("DeleteUser State Machine", () => {
 
 	beforeEach(async () => {
 		user = await Given.user.authenticated();
-		console.log("User:", user);
 		CID = chance.guid({ version: 5 });
 		payload = {
 			id: user.id,
@@ -38,12 +37,11 @@ describe("DeleteUser State Machine", () => {
 			.promise()
 	);
 
-	test("Successful DeleteUser state machine.", async () => {
+	test("Successful DeleteUser state machine run.", async () => {
 		await executeDeleteUser({ CID, payload });
 		const wasDeleted = await wasUserDeleted(user.id, { times: 10, duration: 300 });
 		expect(wasDeleted).toBe(true);
 	});
-	/*
 
 	test("Creator Checks", async () => {
 		await executeDeleteUser({ CID, payload: { ...payload, creator: chance.guid({ version: 5 }) } });
@@ -53,7 +51,7 @@ describe("DeleteUser State Machine", () => {
 
 	test("User continuity rollback", async () => {
 
-		// deleting the user from cognito will make the DeleteCognitoUser step to fail
+		// deleting the user from cognito will make the DeleteCognitoUser step to fail.
 		// causing the state machine to rollback a users continuity.
 
 		await deleteUserFromCognito();
@@ -65,6 +63,5 @@ describe("DeleteUser State Machine", () => {
 		expect(user.discontinued).toBe(false);
 
 	});
-	*/
 
 });

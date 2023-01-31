@@ -1,4 +1,4 @@
-import { SNS, SQS } from "aws-sdk";
+import { SNS, SQS, config } from "aws-sdk";
 import { configureEnviromentVariables } from "../utilities/functions";
 import { apiGatewaySignedFetch } from './api-gateway-signed-fetch';
 import { CREATE, CREATED, Inputs } from "./types/user";
@@ -23,6 +23,7 @@ class UserServiceIO {
   async create(params: Pick<CREATE, "cid" | "payload">): Promise<CREATED> {
 
     const body = JSON.stringify({ type: Inputs.CREATE, ...params });
+    console.log("Cred:", config.credentials);
 
     const response = await apiGatewaySignedFetch(USER_API_URL, {
       method: 'post',
@@ -32,7 +33,13 @@ class UserServiceIO {
       }
     });
 
-    return await response.json();
+    const json = await response.json();
+
+    console.log("CR:", json)
+
+    if (response.status !== 200) throw new Error(json.message);
+
+    return json;
 
   }
 

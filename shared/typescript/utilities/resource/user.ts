@@ -13,6 +13,7 @@ class UserResources {
 	readonly tableStreamArn = "${ssm:/clockup/${self:custom.stage}/user/storage/table/stream/arn}" as const;
 
   readonly apiId = "${ssm:/clockup/${self:custom.stage}/user/api/id}" as const;
+  readonly apiArn = "${ssm:/clockup/${self:custom.stage}/user/api/arn}" as const;
   readonly apiRootResourceId = "${ssm:/clockup/${self:custom.stage}/user/api/root-resource-id}" as const;
   readonly apiUrl = "${ssm:/clockup/${self:custom.stage}/user/api/url}" as const;
 

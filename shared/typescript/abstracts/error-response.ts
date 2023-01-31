@@ -25,6 +25,7 @@ export class ErrorResponse implements IGraphQlEntity {
 			__typename: "ErrorResponse",
 			type: this.error.name,
 			message: this.error.message,
+			code: this.error.code,
 			cause: this.error.cause
 		};
 	}

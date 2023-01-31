@@ -1,12 +1,12 @@
 variable "stage" {
   type        = string
-  default     = "dev"
+  nullable    = false
   description = "Stage the API infrastructure is created in."
 }
 
 variable "region" {
   type        = string
-  default     = "eu-central-1"
+  nullables   = false
   description = "Region the API infrastructure is created in."
 }
 

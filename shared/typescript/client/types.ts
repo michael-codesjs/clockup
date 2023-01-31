@@ -86,6 +86,7 @@ export type Note = {
 export type ErrorResponse = {
   __typename: "ErrorResponse",
   type: ErrorTypes,
+  code: number,
   message: string,
   cause?: string | null,
 };
@@ -173,6 +174,7 @@ export type UpdateUserMutation = {
     } | {
       __typename: "ErrorResponse",
       type: ErrorTypes,
+      code: number,
       message: string,
       cause?: string | null,
     }
@@ -187,6 +189,7 @@ export type DeleteUserMutation = {
     } | {
       __typename: "ErrorResponse",
       type: ErrorTypes,
+      code: number,
       message: string,
       cause?: string | null,
     }
@@ -239,6 +242,7 @@ export type CreateAlarmMutation = {
     } | {
       __typename: "ErrorResponse",
       type: ErrorTypes,
+      code: number,
       message: string,
       cause?: string | null,
     }
@@ -291,6 +295,7 @@ export type UpdateAlarmMutation = {
     } | {
       __typename: "ErrorResponse",
       type: ErrorTypes,
+      code: number,
       message: string,
       cause?: string | null,
     }
@@ -312,6 +317,7 @@ export type GetProfileQuery = {
     } | {
       __typename: "ErrorResponse",
       type: ErrorTypes,
+      code: number,
       message: string,
       cause?: string | null,
     }

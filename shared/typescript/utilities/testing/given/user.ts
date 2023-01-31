@@ -29,7 +29,7 @@ class GivenUserAttributes {
 	attributes(): TUser {
 
 		const entityType = EntityType.User;
-		const id = ulid();
+		const id = chance.guid();
 		const creator = id;
 		const creatorType = entityType;
 		const discontinued = false;
@@ -98,9 +98,7 @@ class GivenUserAttributes {
 		};
 
 		const { id } = await Authentication.signUp(attributes); // sign up user
-
-		console.log("ID:", id);
-
+		
 		await Authentication.signIn({
 			username: attributes.email,
 			password: attributes.password

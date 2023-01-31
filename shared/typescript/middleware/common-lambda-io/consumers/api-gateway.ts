@@ -21,6 +21,8 @@ export class CommonIoApiGatewayConsumer implements Consumer {
 
   async error(request: middy.Request<CommonIOInputSources<any, any>, any, Error, Context>): Promise<void> {
 
+    console.error(request.error); // log for debugging purposes.
+
     const errorResponse = new ErrorResponse(request.error);
 
     request.response = {

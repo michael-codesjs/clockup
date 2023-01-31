@@ -8,7 +8,9 @@ const handler: PostConfirmationTriggerHandler = async event => {
 	// extract attributes from event
 	const { email, name } = event.request.userAttributes;
 	const id = event.userName;
-	await ServiceIO.user.create({ id, email, name, creatorType: EntityType.User, creator: id }); // send CREATE input to user service.
+	const payload = { id, email, name, creatorType: EntityType.User, creator: id };
+
+	await ServiceIO.user.create({ cid: id, payload }); // send 'CREATE' input to the user service.
 
 	return event;
 

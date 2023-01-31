@@ -13,16 +13,10 @@ describe("Confirm Sign Up", () => {
 
 		const { event, context } = HandlerArguments.cognito.confirmSignUp(attributes); // event payload for confirmUserSignUp lambda handler
 
-		await main(event, context); // call lambda
-
-		const isCreated = await Repeat.timedOnCondition({
-			times: 20,
-			duration: 200,
-			call: async () => { // check if the user was created in table.
-				const user = await Given.user.byId(attributes.id); // get user item
-				return user !== null || user !== undefined;
-			}
-		});
+		await main(event, context); // call lambda handler
+		
+		const user = await Given.user.byId(event.userName); // get user item
+		const isCreated = user !== null && user !== undefined;
 
 		expect(isCreated).toBe(true);
 

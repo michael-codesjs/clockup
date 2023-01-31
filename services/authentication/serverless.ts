@@ -21,6 +21,7 @@ const serverlessConfiguration: AWS.Service = {
 			COGNITO_USER_POOL_ID: resource.authentication.userPoolId,
 			COGNITO_CLIENT_ID: resource.authentication.userPoolWebClient,
 			USER_TOPIC_ARN: resource.user.topicArn,
+			USER_API_URL: resource.user.apiUrl,
 			USER_REQUEST_QUEUE_URL: resource.user.requestQueueURL,
 			USER_RESPONSE_QUEUE_URL: resource.user.responseQueueURL,
 			AUTHENTICATION_REQUEST_QUEUE_URL: resource.authentication.requestQueueURL,

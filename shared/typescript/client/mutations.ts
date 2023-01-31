@@ -18,6 +18,7 @@ export const updateUser = /* GraphQL */ `
       }
       ... on ErrorResponse {
         type
+        code
         message
         cause
       }
@@ -33,6 +34,7 @@ export const deleteUser = /* GraphQL */ `
       }
       ... on ErrorResponse {
         type
+        code
         message
         cause
       }
@@ -78,6 +80,7 @@ export const createAlarm = /* GraphQL */ `
       }
       ... on ErrorResponse {
         type
+        code
         message
         cause
       }
@@ -123,6 +126,7 @@ export const updateAlarm = /* GraphQL */ `
       }
       ... on ErrorResponse {
         type
+        code
         message
         cause
       }

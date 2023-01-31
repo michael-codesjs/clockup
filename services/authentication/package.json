@@ -4,10 +4,10 @@
   "description": "clockup authentication service.",
   "main": "serverless.ts",
   "scripts": {
-    "test": "jest --verbose",
-    "test:unit": "jest __tests__/unit",
-    "test:integration": "jest __tests__/integration",
-    "test:e2e": "jest __tests__/e2e"
+    "test": "jest --silent",
+    "test:unit": "jest __tests__/unit --silent",
+    "test:integration": "jest __tests__/integration --silent",
+    "test:e2e": "jest __tests__/e2e --silent"
   },
   "engines": {
     "node": ">=14.15.0"
