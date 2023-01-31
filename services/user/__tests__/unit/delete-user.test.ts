@@ -56,8 +56,10 @@ describe("DeleteUser State Machine", () => {
 
 		await deleteUserFromCognito();
 		await executeDeleteUser({ CID, payload });
-
 		await delay(4000); // ussually takes < 3s
+
+		const wasDeleted = await wasUserDeleted(user.id, { times: 1, duration: 0 });
+		expect(wasDeleted).toBe(true);
 
 		user = await Given.user.byId(user.id);
 		expect(user.discontinued).toBe(false);
