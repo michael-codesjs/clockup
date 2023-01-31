@@ -1,6 +1,6 @@
 import { AsyncOperationResponse, AsyncOperationStatus } from "../../../../shared/typescript/types/api";
 import { Given, When } from "../../../../shared/typescript/utilities/testing";
-import { wasUserDeleted } from "../utilities/was-user-deleted";
+import { wasUserDeletedFromCognitoUserPool } from "../utilities/was-user-deleted";
 
 describe("Delete User", () => {
 
@@ -11,7 +11,7 @@ describe("Delete User", () => {
 		const deleteResult = await When.user.delete() as unknown as AsyncOperationResponse; // delete user via the 'deleteUser' mutation;
 		expect(deleteResult.status).toBe(AsyncOperationStatus.Pending);
 
-		const wasDeleted = await wasUserDeleted(user.id);
+		const wasDeleted = await wasUserDeletedFromCognitoUserPool(user.id);
 		expect(wasDeleted).toBe(true);
 
 	});
