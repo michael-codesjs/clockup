@@ -1,4 +1,4 @@
-import { Inputs as UserInputs, Get as GetUserInput } from "../../../shared/typescript/io/types/user";
+import { Inputs as UserInputs, GET as GetUserInput } from "../../../shared/typescript/io/types/user";
 import { Inputs as RealTimeInputs, ASYNC_OPERATION_RESULT } from "../../../shared/typescript/io/types/real-time";
 import { StateMachineEvent } from "../../../shared/typescript/middleware/common-lambda-io/types";
 import { generate, resource } from "../../../shared/typescript/utilities";
@@ -48,11 +48,15 @@ export const updateUser = {
         Parameters: ((): StateMachineEvent<GetUserInput> => ({
           source: "StateMachine",
           attributes: {
-            Type: UserInputs.UPDATE,
-            ["CID.$" as "CID"]: "$.CID",
+            Type: UserInputs.GET,
+            ["correlationId.$" as "correlationId"]: "$.correlationId",
           },
           payload: {
-            ["id.$" as "id"]: "$.payload.id"
+            type: UserInputs.GET,
+            ["correlationId.$" as "correlationId"]: "$.correlationId",
+            payload: {
+              ["id.$" as "id"]: "$.payload.id"
+            }
           }
         }))(),
         Catch: [{
@@ -78,9 +82,9 @@ export const updateUser = {
               DataType: "String",
               StringValue: UserInputs.UPDATE
             },
-            CID: {
+            correlationId: {
               DataType: "String",
-              "StringValue.$": "$.CID"
+              "StringValue.$": "$.correlationId"
             },
             ReplyTo: {
               DataType: "String",
@@ -104,7 +108,7 @@ export const updateUser = {
           source: "StateMachine",
           attributes: {
             Type: UserInputs.UPDATE,
-            ["CID.$" as "CID"]: "$.CID",
+            ["correlationId.$" as "correlationId"]: "$.correlationId",
           },
           ["payload.$" as "payload"]: "$.payload" as unknown as Input
         }))(),
@@ -128,7 +132,7 @@ export const updateUser = {
           TopicArn: resource.realTime.topicArn,
           Message: ((): ASYNC_OPERATION_RESULT => ({
             success: true,
-            ["CID.$" as "CID"]: "$.CID",
+            ["correlationId.$" as "correlationId"]: "$.correlationId",
             title: "User updated successfully.",
             "message": "User details were updated successfully."
           }))(),
@@ -137,9 +141,9 @@ export const updateUser = {
               DataType: "String",
               StringValue: RealTimeInputs.ASYNC_OPERATION_RESULT
             },
-            CID: {
+            correlationId: {
               DataType: "String",
-              "StringValue.$": "$.CID"
+              "StringValue.$": "$.correlationId"
             },
           }
         },
@@ -153,7 +157,7 @@ export const updateUser = {
           QueueUrl: resource.realTime.requestQueueURL,
           MessageBody: ((): ASYNC_OPERATION_RESULT => ({
             success: true,
-            ["CID.$" as "CID"]: "$.CID",
+            ["correlationId.$" as "correlationId"]: "$.correlationId",
             title: "User update failed.",
             ["message" as "message"]: "Something went wrong while updating user($.payload.id)."
           }))(),
@@ -162,9 +166,9 @@ export const updateUser = {
               DataType: "String",
               StringValue: RealTimeInputs.ASYNC_OPERATION_RESULT
             },
-            CID: {
+            correlationId: {
               DataType: "String",
-              "StringValue.$": "$.CID"
+              "StringValue.$": "$.correlationId"
             },
             Retain: {
               DataType: "String",

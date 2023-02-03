@@ -15,7 +15,7 @@ export const withOutputResponse = async <R extends Promise<any>, E extends boole
   try {
 
     result = await call() as Awaited<GetResponse<R, E>>;
-  
+
     result = isLiteralObject(result) || isLiteralArray(result) ? result : { // turn to OperationResponse if response is not of type object.
       __typename: "OperationResponse",
       success: true,
@@ -23,6 +23,7 @@ export const withOutputResponse = async <R extends Promise<any>, E extends boole
     } as Awaited<GetResponse<R, E>>;
 
   } catch (error) {
+    console.error("WithOutputResponse Caught Error:", error);
     error = new ErrorResponse(error);
     if (rethrow) throw error.error;
     result = error.graphQlEntity() as Awaited<GetResponse<R, E>>;

@@ -4,14 +4,14 @@ import { chance } from "../../../../shared/typescript/utilities/constants";
 import { configureEnviromentVariables, delay } from "../../../../shared/typescript/utilities/functions";
 import { Given } from "../../../../shared/typescript/utilities/testing";
 import { executeDeleteUser } from "../utilities/execute-delete-user";
-import { wasUserDeletedFromCognitoUserPool } from "../utilities/was-user-deleted";
+import { wasUserDeletedFromCognitoUserPool } from "../utilities/was-user-deleted-from-cognito-user-pool";
 
 const { COGNITO_USER_POOL_ID } = configureEnviromentVariables();
 
 describe("DeleteUser State Machine", () => {
 
 	let user: User;
-	let CID: string;
+	let correlationId: string;
 	let payload: {
 		id: string,
 		creator: string,
@@ -20,7 +20,7 @@ describe("DeleteUser State Machine", () => {
 
 	beforeEach(async () => {
 		user = await Given.user.authenticated();
-		CID = chance.guid({ version: 5 });
+		correlationId = chance.guid({ version: 5 });
 		payload = {
 			id: user.id,
 			creator: user.creator,
@@ -38,13 +38,13 @@ describe("DeleteUser State Machine", () => {
 	);
 
 	test("Successful DeleteUser state machine run.", async () => {
-		await executeDeleteUser({ CID, payload });
+		await executeDeleteUser({ correlationId, payload });
 		const wasDeleted = await wasUserDeletedFromCognitoUserPool(user.id, { times: 10, duration: 300 });
 		expect(wasDeleted).toBe(true);
 	});
 
 	test("Creator Checks", async () => {
-		await executeDeleteUser({ CID, payload: { ...payload, creator: chance.guid({ version: 5 }) } });
+		await executeDeleteUser({ correlationId, payload: { ...payload, creator: chance.guid({ version: 5 }) } });
 		const wasDeleted = await wasUserDeletedFromCognitoUserPool(user.id, { times: 10, duration: 500 });
 		expect(wasDeleted).toBe(false);
 	});
@@ -55,7 +55,7 @@ describe("DeleteUser State Machine", () => {
 		// causing the state machine to rollback a users continuity.
 
 		await deleteUserFromCognito();
-		await executeDeleteUser({ CID, payload });
+		await executeDeleteUser({ correlationId, payload });
 		await delay(4000); // ussually takes < 3s
 
 		const wasDeleted = await wasUserDeletedFromCognitoUserPool(user.id, { times: 1, duration: 0 });

@@ -1,6 +1,7 @@
 import middy from "@middy/core";
 import { Context, SQSEvent } from "aws-lambda";
 import { SQS } from "aws-sdk";
+import { CommonInput } from "../../../io/types/main";
 import { CommonIOEvent, Consumer } from "../types";
 
 export class CommonIoSQSConsumer implements Consumer {
@@ -33,37 +34,28 @@ export class CommonIoSQSConsumer implements Consumer {
 
   async response(request: middy.Request<SQSEvent, Array<Record<string, any>>, Error, Context>): Promise<void> {
 
-    const originalEvent = request.internal.originalEvent as SQSEvent;
-
     for (let index = 0; index < request.response.length; index++) {
 
-      const originalRecord = originalEvent.Records[index];
-      const response = request.response[index];
+      const commonIoEvent = request.event as unknown as CommonIOEvent<CommonInput<string, any>>;
+      const { meta } = commonIoEvent.inputs[index];
 
-      if ("ReplyTo" in originalRecord.messageAttributes && "CID" in originalRecord.messageAttributes) {
+      if (!meta) return console.log("No meta tags were included by the input producer.");
 
-        const Type = originalRecord.messageAttributes.Type.stringValue;
-        const CID = originalRecord.messageAttributes.CID.stringValue;
-        const ResponseQueueURL = originalRecord.messageAttributes.ReplyTo.stringValue;
+      if (meta.replyTo) {
+
+        const response = request.response[index];
+
+        const sendMessageArgs = {
+          MessageBody: JSON.stringify(response),
+          QueueUrl: meta.replyTo
+        }
 
         await this.sqsServiceObject
-          .sendMessage({
-            MessageAttributes: {
-              Type: {
-                DataType: "String",
-                StringValue: Type
-              },
-              CID: {
-                DataType: "String",
-                StringValue: CID
-              }
-            },
-            MessageBody: JSON.stringify(response),
-            QueueUrl: ResponseQueueURL
-          })
+          .sendMessage(sendMessageArgs)
           .promise();
 
       }
+      
     }
 
     request.response = null;

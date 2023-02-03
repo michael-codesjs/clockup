@@ -32,7 +32,7 @@ type OperationResponse {
 
 type AsyncOperationResponse {
   status: AsyncOperationStatus!
-  CID: ID!
+  correlationId: ID!
 }
 
 enum EntityType {
@@ -151,7 +151,7 @@ type Query {
 }
 
 type Mutation {
-  updateUser(input: UpdateUserInput!): UserOutput! @aws_cognito_user_pools
+  updateUser(input: UpdateUserInput!): AsyncOperationOutput! @aws_cognito_user_pools
   deleteUser: AsyncOperationOutput! @aws_cognito_user_pools
   createAlarm(input: CreateAlarmInput!): AlarmOutput! @aws_cognito_user_pools
   updateAlarm(input: UpdateAlarmInput!): AlarmOutput! @aws_cognito_user_pools

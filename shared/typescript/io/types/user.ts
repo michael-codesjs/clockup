@@ -1,18 +1,19 @@
-import { EntityType, User as UserGraphQlEntity } from "../../types/api";
+import { EntityType, User as UserGraphQlEntity, UpdateUserInput } from "../../types/api";
 
 export enum Inputs {
   CREATE = "CREATE",
   CREATED = "CREATED",
+  GET = "GET",
+  GOT = "GOT",
   UPDATE = "UPDATE",
   CONTINUE = "CONTINUE",
   DISCONTINUE = "DISCONTINUE",
-  DELETE = "DELETE",
-  GET = "GET"
+  DELETE = "DELETE"
 }
 
 export type CREATE = {
   type: Inputs.CREATE,
-  cid: string,
+  correlationId: string,
   payload: {
     id: string,
     name: string,
@@ -25,13 +26,35 @@ export type CREATE = {
 
 export type CREATED = {
   type: Inputs.CREATED,
-  cid: string,
+  correlationId: string,
   payload: UserGraphQlEntity
 }
 
-export type Get = {
-  id: string
+export type GET = {
+  type: Inputs.GET,
+  correlationId: string,
+  payload: {
+    id: string
+  }
 };
+
+export type GOT = {
+  type: Inputs.GOT,
+  correlationId: string,
+  payload: UserGraphQlEntity
+};
+
+export type UPDATE = {
+  type: Inputs.UPDATE,
+  correlationId: string,
+  payload: UpdateUserInput & { id: string }
+};
+
+export type UPDATED = {
+  type: Inputs.UPDATE,
+  correlationId: string,
+  payload: UserGraphQlEntity
+}
 
 export type Discontinue = {
   id: string,

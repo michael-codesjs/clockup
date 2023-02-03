@@ -10,7 +10,7 @@ $util.qr($ctx.stash.put("correlationId", $util.autoId()))
     },
     "body": {
       "stateMachineArn": "${deleteUserStateMachineArn}",
-      "input": "{ \"correlationId\": \"$ctx.stash.correlationId\", \"payload\": { \"id\": \"$ctx.identity.sub\", \"creator\": \"$ctx.identity.sub\", \"creatorType\": \"USER\" } }"
+      "input": "{ \"correlationId\": \"$ctx.stash.correlationId\", \"payload\": $util.qr($ctx.arguments.input).putAll($util.qr({ id: ctx.identity.sub })))
     }
   }
 }

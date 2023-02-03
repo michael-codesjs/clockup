@@ -5,16 +5,9 @@
 export const updateUser = /* GraphQL */ `
   mutation UpdateUser($input: UpdateUserInput!) {
     updateUser(input: $input) {
-      ... on User {
-        id
-        entityType
-        creator
-        creatorType
-        created
-        modified
-        discontinued
-        email
-        name
+      ... on AsyncOperationResponse {
+        status
+        correlationId
       }
       ... on ErrorResponse {
         type
@@ -30,7 +23,7 @@ export const deleteUser = /* GraphQL */ `
     deleteUser {
       ... on AsyncOperationResponse {
         status
-        CID
+        correlationId
       }
       ... on ErrorResponse {
         type

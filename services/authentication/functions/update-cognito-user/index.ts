@@ -3,17 +3,17 @@ import type { AWS } from "../../../../shared/typescript/types/aws";
 import { resource } from "../../../../shared/typescript/utilities";
 import { handlerPath } from "../../../../shared/typescript/utilities/functions";
 
-/** 'deleteCognitoUser' lambda function sls definition */
-export const deleteCognitoUser: AWS.ServerlessLambdaFunction = {
-
-	description: "Deletes a user from the cognito user pool.",
+/** 'updateCognitoUser' lambda function sls definition. */
+export const updateCognitoUser: AWS.ServerlessLambdaFunction = {
+	
+	description: "Updates a cognito users details.",
 	handler: handlerPath(__dirname) + "/handler.main",
-
+	
 	events: [{
 		eventBridge: {
 			eventBus: resource.eventBusArn,
 			pattern: {
-				"detail-type": [Inputs.DELETE]
+				"detail-type": [Inputs.UPDATE]
 			}
 		}
 	}],
@@ -22,7 +22,7 @@ export const deleteCognitoUser: AWS.ServerlessLambdaFunction = {
 		{
 			Effect: "Allow",
 			Resource: resource.authentication.userPoolArn,
-			Action: ["cognito-idp:AdminDeleteUser"]
+			Action: ["cognito-idp:AdminUpdateUserAttributes"]
 		},
 		{
 			Effect: "Allow",
@@ -30,5 +30,5 @@ export const deleteCognitoUser: AWS.ServerlessLambdaFunction = {
 			Action: ["events:putEvents"]
 		}
 	]
-
+	
 };

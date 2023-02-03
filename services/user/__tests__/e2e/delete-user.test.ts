@@ -1,6 +1,6 @@
 import { AsyncOperationResponse, AsyncOperationStatus } from "../../../../shared/typescript/types/api";
 import { Given, When } from "../../../../shared/typescript/utilities/testing";
-import { wasUserDeletedFromCognitoUserPool } from "../utilities/was-user-deleted";
+import { wasUserDeletedFromCognitoUserPool } from "../utilities/was-user-deleted-from-cognito-user-pool";
 
 describe("Delete User", () => {
 

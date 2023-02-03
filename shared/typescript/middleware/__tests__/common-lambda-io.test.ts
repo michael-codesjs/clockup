@@ -1,7 +1,7 @@
 import middy from "@middy/core";
-import { AppSyncResolverEvent, Context, SNSEvent, SNSEventRecord, SQSEvent, APIGatewayProxyEvent } from "aws-lambda";
+import { APIGatewayProxyEvent, AppSyncResolverEvent, Context, EventBridgeEvent, SNSEvent, SNSEventRecord, SQSEvent } from "aws-lambda";
 import SQS from "aws-sdk/clients/sqs";
-import { ErrorResponse, ErrorTypes } from "../../types/api";
+import { CommonInput } from "../../io/types/main";
 import { chance } from "../../utilities/constants";
 import { configureEnviromentVariables } from "../../utilities/functions";
 import { commonLambdaIO } from "../common-lambda-io";
@@ -17,17 +17,28 @@ describe("CommonLambdaIO", () => {
     type = chance.string({ alpha: true, casing: "upper", numeric: false, symbols: false });
   });
 
-  const generateInput = () => ({
-    stringAttribute: chance.string(),
-    numberAttribute: chance.integer(),
-    booleanAttribute: chance.bool(),
-    arrayAttribute: Array(chance.integer({ min: 1, max: 10 })).fill(null).map(() => chance.string()),
-    objectAttribute: {
-      [chance.string()]: chance.string()
+  type INPUT = CommonInput<string, {
+    string: string,
+    number: number,
+    boolean: boolean,
+    array: Array<any>
+    object: Record<string, any>
+  }>;
+
+  const generateInput = (meta: Record<string, any> = {}): INPUT => ({
+    type: chance.word().toUpperCase(),
+    correlationId: chance.guid(),
+    meta,
+    payload: {
+      string: chance.string(),
+      number: chance.integer(),
+      boolean: chance.bool(),
+      array: Array(chance.integer({ min: 1, max: 10 })).fill(null).map(() => chance.string()),
+      object: {
+        [chance.string()]: chance.string()
+      }
     }
   });
-
-  type Input = ReturnType<typeof generateInput>;
 
   const getSNSEvent = (): SNSEvent => ({
     Records: Array(chance.integer({ min: 1, max: 10 })).fill(null).map(() => {
@@ -38,7 +49,7 @@ describe("CommonLambdaIO", () => {
         EventSource: "aws:sns",
         Sns: {
           Message: JSON.stringify(message),
-          MessageAttributes: { type },
+          Messages: { type },
           MessageId: chance.fbid(),
           Signature: chance.string(),
         }
@@ -48,52 +59,31 @@ describe("CommonLambdaIO", () => {
 
   const getSQSEvent = (reply: boolean = false): SQSEvent => ({
     Records: Array(chance.integer({ min: 1, max: reply ? 1 : 10 })).fill(null).map(() => {
-      const input = generateInput();
-      const attributes: SQSEvent["Records"][number]["messageAttributes"] = reply ? {
-        Type: {
-          dataType: "String",
-          stringListValues: [],
-          stringValue: chance.word().toUpperCase()
-        },
-        CID: {
-          dataType: "String",
-          stringListValues: [],
-          stringValue: input.stringAttribute
-        },
-        ReplyTo: {
-          dataType: "String",
-          stringListValues: [],
-          stringValue: TEST_QUEUE_URL
-        }
-      } : {};
+      const input = generateInput(reply ? { replyTo: TEST_QUEUE_URL } : {});
       return {
         messageId: chance.fbid(),
         eventSource: "aws:sqs",
-        messageAttributes: attributes,
         attributes: {},
         body: JSON.stringify(input)
       } as unknown as SQSEvent["Records"][number];
     })
   });
 
-  const getStateMachineEvent = (): StateMachineEvent<Input> => ({
+  const getStateMachineEvent = (): StateMachineEvent<INPUT> => ({
     source: "StateMachine",
     attributes: {
       Type: "CREATE",
-      CID: chance.fbid()
+      correlationId: chance.fbid()
     },
     payload: generateInput()
   });
 
-  const getApiGatewayEvent = (): APIGatewayProxyEvent => {
-    const input = generateInput();
-    return {
-      body: JSON.stringify(input),
-      httpMethod: "GET",
-      headers: {},
-      path: "/"
-    } as APIGatewayProxyEvent;
-  }
+  const getApiGatewayEvent = (): APIGatewayProxyEvent => ({
+    body: generateInput(),
+    httpMethod: "GET",
+    headers: {},
+    path: "/"
+  } as unknown as APIGatewayProxyEvent);
 
   const getAppSyncEvent = (inInput = true): AppSyncResolverEvent<any, any> => {
     const input = generateInput();
@@ -108,6 +98,15 @@ describe("CommonLambdaIO", () => {
       },
       stash: {},
     } as AppSyncResolverEvent<any, any>;
+  }
+
+  const getEventBridgeEvent = (): EventBridgeEvent<INPUT["type"], INPUT> => {
+    const input = generateInput();
+    return {
+      "detail-type": input.type,
+      detail: input,
+      source: "clockup.shared.tests.middleware.common-lambda-io",
+    } as EventBridgeEvent<INPUT["type"], INPUT>;
   }
 
   const withMiddleware = (lambda: any) => middy(lambda).use(commonLambdaIO());
@@ -133,9 +132,9 @@ describe("CommonLambdaIO", () => {
 
     const sqsEvent = getSQSEvent();
 
-    const lambda: CommonIOHandler<Input, any> = async event => {
+    const lambda: CommonIOHandler<INPUT, any> = async event => {
       event.inputs.forEach((input, index) => {
-        const sqsEventEquivalentInput = JSON.parse(sqsEvent.Records[index].body)
+        const sqsEventEquivalentInput = JSON.parse(sqsEvent.Records[index].body);
         expect(input).toMatchObject(sqsEventEquivalentInput);
       });
       return event.inputs;
@@ -149,7 +148,7 @@ describe("CommonLambdaIO", () => {
 
     const sqsEvent = getSQSEvent(true);
 
-    const lambda: CommonIOHandler<Input, any> = async event => {
+    const lambda: CommonIOHandler<INPUT, any> = async event => {
       return event.inputs;
     };
 
@@ -158,30 +157,29 @@ describe("CommonLambdaIO", () => {
     // get message which is supposed to be sent to the replyQueue(TEST_QUEUE);
 
     const response = await new SQS({ apiVersion: '2012-11-05' })
-      .receiveMessage({
-        QueueUrl: TEST_QUEUE_URL,
-        MessageAttributeNames: ["CID", "Type"],
-        WaitTimeSeconds: 0,
-      })
+      .receiveMessage({ QueueUrl: TEST_QUEUE_URL, WaitTimeSeconds: 0 })
       .promise();
 
-    const Type = sqsEvent.Records[0].messageAttributes.Type.stringValue;
-    const CID = sqsEvent.Records[0].messageAttributes.CID.stringValue;
+    // console.log("Res:", response);
+
+    const { type, correlationId } = JSON.parse(sqsEvent.Records[0].body);
 
     let hasMessage: boolean;
 
     // delete messages
     for (const message of response.Messages) {
-      hasMessage = Type === message.MessageAttributes.Type.StringValue && CID === message.MessageAttributes.CID.StringValue;
+
+      const body = JSON.parse(message.Body);
+      // console.log(`Sent Type: ${type}, ReceivedType: ${body.type}, CID: ${correlationId}, RCID: ${correlationId}`);
+      hasMessage = type === body.type && correlationId === body.correlationId;
+
       if (hasMessage) {
         await new SQS({ apiVersion: '2012-11-05' })
-          .deleteMessage({
-            QueueUrl: TEST_QUEUE_URL,
-            ReceiptHandle: message.ReceiptHandle
-          })
-          .promise()
+          .deleteMessage({ QueueUrl: TEST_QUEUE_URL, ReceiptHandle: message.ReceiptHandle })
+          .promise();
         break;
       }
+
     }
 
     expect(hasMessage).toBe(true);
@@ -192,7 +190,7 @@ describe("CommonLambdaIO", () => {
 
     const stateMachineEvent = getStateMachineEvent();
 
-    const lambda: CommonIOHandler<Input, any> = async event => {
+    const lambda: CommonIOHandler<INPUT, INPUT> = async event => {
       expect(event.inputs[0]).toMatchObject(stateMachineEvent.payload);
       return event.inputs;
     };
@@ -205,7 +203,7 @@ describe("CommonLambdaIO", () => {
 
     const stateMachineEvent = getStateMachineEvent();
 
-    const lambda: CommonIOHandler<Input, Input> = async event => {
+    const lambda: CommonIOHandler<INPUT, INPUT> = async event => {
       return event.inputs;
     };
 
@@ -214,37 +212,13 @@ describe("CommonLambdaIO", () => {
 
   });
 
-
-  test("StateMachine error response", async () => {
-
-    const stateMachineEvent = getStateMachineEvent();
-    const errorMessage = chance.sentence();
-
-    const lambda: CommonIOHandler<Input, ErrorResponse> = async (event) => {
-      return [{
-        __typename: "ErrorResponse",
-        type: ErrorTypes.InternalError,
-        message: errorMessage,
-        code: chance.integer({ min: 100, max: 1000 })
-      }];
-    };
-
-    try {
-      await withMiddleware(lambda)(stateMachineEvent, {} as Context);
-      throw new Error("Expeting state machine consumer to re-throw the ErrorResponse graphql entity.");
-    } catch (error: any) {
-      expect(error.__typename).toBe("ErrorResponse")
-    }
-
-  });
-
   test("ApiGateway request", async () => {
 
     const apiGatewayEvent = getApiGatewayEvent();
-    
-    const lambda: CommonIOHandler<Input, null> = async event => {
+
+    const lambda: CommonIOHandler<INPUT, INPUT> = async event => {
       expect(event.inputs[0]).toBe(apiGatewayEvent.body);
-      return null;
+      return event.inputs;
     };
 
     await withMiddleware(lambda)(apiGatewayEvent, {} as Context);
@@ -255,12 +229,25 @@ describe("CommonLambdaIO", () => {
 
     const apiGatewayEvent = getApiGatewayEvent();
 
-    const lambda: CommonIOHandler<Input, Input> = async event => {
+    const lambda: CommonIOHandler<INPUT, INPUT> = async event => {
       return event.inputs;
     }
 
     const response = await withMiddleware(lambda)(apiGatewayEvent, {} as Context);
-    expect(response[0]).toBe(apiGatewayEvent.body);
+    expect(JSON.parse(response.body)).toMatchObject(apiGatewayEvent.body);
+
+  });
+
+  test("EventBridge request", async () => {
+
+    const eventBridgeEvent = getEventBridgeEvent();
+
+    const lambda: CommonIOHandler<INPUT, INPUT> = async event => {
+      expect(event.inputs[0]).toBe(eventBridgeEvent.detail);
+      return event.inputs;
+    };
+
+    await withMiddleware(lambda)(eventBridgeEvent, {} as Context);
 
   });
 

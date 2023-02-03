@@ -38,6 +38,7 @@ module "authentication" {
 module "api" {
   source               = "./api"
   stage                = var.stage
+  region               = var.region
   cognito_user_pool_id = module.authentication.cognito_user_pool_id
 }
 

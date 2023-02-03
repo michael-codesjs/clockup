@@ -8,7 +8,7 @@ describe("Create User", () => {
     const { id, creator, creatorType, name, email } = Given.user.attributes(); // get attributes.
     const payload = { id, creator, creatorType, name, email };
 
-    const result = await ServiceIO.user.create({ cid: id, payload }); // send a 'CREATE' input to the user service.
+    const result = await ServiceIO.user.create({ correlationId: id, payload }); // send a 'CREATE' input to the user service.
 
     expect(result.payload).toMatchObject(payload);
 

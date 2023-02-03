@@ -5,7 +5,7 @@ import { CREATE, CREATED, Inputs } from "../../../../shared/typescript/io/types/
 import { CommonIOHandler } from "../../../../shared/typescript/middleware/common-lambda-io/types";
 import { User } from "../../framework";
 
-/** handler for the 'createUser' lambda function. */
+/** handler for the 'updateUser' lambda function. */
 const handler: CommonIOHandler<CREATE, CREATED> = withCommonInput(async input => {
 
 	const createUser = async (): Promise<CREATED> => {

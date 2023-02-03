@@ -13,3 +13,9 @@ module "user" {
   stage = var.stage
   region = var.region
 }
+
+module "authentication" {
+  source = "./authentication"
+  stage = var.stage
+  region = var.region
+}

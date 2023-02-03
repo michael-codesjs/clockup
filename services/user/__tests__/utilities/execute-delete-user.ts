@@ -6,7 +6,7 @@ import { configureEnviromentVariables } from "../../../../shared/typescript/util
 const { REGION, STAGE } = configureEnviromentVariables();
 
 type Params = {
-  CID: string,
+  correlationId: string,
   payload: {
     id: string,
     creator: string,

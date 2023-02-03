@@ -1,9 +1,9 @@
 import middy from "@middy/core";
 import { Consumers } from "./consumers";
-import { CommonIOInputSources, Consumer } from "./types";
+import { CommonInputSources, Consumer } from "./types";
 
 /** Provides a common interface for receiving and replying to inputs from various sources. */
-export const commonLambdaIO = <I, R>(): middy.MiddlewareObj<CommonIOInputSources<I, R>, R> => {
+export const commonLambdaIO = <I, R>(): middy.MiddlewareObj<CommonInputSources<I, R>, R> => {
 
 	let consumer: Consumer;
 

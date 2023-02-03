@@ -10,6 +10,9 @@ class ResourceCollection {
   private constructor() {}
   static readonly instance = new ResourceCollection;
 
+  readonly eventBusArn = "${ssm:/clockup/${self:custom.stage}/event-bus/arn}" as const
+  readonly eventBusName = "${ssm:/clockup/${self:custom.stage}/event-bus/name}" as const;
+
   readonly network: typeof networkResources = networkResources;
   readonly test: typeof testResources = testResources;
   readonly authentication: typeof authenticationResources = authenticationResources;

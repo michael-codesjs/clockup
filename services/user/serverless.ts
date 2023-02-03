@@ -1,8 +1,8 @@
 import { AWS } from "../../shared/typescript/types/aws";
 import { common, generate, resource } from "../../shared/typescript/utilities";
 import { createMappingTemplate, createStateMachineDataSource } from "../../shared/typescript/utilities/functions";
-import { continueUser, createUser, discontinueUser, handleDeleteCognitoUserTaskToken } from "./functions";
-import { deleteUser } from "./state-machines";
+import { continueUser, createUser, getUser, discontinueUser, handleDeleteCognitoUserTaskToken } from "./functions";
+import { deleteUser, updateUser } from "./state-machines";
 
 const serverlessConfiguration: AWS.Service = {
 
@@ -20,7 +20,7 @@ const serverlessConfiguration: AWS.Service = {
 		apiGateway: {
 			restApiId: resource.user.apiId,
 			restApiRootResourceId: resource.user.apiRootResourceId,
-			
+
 		},
 		environment: {
 			...common.enviromentVariables,
@@ -70,7 +70,14 @@ const serverlessConfiguration: AWS.Service = {
 					type: "Mutation",
 					source: "deleteUser",
 					request: "request.deleteUser.vtl",
-					response: "response.deleteUser.vtl"
+					response: "async-operation-response.vtl"
+				}),
+				createMappingTemplate({
+					field: "updateUser",
+					type: "Mutation",
+					source: "updateUser",
+					request: "request.updateUser.vtl",
+					response: "async-operation-response.vtl"
 				})
 			],
 			dataSources: [
@@ -80,6 +87,11 @@ const serverlessConfiguration: AWS.Service = {
 					name: "deleteUser",
 					sync: false,
 					stateMachineArn: "${self:resources.Outputs.DeleteUserStateMachineArn.Value}"
+				}),
+				createStateMachineDataSource({
+					name: "updateUser",
+					sync: false,
+					stateMachineArn: "${self:resources.Outputs.UpdateUserStateMachineArn.Value}"
 				})
 			]
 		},
@@ -88,6 +100,7 @@ const serverlessConfiguration: AWS.Service = {
 
 	functions: {
 		createUser,
+		getUser,
 		discontinueUser,
 		continueUser,
 		handleDeleteCognitoUserTaskToken
@@ -96,7 +109,8 @@ const serverlessConfiguration: AWS.Service = {
 	...({
 		stepFunctions: {
 			stateMachines: {
-				deleteUser
+				deleteUser,
+				updateUser
 			}
 		}
 	}),
@@ -104,6 +118,7 @@ const serverlessConfiguration: AWS.Service = {
 	resources: {
 
 		Resources: {
+
 			DeleteUserStateMachineArnSSMParameter: {
 				Type: "AWS::SSM::Parameter",
 				Properties: {
@@ -114,13 +129,30 @@ const serverlessConfiguration: AWS.Service = {
 						Environment: "${self:custom.stage}"
 					}
 				}
+			},
+
+			UpdateUserUserStateMachineArnSSMParameter: {
+				Type: "AWS::SSM::Parameter",
+				Properties: {
+					Name: "/clockup/user/${self:custom.stage}/state-machines/update-user/arn",
+					Type: "String",
+					Value: { Ref: generate.stateMachineName("UpdateUser") },
+					Tags: {
+						Environment: "${self:custom.stage}"
+					}
+				}
 			}
+
 		},
 
 		Outputs: {
 			DeleteUserStateMachineArn: {
-				Description: "ARN for the deleteUser state machine.",
+				Description: "Arn for the deleteUser state machine.",
 				Value: { Ref: generate.stateMachineName("DeleteUser") }
+			},
+			UpdateUserStateMachineArn: {
+				Description: "Arn for the updateUser state machine.",
+				Value: { Ref: generate.stateMachineName("UpdateUser") }
 			}
 		}
 

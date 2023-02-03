@@ -1,53 +1,93 @@
 
-import { SNS, SQS } from "aws-sdk";
+import { EventBridge } from "aws-sdk";
+import correlator from "correlation-id";
+import { eventBridgeClient } from "../lib/event-bridge";
 import { configureEnviromentVariables } from "../utilities/functions";
-import { Delete, Inputs } from "./types/authentication";
+import { DELETE, Inputs, UPDATE } from "./types/authentication";
+import { SendInputResponse } from "./types/main";
 
 const {
-  AUTHENTICATION_REQUEST_QUEUE_URL,
-  USER_RESPONSE_QUEUE_URL,
-  REGION
+  AUTHENTITCATION_API_URL,
+  EVENT_BUS_NAME
 } = configureEnviromentVariables();
 
-/** Utility class for sending messages to the user service. */
+type BaseSendInputParams = {
+  correlationId?: string,
+  source: string
+}
+
+type OptionalUpdateParams = BaseSendInputParams;
+
+type OptionalDeleteParams = BaseSendInputParams;
+
+/** Utility class for sending inputs to the authentication service. */
 class AuthenticationServiceIO {
 
   private constructor() { }
   static readonly instance = new AuthenticationServiceIO();
 
-  private get snsServiceObject() {
-    return new SNS({
-      apiVersion: "2010-03-32",
-      region: REGION
-    });
+  /** Sends a 'UPDATE' input to the authentication service. */
+  async update(params: Pick<UPDATE, "payload" | "meta"> & OptionalUpdateParams): Promise<SendInputResponse<EventBridge.PutEventsResponse>> {
+
+    const correlationId = params.correlationId || correlator.getId();
+    const { source, ...rest } = params;
+
+    const input: UPDATE = {
+      ...rest,
+      type: Inputs.UPDATE,
+      correlationId,
+    };
+
+    const putEventArgs: EventBridge.PutEventsRequest = {
+      Entries: [{
+        EventBusName: EVENT_BUS_NAME,
+        Source: source,
+        DetailType: input.type,
+        Detail: JSON.stringify(input),
+      }]
+    };
+
+    const response = await eventBridgeClient()
+      .putEvents(putEventArgs)
+      .promise();
+
+    return {
+      correlationId,
+      response
+    };
+
   }
 
-  private get sqsServiceObject() {
-    return new SQS({ apiVersion: '2012-11-05' });
-  }
+  /** Sends a 'DELETE' input to authentication service. */
+  async delete(params: Pick<DELETE, "payload" | "meta"> & OptionalDeleteParams): Promise<SendInputResponse<EventBridge.PutEventsResponse>> {
 
-  async delete(message: Delete) {
+    const correlationId = params.correlationId || correlator.getId();
 
-    const serviceObject = this.sqsServiceObject;
-    
-    return await serviceObject.sendMessage({
-      MessageBody: JSON.stringify(message),
-      MessageAttributes: {
-        Type: {
-          DataType: "String",
-          StringValue: Inputs.DELETE
-        },
-        CID: {
-          DataType: "String",
-          StringValue: message.id
-        },
-        ReplyTo: {
-          DataType: "String",
-          StringValue: USER_RESPONSE_QUEUE_URL
-        }
-      },
-      QueueUrl: AUTHENTICATION_REQUEST_QUEUE_URL,
-    }).promise();
+    const { source, ...rest } = params;
+
+    const input: DELETE = {
+      ...rest,
+      type: Inputs.DELETE,
+      correlationId
+    };
+
+    const putEventArgs: EventBridge.PutEventsRequest = {
+      Entries: [{
+        EventBusName: EVENT_BUS_NAME,
+        Source: source,
+        DetailType: input.type,
+        Detail: JSON.stringify(input),
+      }]
+    };
+
+    const response = await eventBridgeClient()
+      .putEvents(putEventArgs)
+      .promise();
+
+    return {
+      correlationId,
+      response: response
+    };
 
   }
 

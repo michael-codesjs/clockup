@@ -1,20 +1,19 @@
 import type { AWS } from "../../../../shared/typescript/types/aws";
-import { Inputs } from "../../../../shared/typescript/io/types/user";
-import { cloudImports } from "../../../../shared/typescript/utilities/resource";
 import { handlerPath } from "../../../../shared/typescript/utilities/functions";
+import { resource } from "../../../../shared/typescript/utilities/resource";
 
-export const createUser: AWS.ServerlessLambdaFunction = {
+export const getUser: AWS.ServerlessLambdaFunction = {
 
-	description: "Creates a user.",
-	handler: `${handlerPath(__dirname)}/handler.main`,
+	description: "Gets a user.",
+	handler: handlerPath(__dirname) + "/handler.main",
 
 	events: [
 		{
-			sqs: {
-				arn: cloudImports.userCreateQueueArn,
-				enabled: true,
-				batchSize: 1,
-				maximumBatchingWindow: 0
+			http: {
+				method: "GET",
+				path: "/",
+				cors: true,
+				authorizer: "AWS_IAM",
 			}
 		}
 	],
@@ -22,8 +21,11 @@ export const createUser: AWS.ServerlessLambdaFunction = {
 	iamRoleStatements: [
 		{
 			Effect: "Allow",
-			Action: ["dynamodb:PutItem"],
-			Resource: cloudImports.tableArn
+			Action: ["dynamodb:GetItem"],
+			Resource: [
+				resource.user.tableArn,
+				resource.user.tableArn + "/*"
+			]
 		}
 	]
 

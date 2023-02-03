@@ -20,10 +20,9 @@ class UserServiceIO {
   }
 
   /** Sends a "CREATE" input to the user service via it's API. Is a synchronous operation so expect a "CREATED" response. */
-  async create(params: Pick<CREATE, "cid" | "payload">): Promise<CREATED> {
+  async create(params: Pick<CREATE, "correlationId" | "payload">): Promise<CREATED> {
 
     const body = JSON.stringify({ type: Inputs.CREATE, ...params });
-    console.log("Cred:", config.credentials);
 
     const response = await apiGatewaySignedFetch(USER_API_URL, {
       method: 'post',
@@ -34,10 +33,7 @@ class UserServiceIO {
     });
 
     const json = await response.json();
-
-    console.log("CR:", json)
-
-    if (response.status !== 200) throw new Error(json.message);
+    if (response.status !== 200) throw new Error("");
 
     return json;
 

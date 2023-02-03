@@ -9808,7 +9808,7 @@ lodash@4.17.x, lodash@^4.17.11, lodash@^4.17.15, lodash@^4.17.20, lodash@^4.17.2
 log-node@^8.0.3:
   version "8.0.3"
   resolved "https://registry.npmjs.org/log-node/-/log-node-8.0.3.tgz"
-  integrity sha512-1UBwzgYiCIDFs8A0rM2QdBFo8Wd8UQ0HrSTu/MNI+/2zN3NoHRj2fhplurAyuxTYUXu3Oohugq1jAn5s05u1MQ==
+  integrity sha512-1UBwzgYicorrelationIdFs8A0rM2QdBFo8Wd8UQ0HrSTu/MNI+/2zN3NoHRj2fhplurAyuxTYUXu3Oohugq1jAn5s05u1MQ==
   dependencies:
     ansi-regex "^5.0.1"
     cli-color "^2.0.1"

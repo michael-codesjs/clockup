@@ -117,7 +117,7 @@ export type Mutation = {
   createAlarm: AlarmOutput;
   deleteUser: AsyncOperationOutput;
   updateAlarm: AlarmOutput;
-  updateUser: UserOutput;
+  updateUser: AsyncOperationOutput;
 };
 
 
@@ -166,7 +166,7 @@ export type AsyncOperationOutput = AsyncOperationResponse | ErrorResponse;
 
 export type AsyncOperationResponse = {
   __typename?: 'AsyncOperationResponse';
-  CID: Scalars['ID'];
+  correlationId: Scalars['ID'];
   status: AsyncOperationStatus;
 };
 
@@ -440,7 +440,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createAlarm?: Resolver<ResolversTypes['AlarmOutput'], ParentType, ContextType, RequireFields<MutationCreateAlarmArgs, 'input'>>;
   deleteUser?: Resolver<ResolversTypes['AsyncOperationOutput'], ParentType, ContextType>;
   updateAlarm?: Resolver<ResolversTypes['AlarmOutput'], ParentType, ContextType, RequireFields<MutationUpdateAlarmArgs, 'input'>>;
-  updateUser?: Resolver<ResolversTypes['UserOutput'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'input'>>;
+  updateUser?: Resolver<ResolversTypes['AsyncOperationOutput'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'input'>>;
 };
 
 export type AlarmOutputResolvers<ContextType = any, ParentType extends ResolversParentTypes['AlarmOutput'] = ResolversParentTypes['AlarmOutput']> = {
@@ -458,7 +458,7 @@ export type AsyncOperationOutputResolvers<ContextType = any, ParentType extends 
 };
 
 export type AsyncOperationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AsyncOperationResponse'] = ResolversParentTypes['AsyncOperationResponse']> = {
-  CID?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  correlationId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['AsyncOperationStatus'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

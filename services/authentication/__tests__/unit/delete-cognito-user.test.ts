@@ -1,52 +1,40 @@
+import { CognitoIdentityServiceProvider } from "aws-sdk";
+import { adminCreateUser, adminGetUser } from "../utilities";
 import { ServiceIO } from "../../../../shared/typescript/io";
-import { cognitoProvider } from "../../../../shared/typescript/lib/cognito";
 import { chance } from "../../../../shared/typescript/utilities/constants";
-import { configureEnviromentVariables } from "../../../../shared/typescript/utilities/functions";
 import { Repeat } from "../../../../shared/typescript/utilities/testing";
-
-const { COGNITO_USER_POOL_ID } = configureEnviromentVariables();
 
 describe("Delete Cognito User", () => {
 
-  let id: string;
   let name: string;
   let email: string;
-  let user: any;
+  let user: CognitoIdentityServiceProvider.UserType;
 
   beforeEach(async () => {
 
     name = chance.name();
     email = chance.email();
 
-    const { User } = await cognitoProvider()
-      .adminCreateUser({
-        Username: email,
-        UserAttributes: [
-          { Name: "name", Value: name },
-          { Name: "email", Value: email }
-        ],
-        UserPoolId: COGNITO_USER_POOL_ID,
-      })
-      .promise();
-
-    user = User;
-    id = User.Username;
+    user = await adminCreateUser({ name, email });
 
   });
 
   it("Deletes a cognito user", async () => {
 
-    await ServiceIO.authentication.delete({ id });
+    const payload = { id: user.Username };
+
+    await ServiceIO.authentication.delete({
+      payload,
+      source: "clockup.authentication.tests.unit.delete-cognito-user"
+    });
 
     const wasDeletedFromCognito = await Repeat.timedOnCondition({
       times: 10,
       duration: 100,
       call: async () => {
         try {
-          await cognitoProvider()
-            .adminGetUser({ UserPoolId: COGNITO_USER_POOL_ID, Username: id })
-            .promise();
-          return false;
+          await adminGetUser(user.Username);
+          return false; // adminGetUser is supposed to fail.
         } catch (error: any) {
           return error.code === "UserNotFoundException";
         }

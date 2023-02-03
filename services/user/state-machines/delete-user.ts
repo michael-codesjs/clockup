@@ -36,7 +36,7 @@ export const deleteUser = {
           source: "StateMachine",
           attributes: {
             Type: UserInputs.DISCONTINUE,
-            ["CID.$" as "CID"]: "$.CID",
+            ["correlationId.$" as "correlationId"]: "$.correlationId",
           },
           ["payload.$" as "payload"]: "$.payload" as unknown as Input
         }))(),
@@ -56,7 +56,7 @@ export const deleteUser = {
           source: "StateMachine",
           attributes: {
             Type: UserInputs.CONTINUE,
-            ["CID.$" as "CID"]: "$.CID",
+            ["correlationId.$" as "correlationId"]: "$.correlationId",
           },
           ["payload.$" as "payload"]: "$.payload" as unknown as Input
         }))(),
@@ -78,9 +78,9 @@ export const deleteUser = {
               DataType: "String",
               StringValue: UserInputs.DELETE
             },
-            CID: {
+            correlationId: {
               DataType: "String",
-              "StringValue.$": "$.CID"
+              "StringValue.$": "$.correlationId"
             },
             ReplyTo: {
               DataType: "String",
@@ -104,7 +104,7 @@ export const deleteUser = {
           TopicArn: resource.realTime.topicArn,
           Message: ((): ASYNC_OPERATION_RESULT => ({
             success: true,
-            ["CID.$" as "CID"]: "$.CID",
+            ["correlationId.$" as "correlationId"]: "$.correlationId",
             title: "User deleted successfully.",
             ["message" as "message"]: "User($.payload.id) and all their assets were deleted successfully."
           }))(),
@@ -113,9 +113,9 @@ export const deleteUser = {
               DataType: "String",
               StringValue: RealTimeInputs.ASYNC_OPERATION_RESULT
             },
-            CID: {
+            correlationId: {
               DataType: "String",
-              "StringValue.$": "$.CID"
+              "StringValue.$": "$.correlationId"
             },
           }
         },
@@ -129,7 +129,7 @@ export const deleteUser = {
           QueueUrl: resource.realTime.requestQueueURL,
           MessageBody: ((): ASYNC_OPERATION_RESULT => ({
             success: true,
-            ["CID.$" as "CID"]: "$.CID",
+            ["correlationId.$" as "correlationId"]: "$.correlationId",
             title: "User deletion failed.",
             ["message" as "message"]: "Something went wrong while deleting user($.payload.id)."
           }))(),
@@ -138,9 +138,9 @@ export const deleteUser = {
               DataType: "String",
               StringValue: RealTimeInputs.ASYNC_OPERATION_RESULT
             },
-            CID: {
+            correlationId: {
               DataType: "String",
-              "StringValue.$": "$.CID"
+              "StringValue.$": "$.correlationId"
             },
             Retain: {
               DataType: "String",

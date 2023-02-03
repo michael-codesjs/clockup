@@ -1,7 +1,7 @@
 import middy from "@middy/core";
 import { APIGatewayProxyEvent, Context } from "aws-lambda";
 import { ErrorResponse } from "../../../abstracts";
-import { CommonIOEvent, CommonIOInputSources, Consumer } from "../types";
+import { CommonIOEvent, CommonInputSources, Consumer } from "../types";
 
 export class CommonIoApiGatewayConsumer implements Consumer {
 
@@ -19,7 +19,7 @@ export class CommonIoApiGatewayConsumer implements Consumer {
 
   }
 
-  async error(request: middy.Request<CommonIOInputSources<any, any>, any, Error, Context>): Promise<void> {
+  async error(request: middy.Request<CommonInputSources<any, any>, any, Error, Context>): Promise<void> {
 
     console.error(request.error); // log for debugging purposes.
 

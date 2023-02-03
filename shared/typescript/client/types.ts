@@ -7,81 +7,21 @@ export type UpdateUserInput = {
   name?: string | null,
 };
 
-export type UserOutput = User | ErrorResponse
+export type AsyncOperationOutput = AsyncOperationResponse | ErrorResponse
 
 
-export type User = {
-  __typename: "User",
-  id: string,
-  entityType: EntityType,
-  creator: string,
-  creatorType: EntityType,
-  created: string,
-  modified?: string | null,
-  discontinued: boolean,
-  email: string,
-  name: string,
+export type AsyncOperationResponse = {
+  __typename: "AsyncOperationResponse",
+  status: AsyncOperationStatus,
+  correlationId: string,
 };
 
-export type Common = {
-  __typename: "Common",
-  id: string,
-  entityType: EntityType,
-  creator: string,
-  creatorType: EntityType,
-  created: string,
-  modified?: string | null,
-  discontinued: boolean,
-};
-
-export type Alarm = {
-  __typename: "Alarm",
-  id: string,
-  entityType: EntityType,
-  creator: string,
-  creatorType: EntityType,
-  created: string,
-  modified?: string | null,
-  discontinued: boolean,
-  name?: string | null,
-  enabled?: boolean | null,
-  days?: Array< number > | null,
-  time: AlarmRingTime,
-  snooze: AlarmSnoozeSettings,
-  onceOff?: boolean | null,
-};
-
-export enum EntityType {
-  USER = "USER",
-  ALARM = "ALARM",
-  NOTE = "NOTE",
+export enum AsyncOperationStatus {
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
+  FAILED = "FAILED",
 }
 
-
-export type AlarmRingTime = {
-  __typename: "AlarmRingTime",
-  hour: number,
-  minute: number,
-};
-
-export type AlarmSnoozeSettings = {
-  __typename: "AlarmSnoozeSettings",
-  duration: number,
-  interval: number,
-};
-
-export type Note = {
-  __typename: "Note",
-  id: string,
-  entityType: EntityType,
-  creator: string,
-  creatorType: EntityType,
-  created: string,
-  modified?: string | null,
-  discontinued: boolean,
-  title?: string | null,
-  body?: string | null,
-};
 
 export type ErrorResponse = {
   __typename: "ErrorResponse",
@@ -98,22 +38,6 @@ export enum ErrorTypes {
   CREATE_FAILED = "CREATE_FAILED",
   UPDATE_FAILED = "UPDATE_FAILED",
   DELETE_FAILED = "DELETE_FAILED",
-}
-
-
-export type AsyncOperationOutput = AsyncOperationResponse | ErrorResponse
-
-
-export type AsyncOperationResponse = {
-  __typename: "AsyncOperationResponse",
-  status: AsyncOperationStatus,
-  CID: string,
-};
-
-export enum AsyncOperationStatus {
-  PENDING = "PENDING",
-  COMPLETED = "COMPLETED",
-  FAILED = "FAILED",
 }
 
 
@@ -145,6 +69,79 @@ export type AlarmResponse = {
   creator: User,
 };
 
+export type Alarm = {
+  __typename: "Alarm",
+  id: string,
+  entityType: EntityType,
+  creator: string,
+  creatorType: EntityType,
+  created: string,
+  modified?: string | null,
+  discontinued: boolean,
+  name?: string | null,
+  enabled?: boolean | null,
+  days?: Array< number > | null,
+  time: AlarmRingTime,
+  snooze: AlarmSnoozeSettings,
+  onceOff?: boolean | null,
+};
+
+export type Common = {
+  __typename: "Common",
+  id: string,
+  entityType: EntityType,
+  creator: string,
+  creatorType: EntityType,
+  created: string,
+  modified?: string | null,
+  discontinued: boolean,
+};
+
+export type User = {
+  __typename: "User",
+  id: string,
+  entityType: EntityType,
+  creator: string,
+  creatorType: EntityType,
+  created: string,
+  modified?: string | null,
+  discontinued: boolean,
+  email: string,
+  name: string,
+};
+
+export enum EntityType {
+  USER = "USER",
+  ALARM = "ALARM",
+  NOTE = "NOTE",
+}
+
+
+export type Note = {
+  __typename: "Note",
+  id: string,
+  entityType: EntityType,
+  creator: string,
+  creatorType: EntityType,
+  created: string,
+  modified?: string | null,
+  discontinued: boolean,
+  title?: string | null,
+  body?: string | null,
+};
+
+export type AlarmRingTime = {
+  __typename: "AlarmRingTime",
+  hour: number,
+  minute: number,
+};
+
+export type AlarmSnoozeSettings = {
+  __typename: "AlarmSnoozeSettings",
+  duration: number,
+  interval: number,
+};
+
 export type UpdateAlarmInput = {
   id: string,
   name?: string | null,
@@ -155,22 +152,18 @@ export type UpdateAlarmInput = {
   onceOff?: boolean | null,
 };
 
+export type UserOutput = User | ErrorResponse
+
+
 export type UpdateUserMutationVariables = {
   input: UpdateUserInput,
 };
 
 export type UpdateUserMutation = {
   updateUser: ( {
-      __typename: "User",
-      id: string,
-      entityType: EntityType,
-      creator: string,
-      creatorType: EntityType,
-      created: string,
-      modified?: string | null,
-      discontinued: boolean,
-      email: string,
-      name: string,
+      __typename: "AsyncOperationResponse",
+      status: AsyncOperationStatus,
+      correlationId: string,
     } | {
       __typename: "ErrorResponse",
       type: ErrorTypes,
@@ -185,7 +178,7 @@ export type DeleteUserMutation = {
   deleteUser: ( {
       __typename: "AsyncOperationResponse",
       status: AsyncOperationStatus,
-      CID: string,
+      correlationId: string,
     } | {
       __typename: "ErrorResponse",
       type: ErrorTypes,

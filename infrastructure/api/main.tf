@@ -6,7 +6,7 @@ variable "stage" {
 
 variable "region" {
   type        = string
-  nullables   = false
+  nullable    = false
   description = "Region the API infrastructure is created in."
 }
 

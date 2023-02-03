@@ -26,6 +26,10 @@ class GivenUserAttributes {
 		return chance.string({ length: 20, alpha: true, numeric: true, symbols: true });
 	}
 
+	cognitoAttributes() {
+		return this.input();
+	}
+
 	attributes(): TUser {
 
 		const entityType = EntityType.User;
