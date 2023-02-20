@@ -1,4 +1,3 @@
-
 import { EventBridge } from "aws-sdk";
 import correlator from "correlation-id";
 import { eventBridgeClient } from "../lib/event-bridge";
@@ -7,7 +6,6 @@ import { DELETE, Inputs, UPDATE } from "./types/authentication";
 import { SendInputResponse } from "./types/main";
 
 const {
-  AUTHENTITCATION_API_URL,
   EVENT_BUS_NAME
 } = configureEnviromentVariables();
 

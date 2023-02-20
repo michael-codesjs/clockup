@@ -1,16 +1,23 @@
 $util.qr($ctx.stash.put("correlationId", $util.autoId()))
+#set($eventType = "USER_CREATABLES_CLEAN_UP")
 {
   "version": "2018-05-29",
   "method": "POST",
   "resourcePath": "/",
   "params": {
     "headers": {
-      "content-type": "application/x-amz-json-1.0",
-      "x-amz-target": "AWSStepFunctions.StartExecution"
+      "content-type": "application/x-amz-json-1.1",
+      "x-amz-target":"AWSEvents.PutEvents"
     },
     "body": {
-      "stateMachineArn": "${deleteUserStateMachineArn}",
-      "input": "{ \"correlationId\": \"$ctx.stash.correlationId\", \"payload\": { \"id\": \"$ctx.identity.sub\", \"creator\": \"$ctx.identity.sub\", \"creatorType\": \"USER\" } }"
+      "Entries": [
+        {
+          "Source": "appsync",
+          "EventBusName": "${eventBusName}",
+          "Detail": "{\"type\":\"USER_CREATABLES_CLEAN_UP\",\"correlationId\":\"$ctx.stash.correlationId\",\"payload\":{\"id\":\"$ctx.identity.sub\",\"creator\":\"$ctx.identity.sub\",\"creatorType\":\"USER\"},\"meta\":{\"towards\":\"USER_DELETION\"}}",
+          "DetailType": "$eventType"
+         }
+      ]
     }
   }
 }

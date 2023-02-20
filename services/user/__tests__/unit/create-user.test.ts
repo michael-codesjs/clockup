@@ -1,5 +1,6 @@
 import { Given, Repeat, Then } from "../../../../shared/typescript/utilities/testing";
 import { ServiceIO } from "../../../../shared/typescript/io";
+import { eventBridgeClient } from "../../../../shared/typescript/lib/event-bridge";
 
 describe("Create User", () => {
 

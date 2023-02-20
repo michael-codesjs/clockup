@@ -23,6 +23,8 @@ const handler: CommonIOHandler<DELETE, DELETED> = withCommonInput(async input =>
 
 	const responsePayload = await withOutputResponse(deleteUser);
 
+	console.log("RP:", responsePayload);
+
 	return {
 		type: Inputs.DELETED,
 		payload: responsePayload,

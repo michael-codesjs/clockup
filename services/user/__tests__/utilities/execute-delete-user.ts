@@ -13,6 +13,7 @@ type Params = {
     creatorType: EntityType
   }
 }
+
 export const executeDeleteUser = async (params: Params) => {
 
   const { Parameter } = await new SSM({ region: REGION }) // get DeleteUser state machine arn from ssm.

@@ -27,19 +27,22 @@ export class CommonIoEventBridgeConsumer implements Consumer {
 
     for (let index = 0; index < request.response.length; index++) {
 
-      const commonIoEvent = request.event as unknown as CommonIOEvent<CommonInput<string, any>>;
-      const { meta } = commonIoEvent.inputs[index];
+      const response = request.response[index] as CommonInput<string, any>;
+      const { meta } = response;
 
       if (!meta) return console.log("No meta tags were included by the input producer.");
 
       if (meta.propagate) {
 
-        const response = request.response[index] as CommonInput<string, any>;
+        const source = meta.source;
+
+        delete meta.source;
+        delete meta.propagate;
 
         const putEventArgs: EventBridge.PutEventsRequest = {
           Entries: [{
             EventBusName: EVENT_BUS_NAME,
-            Source: meta.source,
+            Source: source,
             DetailType: response.type,
             Detail: JSON.stringify(response)
           }],

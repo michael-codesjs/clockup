@@ -9,6 +9,7 @@ describe("Delete User", () => {
 		const user = await Given.user.authenticated();
 
 		const deleteResult = await When.user.delete() as unknown as AsyncOperationResponse; // delete user via the 'deleteUser' mutation;
+		console.log("Delete Result:", deleteResult);
 		expect(deleteResult.status).toBe(AsyncOperationStatus.Pending);
 
 		const wasDeleted = await wasUserDeletedFromCognitoUserPool(user.id);

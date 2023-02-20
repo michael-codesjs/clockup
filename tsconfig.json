@@ -12,7 +12,7 @@
   },
   "include": [
     "**/*.ts",
-    "**/*.js",
+    "**/*.js", "services/user/__tests__/unit/discontinue-user.test.tsp",
   ],
   "exclude": [
     "node_modules/**/*",

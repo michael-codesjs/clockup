@@ -1,12 +1,12 @@
-import { ulid } from "ulid";
 import { Keys } from "../../../abstracts";
+import { cognitoProvider } from "../../../lib/cognito";
 import { dynamoDbOperations } from "../../../lib/dynamoDb";
 import { EntityType, User as TUser } from "../../../types/api";
 import { chance } from "../../../utilities/constants";
 import { configureEnviromentVariables } from "../../../utilities/functions";
 import { Authentication } from "../when/authentication";
 
-const { USER_TABLE_NAME } = configureEnviromentVariables();
+const { USER_TABLE_NAME, COGNITO_USER_POOL_ID } = configureEnviromentVariables();
 
 class GivenUserAttributes {
 
@@ -14,10 +14,10 @@ class GivenUserAttributes {
 	static readonly instance = new GivenUserAttributes;
 
 	input() {
-		
+
 		const name = chance.name();
 		const email = chance.email();
-		
+
 		return { name, email };
 
 	}
@@ -58,17 +58,17 @@ class GivenUserAttributes {
 			values: [id]
 		}) as any;
 
-		
-		const result = await dynamoDbOperations.get({
-      TableName: USER_TABLE_NAME,
-      Key: {
-        PK: key,
-        SK: key
-      }
-    });
 
-    return result.Item as TUser
-	
+		const result = await dynamoDbOperations.get({
+			TableName: USER_TABLE_NAME,
+			Key: {
+				PK: key,
+				SK: key
+			}
+		});
+
+		return result.Item as TUser
+
 	}
 
 	async new(attributes: TUser = this.attributes()) {
@@ -78,21 +78,21 @@ class GivenUserAttributes {
 			values: [attributes.id]
 		}) as any;
 
-		
-    const Item = {
-      ...attributes,
-      PK: key,
-      SK: key
-    } as any;
-    
-    await dynamoDbOperations.put({
-      TableName: USER_TABLE_NAME,
-      Item
-    });
 
-    return Item as TUser;
-	
-  }
+		const Item = {
+			...attributes,
+			PK: key,
+			SK: key
+		} as any;
+
+		await dynamoDbOperations.put({
+			TableName: USER_TABLE_NAME,
+			Item
+		});
+
+		return Item as TUser;
+
+	}
 
 	async authenticated() {
 
@@ -102,7 +102,7 @@ class GivenUserAttributes {
 		};
 
 		const { id } = await Authentication.signUp(attributes); // sign up user
-		
+
 		await Authentication.signIn({
 			username: attributes.email,
 			password: attributes.password
@@ -110,6 +110,12 @@ class GivenUserAttributes {
 
 		return await this.byId(id);
 
+	}
+
+	async cognito(id: string) {
+		return await cognitoProvider()
+			.adminGetUser({ UserPoolId: COGNITO_USER_POOL_ID, Username: id })
+			.promise()
 	}
 
 	/*

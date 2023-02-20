@@ -1,21 +1,30 @@
 import { withCommonInput } from "../../../../shared/typescript/hofs";
 import { withLambdaIOStandard } from "../../../../shared/typescript/hofs/with-lambda-io-standard";
 import { withOutputResponse } from "../../../../shared/typescript/hofs/with-output-response";
-import { Discontinue } from "../../../../shared/typescript/io/types/user";
+import { CONTINUE, CONTINUED, Inputs } from "../../../../shared/typescript/io/types/user";
 import { CommonIOHandler } from "../../../../shared/typescript/middleware/common-lambda-io/types";
-import { OperationResponse } from "../../../../shared/typescript/types/api";
 import { User } from "../../framework";
 
 /** handler for the 'continueUser' lambda function. */
-const handler: CommonIOHandler<Discontinue, OperationResponse> = withCommonInput(async input => {
+const handler: CommonIOHandler<CONTINUE, CONTINUED> = withCommonInput(async input => {
 
 	const discontinueUser = async () => {
-			const user = new User(input); // instanciate instance of User with inputs from event.
+			const user = new User(input.payload); // instanciate instance of User with inputs from event.
 			await user.continue(); // discontinue user.
-			return `User(${input.id}) continued successfully.`;
+			return `User(${input.payload.id}) continued successfully.`;
 	}
 
-	return withOutputResponse(discontinueUser, { rethrow: true });
+	const response = await withOutputResponse(discontinueUser);
+
+	return {
+		type: Inputs.CONTINUED,
+		correlationId: input.correlationId,
+		payload: response,
+		meta: {
+			propagate: true,
+			source: "clockup.user.functions.continue-user"
+		}
+	};
 
 });
 

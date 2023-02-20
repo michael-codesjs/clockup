@@ -34,3 +34,9 @@ module "storage" {
   stage  = var.stage
   region = var.region
 }
+
+module "roles" {
+  source = "./roles"
+  stage  = var.stage
+  region = var.region
+}

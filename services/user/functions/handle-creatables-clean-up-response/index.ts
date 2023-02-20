@@ -3,18 +3,19 @@ import type { AWS } from "../../../../shared/typescript/types/aws";
 import { resource } from "../../../../shared/typescript/utilities";
 import { handlerPath } from "../../../../shared/typescript/utilities/functions";
 
-export const createUser: AWS.ServerlessLambdaFunction = {
+/** 'handleUserCreatablesCleanUpResponse' lambda function sls definition. */
+export const handleCreatablesCleanUpResponse: AWS.ServerlessLambdaFunction = {
 
-	description: "Creates a user entity.",
+	description: "Handles the user creatables clean up resposne.",
 	handler: `${handlerPath(__dirname)}/handler.main`,
-
+	
 	events: [
 		{
-			http: {
-				path: "/",
-				method: "POST",
-				cors: true,
-				authorizer: "AWS_IAM",
+			eventBridge: {
+				eventBus: resource.eventBusArn,
+				pattern: {
+					"detail-type": [Inputs.CREATABLES_CLEANED_UP]
+				}
 			}
 		}
 	],
@@ -22,13 +23,8 @@ export const createUser: AWS.ServerlessLambdaFunction = {
 	iamRoleStatements: [
 		{
 			Effect: "Allow",
-			Action: ["dynamodb:PutItem"],
-			Resource: resource.user.tableArn
-		},
-		{
-			Effect: "Allow",
-			Resource: resource.eventBusArn,
-			Action: ["events:PutEvents"]
+			Action: ["events:PutEvents"],
+			Resource: resource.eventBusArn
 		}
 	]
 

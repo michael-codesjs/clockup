@@ -3,18 +3,19 @@ import type { AWS } from "../../../../shared/typescript/types/aws";
 import { resource } from "../../../../shared/typescript/utilities";
 import { handlerPath } from "../../../../shared/typescript/utilities/functions";
 
-export const createUser: AWS.ServerlessLambdaFunction = {
+/** 'handleDiscontinueUserResponse' lambda function sls definition. */
+export const handleDiscontinueUserResponse: AWS.ServerlessLambdaFunction = {
 
-	description: "Creates a user entity.",
+	description: "Discontinues a user.",
 	handler: `${handlerPath(__dirname)}/handler.main`,
-
+	
 	events: [
 		{
-			http: {
-				path: "/",
-				method: "POST",
-				cors: true,
-				authorizer: "AWS_IAM",
+			eventBridge: {
+				eventBus: resource.eventBusArn,
+				pattern: {
+					"detail-type": [Inputs.DISCONTINUED]
+				}
 			}
 		}
 	],
@@ -22,13 +23,13 @@ export const createUser: AWS.ServerlessLambdaFunction = {
 	iamRoleStatements: [
 		{
 			Effect: "Allow",
-			Action: ["dynamodb:PutItem"],
+			Action: ["dynamodb:UpdateItem"],
 			Resource: resource.user.tableArn
 		},
 		{
 			Effect: "Allow",
-			Resource: resource.eventBusArn,
-			Action: ["events:PutEvents"]
+			Action: ["events:PutEvents"],
+			Resource: resource.eventBusArn
 		}
 	]
 

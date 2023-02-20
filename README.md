@@ -1,4 +1,8 @@
-# **clockup**
+## **NOTICE**
+
+I've paused working on this project for the time being. I'll be back hopefully not a long time from now (20/02/2023).
+
+## **clockup**
 
 Welcome, this repository contains everything that makes up the clockup platform.
 The backend comprised of several serverless microservices, web clients comprised of several micro front-ends and a cross platform native app.
